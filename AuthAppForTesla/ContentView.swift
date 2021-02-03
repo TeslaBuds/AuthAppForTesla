@@ -149,7 +149,7 @@ struct ContentView: View {
     
     func authenticateV3() {
         
-        self.getAuthRegion { (url) in
+        model.getAuthRegion { (url) in
             guard let url = url else { return }
             
             oauthswift.accessTokenUrl = url
@@ -190,20 +190,5 @@ struct ContentView: View {
             }
 
         }
-    }
-        
-    func getAuthRegion(completion: @escaping (_ result: String?) -> ()) {
-        let url = URL(string: "https://auth-global.tesla.com/oauth2/v3/token")!
-        let request = URLRequest(url: url)
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let response = response as? HTTPURLResponse {
-                completion(response.url?.absoluteString)
-            }
-            else
-            {
-                completion(nil)
-            }
-        }
-        task.resume()
     }
 }

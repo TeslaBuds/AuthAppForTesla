@@ -26,7 +26,7 @@ class AuthViewModel: ObservableObject {
         let configuration = URLSessionConfiguration.default
         configuration.requestCachePolicy = .reloadIgnoringLocalCacheData
         configuration.allowsCellularAccess = true
-        return Networking(baseURL: "https://auth.tesla.com", configuration: configuration)
+        return Networking(configuration: configuration)
     }()
 
     private lazy var networking: Networking = {
@@ -113,108 +113,125 @@ class AuthViewModel: ObservableObject {
         completion(nil)
     }
 
-    fileprivate func oauthRenew(_ refreshToken: String, retries: Int = 0, _ completion: @escaping (Token?) -> ()) {
-        self.networkingAuth.headerFields = ["User-Agent": "TeslaWatch"]
-        self.networkingAuth.headerFields = ["X-Tesla-User-Agent": "TeslaWatch"]
-        self.networkingAuth.post("/oauth2/v3/token", parameterType: .formURLEncoded, parameters:
-            [   "grant_type" : "refresh_token",
-                "scope" : "openid email offline_access",
-                "client_id" : "ownerapi",
-                "client_secret" : kTeslaSecret,
-                "refresh_token" : "\(refreshToken)"]
-        ) { result in
-            switch result {
-            case .success(let result):
-                var token: Token? = nil
-                if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
-                let access_token = result.dictionaryBody["access_token"] as? String,
-                let token_type = result.dictionaryBody["token_type"] as? String,
-                let refresh_token = result.dictionaryBody["refresh_token"] as? String
-                {
-                    let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
-
-                    token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt)
-                    if let encodedToken = try? JSONEncoder().encode(token) {
-                        logRequestEvent(message: "Setting V3 token from oauthRenew: \(encodedToken)")
-                        KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-                        self.tokenV3 = token
-                    }
-                    if (refreshToken != refresh_token)
-                    {
-                        logRequestEvent(message: "Refresh token v3: Refresh token value updated during refresh")
-                    }
-                }
-                logRequestEvent(message: "Refresh token v3 success: \(token == nil ? "Token received but was invalid" : "True")")
-                completion(token)
-                return
-            case .failure(let error):
-                // print("Error refreshing token: \(error)")
-                if error.statusCode == 400
-                {
-                    if retries < 3
-                    {
-                        logRequestEvent(message: "Refresh token v3 failure 400: retrying \(retries + 1)")
-                        self.oauthRenew(refreshToken, retries: retries + 1, completion)
-                        return
-                    }
-                    logRequestEvent(message: "Refresh token v3 failure 400: giving up")
-                    logRequestEvent(message: "Refresh token v3 error 400, removing token")
-                    logRequestEvent(message: "Removing V3 token from oauthRenew")
-                    KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-                    self.tokenV3 = nil
-                    //KeychainWrapper.global.set("", forKey: kWatchToken, withAccessibility: .afterFirstUnlock)
-                    //UserDefaults.standard.set(nil, forKey: kWatchToken)
-                }
-                else if error.statusCode == 401
-                {
-                    if retries < 3
-                    {
-                        logRequestEvent(message: "Refresh token v3 failure 401: retrying \(retries + 1)")
-                        self.oauthRenew(refreshToken, retries: retries + 1, completion)
-                        return
-                    }
-                    logRequestEvent(message: "Refresh token v3 failure 401: giving up")
-                    logRequestEvent(message: "Refresh token v3 error 401, removing token")
-                    logRequestEvent(message: "Removing V3 token from oauthRenew")
-                    KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-                    self.tokenV3 = nil
-                    //KeychainWrapper.global.set("", forKey: kWatchToken, withAccessibility: .afterFirstUnlock)
-                    //UserDefaults.standard.set(nil, forKey: kWatchToken)
-                }
-                else if error.statusCode == 848
-                {
-                    //Mystical SSL error
-                    logRequestEvent(message: "Refresh token v3 failure: SSL 848")
-                    if retries < 3
-                    {
-                        logRequestEvent(message: "Refresh token v3 failure: retrying \(retries + 1)")
-                        self.oauthRenew(refreshToken, retries: retries + 1, completion)
-                        return
-                    }
-                    logRequestEvent(message: "Refresh token v3 failure: giving up")
-                }
-                else
-                {
-                    //19 - network connection was lost
-                    //23 - request timed out
-
-                    logRequestEvent(message: "Refresh token v3 error: \(error.headers["Www-Authenticate"] as? String ?? error.statusCode.description)")
-                    if retries < 3
-                    {
-                        logRequestEvent(message: "Refresh token v3 failure \(error.statusCode.description): retrying \(retries + 1)")
-                        self.oauthRenew(refreshToken, retries: retries + 1, completion)
-                        return
-                    }
-                    logRequestEvent(message: "Refresh token v3 failure: giving up")
-                    logRequestEvent(message: "Refresh token v3 failure: \(error.error.debugDescription)")
-                    //set offline - not logged out
-                    
-                }
+    func getAuthRegion(completion: @escaping (_ result: String?) -> ()) {
+        let url = URL(string: "https://auth-global.tesla.com/oauth2/v3/token")!
+        let request = URLRequest(url: url)
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let response = response as? HTTPURLResponse {
+                completion(response.url?.absoluteString)
+            }
+            else
+            {
                 completion(nil)
             }
         }
+        task.resume()
+    }
 
-        
+    fileprivate func oauthRenew(_ refreshToken: String, retries: Int = 0, _ completion: @escaping (Token?) -> ()) {
+        getAuthRegion { (url) in
+            guard let url = url else { completion(nil); return }
+            
+            self.networkingAuth.headerFields = ["User-Agent": "TeslaWatch"]
+            self.networkingAuth.headerFields = ["X-Tesla-User-Agent": "TeslaWatch"]
+            self.networkingAuth.post(url, parameterType: .formURLEncoded, parameters:
+                [   "grant_type" : "refresh_token",
+                    "scope" : "openid email offline_access",
+                    "client_id" : "ownerapi",
+                    "client_secret" : kTeslaSecret,
+                    "refresh_token" : "\(refreshToken)"]
+            ) { result in
+                switch result {
+                case .success(let result):
+                    var token: Token? = nil
+                    if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
+                    let access_token = result.dictionaryBody["access_token"] as? String,
+                    let token_type = result.dictionaryBody["token_type"] as? String,
+                    let refresh_token = result.dictionaryBody["refresh_token"] as? String
+                    {
+                        let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
+
+                        token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt)
+                        if let encodedToken = try? JSONEncoder().encode(token) {
+                            logRequestEvent(message: "Setting V3 token from oauthRenew: \(encodedToken)")
+                            KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                            self.tokenV3 = token
+                        }
+                        if (refreshToken != refresh_token)
+                        {
+                            logRequestEvent(message: "Refresh token v3: Refresh token value updated during refresh")
+                        }
+                    }
+                    logRequestEvent(message: "Refresh token v3 success: \(token == nil ? "Token received but was invalid" : "True")")
+                    completion(token)
+                    return
+                case .failure(let error):
+                    // print("Error refreshing token: \(error)")
+                    if error.statusCode == 400
+                    {
+                        if retries < 3
+                        {
+                            logRequestEvent(message: "Refresh token v3 failure 400: retrying \(retries + 1)")
+                            self.oauthRenew(refreshToken, retries: retries + 1, completion)
+                            return
+                        }
+                        logRequestEvent(message: "Refresh token v3 failure 400: giving up")
+                        logRequestEvent(message: "Refresh token v3 error 400, removing token")
+                        logRequestEvent(message: "Removing V3 token from oauthRenew")
+                        KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                        self.tokenV3 = nil
+                        //KeychainWrapper.global.set("", forKey: kWatchToken, withAccessibility: .afterFirstUnlock)
+                        //UserDefaults.standard.set(nil, forKey: kWatchToken)
+                    }
+                    else if error.statusCode == 401
+                    {
+                        if retries < 3
+                        {
+                            logRequestEvent(message: "Refresh token v3 failure 401: retrying \(retries + 1)")
+                            self.oauthRenew(refreshToken, retries: retries + 1, completion)
+                            return
+                        }
+                        logRequestEvent(message: "Refresh token v3 failure 401: giving up")
+                        logRequestEvent(message: "Refresh token v3 error 401, removing token")
+                        logRequestEvent(message: "Removing V3 token from oauthRenew")
+                        KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                        self.tokenV3 = nil
+                        //KeychainWrapper.global.set("", forKey: kWatchToken, withAccessibility: .afterFirstUnlock)
+                        //UserDefaults.standard.set(nil, forKey: kWatchToken)
+                    }
+                    else if error.statusCode == 848
+                    {
+                        //Mystical SSL error
+                        logRequestEvent(message: "Refresh token v3 failure: SSL 848")
+                        if retries < 3
+                        {
+                            logRequestEvent(message: "Refresh token v3 failure: retrying \(retries + 1)")
+                            self.oauthRenew(refreshToken, retries: retries + 1, completion)
+                            return
+                        }
+                        logRequestEvent(message: "Refresh token v3 failure: giving up")
+                    }
+                    else
+                    {
+                        //19 - network connection was lost
+                        //23 - request timed out
+
+                        logRequestEvent(message: "Refresh token v3 error: \(error.headers["Www-Authenticate"] as? String ?? error.statusCode.description)")
+                        if retries < 3
+                        {
+                            logRequestEvent(message: "Refresh token v3 failure \(error.statusCode.description): retrying \(retries + 1)")
+                            self.oauthRenew(refreshToken, retries: retries + 1, completion)
+                            return
+                        }
+                        logRequestEvent(message: "Refresh token v3 failure: giving up")
+                        logRequestEvent(message: "Refresh token v3 failure: \(error.error.debugDescription)")
+                        //set offline - not logged out
+                        
+                    }
+                    completion(nil)
+                }
+            }
+        }
     }
 
     fileprivate func refreshClassicTokenWithJWTToken(_ accessToken: String, retries: Int = 0, _ completion: @escaping (Token?) -> ()) {
