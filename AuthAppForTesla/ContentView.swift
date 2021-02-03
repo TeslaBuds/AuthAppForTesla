@@ -67,10 +67,25 @@ struct ContentView: View {
                 Spacer()
                 }
 
-                if (refreshV3.count > 0) { Text("Refresh token: \(refreshV3)") }
-                if (tokenV3.count > 0) { Text("Access token v3: \(tokenV3)") }
-                if (tokenV2.count > 0) { Text("Access token v2: \(tokenV2)") }
                 
+                if (refreshV3.count > 0) {
+                    Button(action: {
+                        let pasteBoard = UIPasteboard.general
+                        pasteBoard.string = refreshV3
+                    }, label: {
+                        Text("Refresh token")
+                    }).frame(maxWidth: .infinity)
+                }
+
+                if (tokenV2.count > 0) {
+                    Button(action: {
+                        let pasteBoard = UIPasteboard.general
+                        pasteBoard.string = tokenV2
+                    }, label: {
+                        Text("Access token")
+                    }).frame(maxWidth: .infinity)
+                }
+            
                 if (message.count > 0)
                 {
                     Divider()
