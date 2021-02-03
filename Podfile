@@ -12,4 +12,5 @@ platform :ios, '14.3'
   # Pods for AuthAppForTesla
   pod 'Networking'
   pod 'OAuthSwift'
+  pod 'SwiftDate'
 end

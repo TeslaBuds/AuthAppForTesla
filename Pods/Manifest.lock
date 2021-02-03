@@ -1,20 +1,24 @@
 PODS:
   - Networking (5.1.0)
   - OAuthSwift (2.1.0)
+  - SwiftDate (6.3.1)
 
 DEPENDENCIES:
   - Networking
   - OAuthSwift
+  - SwiftDate
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - Networking
     - OAuthSwift
+    - SwiftDate
 
 SPEC CHECKSUMS:
   Networking: 85b2a0c2d3b6eb548f4eec9880f5f3c49e6b0959
   OAuthSwift: ab1675598273e04355e0282459c328e65c9ddacd
+  SwiftDate: 72d28954e8e1c6c1c0f917ccc8005e4f83c7d4b2
 
-PODFILE CHECKSUM: 7c1defb4410011f762d45695c82695d34f1f1cdb
+PODFILE CHECKSUM: dfd68ace94787a0e38d30944090785cf7616872b
 
 COCOAPODS: 1.10.1
