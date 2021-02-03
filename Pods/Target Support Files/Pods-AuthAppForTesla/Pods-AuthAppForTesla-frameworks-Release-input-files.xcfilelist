@@ -1,0 +1,3 @@
+${PODS_ROOT}/Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla-frameworks.sh
+${BUILT_PRODUCTS_DIR}/Networking/Networking.framework
+${BUILT_PRODUCTS_DIR}/OAuthSwift/OAuthSwift.framework

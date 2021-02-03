@@ -1,0 +1,20 @@
+PODS:
+  - Networking (5.1.0)
+  - OAuthSwift (2.1.0)
+
+DEPENDENCIES:
+  - Networking
+  - OAuthSwift
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - Networking
+    - OAuthSwift
+
+SPEC CHECKSUMS:
+  Networking: 85b2a0c2d3b6eb548f4eec9880f5f3c49e6b0959
+  OAuthSwift: ab1675598273e04355e0282459c328e65c9ddacd
+
+PODFILE CHECKSUM: 7c1defb4410011f762d45695c82695d34f1f1cdb
+
+COCOAPODS: 1.10.1
