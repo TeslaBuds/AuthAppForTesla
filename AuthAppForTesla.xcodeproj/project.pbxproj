@@ -1,0 +1,435 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 51;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */; };
+		EA63697425CAB11D000216BF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697325CAB11D000216BF /* ContentView.swift */; };
+		EA63697625CAB11D000216BF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA63697525CAB11D000216BF /* Assets.xcassets */; };
+		EA63697925CAB11D000216BF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA63697825CAB11D000216BF /* Preview Assets.xcassets */; };
+		EA63698925CAB3EF000216BF /* AuthWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63698825CAB3EF000216BF /* AuthWebViewController.swift */; };
+		EA63698C25CAB620000216BF /* Consts.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63698B25CAB620000216BF /* Consts.swift */; };
+		EA63698F25CAB660000216BF /* Util.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63698E25CAB660000216BF /* Util.swift */; };
+		EA63699225CAB6A8000216BF /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63699125CAB6A8000216BF /* Models.swift */; };
+		EA63699E25CABA68000216BF /* KeychainItemAccessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63699C25CABA68000216BF /* KeychainItemAccessibility.swift */; };
+		EA63699F25CABA68000216BF /* KeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63699D25CABA68000216BF /* KeychainWrapper.swift */; };
+		EA6369A725CAD79D000216BF /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6369A625CAD79D000216BF /* AuthViewModel.swift */; };
+		FEFDE3CBF424AD0B182E9D6E /* Pods_AuthAppForTesla.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45769FA58A6F7E602DA51A7E /* Pods_AuthAppForTesla.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		183181C9830E9DD876915C1B /* Pods-AuthAppForTesla.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AuthAppForTesla.release.xcconfig"; path = "Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla.release.xcconfig"; sourceTree = "<group>"; };
+		45769FA58A6F7E602DA51A7E /* Pods_AuthAppForTesla.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AuthAppForTesla.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		77149D1A1E06D0C37B8DC9E7 /* Pods-AuthAppForTesla.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AuthAppForTesla.debug.xcconfig"; path = "Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla.debug.xcconfig"; sourceTree = "<group>"; };
+		EA63696E25CAB11D000216BF /* AuthAppForTesla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthAppForTesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAppForTeslaApp.swift; sourceTree = "<group>"; };
+		EA63697325CAB11D000216BF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		EA63697525CAB11D000216BF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EA63697825CAB11D000216BF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		EA63697A25CAB11D000216BF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EA63698825CAB3EF000216BF /* AuthWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthWebViewController.swift; sourceTree = "<group>"; };
+		EA63698B25CAB620000216BF /* Consts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Consts.swift; sourceTree = "<group>"; };
+		EA63698E25CAB660000216BF /* Util.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Util.swift; sourceTree = "<group>"; };
+		EA63699125CAB6A8000216BF /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		EA63699B25CABA68000216BF /* SwiftKeychainWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwiftKeychainWrapper.h; sourceTree = "<group>"; };
+		EA63699C25CABA68000216BF /* KeychainItemAccessibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainItemAccessibility.swift; sourceTree = "<group>"; };
+		EA63699D25CABA68000216BF /* KeychainWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainWrapper.swift; sourceTree = "<group>"; };
+		EA6369A625CAD79D000216BF /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		EA63696B25CAB11D000216BF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FEFDE3CBF424AD0B182E9D6E /* Pods_AuthAppForTesla.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		003A0F6CF2DBC27EAD7A2DB1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				45769FA58A6F7E602DA51A7E /* Pods_AuthAppForTesla.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		BE65635A7F9DC1BA543408A5 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				77149D1A1E06D0C37B8DC9E7 /* Pods-AuthAppForTesla.debug.xcconfig */,
+				183181C9830E9DD876915C1B /* Pods-AuthAppForTesla.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		EA63696525CAB11D000216BF = {
+			isa = PBXGroup;
+			children = (
+				EA63697025CAB11D000216BF /* AuthAppForTesla */,
+				EA63696F25CAB11D000216BF /* Products */,
+				BE65635A7F9DC1BA543408A5 /* Pods */,
+				003A0F6CF2DBC27EAD7A2DB1 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		EA63696F25CAB11D000216BF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				EA63696E25CAB11D000216BF /* AuthAppForTesla.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		EA63697025CAB11D000216BF /* AuthAppForTesla */ = {
+			isa = PBXGroup;
+			children = (
+				EA63699C25CABA68000216BF /* KeychainItemAccessibility.swift */,
+				EA63699D25CABA68000216BF /* KeychainWrapper.swift */,
+				EA63699B25CABA68000216BF /* SwiftKeychainWrapper.h */,
+				EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */,
+				EA63697325CAB11D000216BF /* ContentView.swift */,
+				EA63697525CAB11D000216BF /* Assets.xcassets */,
+				EA63697A25CAB11D000216BF /* Info.plist */,
+				EA63697725CAB11D000216BF /* Preview Content */,
+				EA63698825CAB3EF000216BF /* AuthWebViewController.swift */,
+				EA63698B25CAB620000216BF /* Consts.swift */,
+				EA63698E25CAB660000216BF /* Util.swift */,
+				EA63699125CAB6A8000216BF /* Models.swift */,
+				EA6369A625CAD79D000216BF /* AuthViewModel.swift */,
+			);
+			path = AuthAppForTesla;
+			sourceTree = "<group>";
+		};
+		EA63697725CAB11D000216BF /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				EA63697825CAB11D000216BF /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EA63696D25CAB11D000216BF /* AuthAppForTesla */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA63697D25CAB11D000216BF /* Build configuration list for PBXNativeTarget "AuthAppForTesla" */;
+			buildPhases = (
+				0F231276C7E19C598F8EFED8 /* [CP] Check Pods Manifest.lock */,
+				EA63696A25CAB11D000216BF /* Sources */,
+				EA63696B25CAB11D000216BF /* Frameworks */,
+				EA63696C25CAB11D000216BF /* Resources */,
+				0DA79864DC80E2D7C6CC547D /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AuthAppForTesla;
+			productName = AuthAppForTesla;
+			productReference = EA63696E25CAB11D000216BF /* AuthAppForTesla.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EA63696625CAB11D000216BF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1240;
+				LastUpgradeCheck = 1240;
+				TargetAttributes = {
+					EA63696D25CAB11D000216BF = {
+						CreatedOnToolsVersion = 12.4;
+					};
+				};
+			};
+			buildConfigurationList = EA63696925CAB11D000216BF /* Build configuration list for PBXProject "AuthAppForTesla" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = EA63696525CAB11D000216BF;
+			productRefGroup = EA63696F25CAB11D000216BF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EA63696D25CAB11D000216BF /* AuthAppForTesla */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		EA63696C25CAB11D000216BF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA63697925CAB11D000216BF /* Preview Assets.xcassets in Resources */,
+				EA63697625CAB11D000216BF /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0DA79864DC80E2D7C6CC547D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		0F231276C7E19C598F8EFED8 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-AuthAppForTesla-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		EA63696A25CAB11D000216BF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA6369A725CAD79D000216BF /* AuthViewModel.swift in Sources */,
+				EA63699F25CABA68000216BF /* KeychainWrapper.swift in Sources */,
+				EA63697425CAB11D000216BF /* ContentView.swift in Sources */,
+				EA63698C25CAB620000216BF /* Consts.swift in Sources */,
+				EA63698F25CAB660000216BF /* Util.swift in Sources */,
+				EA63699225CAB6A8000216BF /* Models.swift in Sources */,
+				EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */,
+				EA63699E25CABA68000216BF /* KeychainItemAccessibility.swift in Sources */,
+				EA63698925CAB3EF000216BF /* AuthWebViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		EA63697B25CAB11D000216BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		EA63697C25CAB11D000216BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		EA63697E25CAB11D000216BF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 77149D1A1E06D0C37B8DC9E7 /* Pods-AuthAppForTesla.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_ASSET_PATHS = "\"AuthAppForTesla/Preview Content\"";
+				DEVELOPMENT_TEAM = R8S8D227CC;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = AuthAppForTesla/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dk.kimhansen.AuthAppForTesla;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EA63697F25CAB11D000216BF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 183181C9830E9DD876915C1B /* Pods-AuthAppForTesla.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_ASSET_PATHS = "\"AuthAppForTesla/Preview Content\"";
+				DEVELOPMENT_TEAM = R8S8D227CC;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = AuthAppForTesla/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = dk.kimhansen.AuthAppForTesla;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		EA63696925CAB11D000216BF /* Build configuration list for PBXProject "AuthAppForTesla" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA63697B25CAB11D000216BF /* Debug */,
+				EA63697C25CAB11D000216BF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EA63697D25CAB11D000216BF /* Build configuration list for PBXNativeTarget "AuthAppForTesla" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA63697E25CAB11D000216BF /* Debug */,
+				EA63697F25CAB11D000216BF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EA63696625CAB11D000216BF /* Project object */;
+}
