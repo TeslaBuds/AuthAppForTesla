@@ -27,7 +27,7 @@ open class OAuth2Swift: OAuthSwift {
     var consumerKey: String
     var consumerSecret: String
     var authorizeUrl: String
-    var accessTokenUrl: String?
+    public var accessTokenUrl: String?
     var responseType: String
     var contentType: String?
     // RFC7636 PKCE

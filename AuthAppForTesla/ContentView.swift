@@ -25,6 +25,7 @@ import SwiftUI
 import Combine
 import OAuthSwift
 import SwiftDate
+import Networking
 
 struct ContentView: View {
     @ObservedObject var model: AuthViewModel
@@ -61,7 +62,6 @@ struct ContentView: View {
                 }).frame(maxWidth: .infinity)
                 Spacer()
                 }
-
                 
                 if (model.tokenV3?.refresh_token.count ?? 0 > 0) {
                     Button(action: {
@@ -116,12 +116,12 @@ struct ContentView: View {
         }
         .navigationBarTitle("Login")
     }
-
+    
     var oauthswift = OAuth2Swift(
         consumerKey: "ownerapi",
         consumerSecret: kTeslaSecret,
-        authorizeUrl: "https://auth.tesla.com/oauth2/v3/authorize",
-        accessTokenUrl: "https://auth.tesla.com/oauth2/v3/token",
+        authorizeUrl: "https://auth-global.tesla.com/oauth2/v3/authorize",
+        accessTokenUrl: "",
         responseType: "code"
     )
     
@@ -148,43 +148,62 @@ struct ContentView: View {
     var credential: OAuthSwiftCredential?
     
     func authenticateV3() {
-        let codeVerifier = self.verifier(forKey: kTeslaClientID)
-        let codeChallenge = self.challenge(forVerifier: codeVerifier)
         
-        let internalController = AuthWebViewController()
-        //        internalController.callbackURL = "https://auth.tesla.com/void/callback"
-        //        internalController.callingViewController = self
-        oauthswift.authorizeURLHandler = internalController
-        //        oauthswift.authorizeURLHandler = SafariURLHandler(viewController: self, oauthSwift: oauthswift)
-        let state = generateState(withLength: 20)
-        
-        oauthswift.authorize(withCallbackURL: "https://auth.tesla.com/void/callback", scope: "openid email offline_access", state: state, codeChallenge: codeChallenge, codeChallengeMethod: "S256", codeVerifier: codeVerifier) { result in
-            switch result {
-            case .success(let (credential, _, _)):
-                print(credential.oauthToken)
+        self.getAuthRegion { (url) in
+            guard let url = url else { return }
+            
+            oauthswift.accessTokenUrl = url
+            
+            DispatchQueue.main.async {
+                let codeVerifier = self.verifier(forKey: kTeslaClientID)
+                let codeChallenge = self.challenge(forVerifier: codeVerifier)
                 
-                let token = Token(access_token: credential.oauthToken, token_type: "bearer", expires_in: 300, refresh_token: credential.oauthRefreshToken, expires_at: credential.oauthTokenExpiresAt)//  Date().addingTimeInterval(TimeInterval(3888000))) //credential.oauthTokenExpiresAt ??
-                model.setJwtToken(token)
-                model.acquireTokenSilent(forceRefresh: true) { (token) in
-                    //
+                let internalController = AuthWebViewController()
+                //        internalController.callbackURL = "https://auth.tesla.com/void/callback"
+                //        internalController.callingViewController = self
+                oauthswift.authorizeURLHandler = internalController
+                //        oauthswift.authorizeURLHandler = SafariURLHandler(viewController: self, oauthSwift: oauthswift)
+                let state = generateState(withLength: 20)
+                
+                oauthswift.authorize(withCallbackURL: "https://auth.tesla.com/void/callback", scope: "openid email offline_access", state: state, codeChallenge: codeChallenge, codeChallengeMethod: "S256", codeVerifier: codeVerifier) { result in
+                    switch result {
+                    case .success(let (credential, _, _)):
+                        print(credential.oauthToken)
+                        
+                        let token = Token(access_token: credential.oauthToken, token_type: "bearer", expires_in: 300, refresh_token: credential.oauthRefreshToken, expires_at: credential.oauthTokenExpiresAt)//  Date().addingTimeInterval(TimeInterval(3888000))) //credential.oauthTokenExpiresAt ??
+                        model.setJwtToken(token)
+                        model.acquireTokenSilent(forceRefresh: true) { (token) in
+                            //
+                        }
+        //                AuthController.shared().getVehicles({ (vehicles, message) in
+        //                    if (vehicles != nil)
+        //                    {
+        //                        self.loading = false
+        //                        TeslaController.shared().startPolling()
+        //                        self.model.loggedIn = true
+        //                    }
+        //                })
+                    case .failure(let error):
+                        print(error)
+                    }
                 }
-//                AuthController.shared().getVehicles({ (vehicles, message) in
-//                    if (vehicles != nil)
-//                    {
-//                        self.loading = false
-//                        TeslaController.shared().startPolling()
-//                        self.model.loggedIn = true
-//                    }
-//                })
-            case .failure(let error):
-                print(error)
             }
+
         }
     }
-    
-    func getData() {
-        oauthswift.startAuthorizedRequest("https://owner-api.teslamotors.com/api/1/vehicles", method: .GET, parameters: OAuthSwift.Parameters()) { (result) in
-            print(result)
+        
+    func getAuthRegion(completion: @escaping (_ result: String?) -> ()) {
+        let url = URL(string: "https://auth-global.tesla.com/oauth2/v3/token")!
+        let request = URLRequest(url: url)
+        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+            if let response = response as? HTTPURLResponse {
+                completion(response.url?.absoluteString)
+            }
+            else
+            {
+                completion(nil)
+            }
         }
+        task.resume()
     }
 }
