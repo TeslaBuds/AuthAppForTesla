@@ -27,18 +27,13 @@ import OAuthSwift
 import SwiftDate
 
 struct ContentView: View {
-//    @ObservedObject var model: TeslaViewModel
-//
-//    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @ObservedObject var model: AuthViewModel
     
     @State var username = ""
     @State var password = ""
     @State var message = ""
     @State var loading = false
     @State var showRequestLog = false
-    @State var tokenV3 = ""
-    @State var refreshV3 = ""
-    @State var tokenV2 = ""
     
     let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
@@ -59,7 +54,7 @@ struct ContentView: View {
                 Group {
                 Spacer()
                 Button(action: {
-                    AuthController.shared().logOut()
+                    model.logOut()
                     self.authenticateV3()
                 }, label: {
                     Text("Login with Tesla")
@@ -68,19 +63,19 @@ struct ContentView: View {
                 }
 
                 
-                if (refreshV3.count > 0) {
+                if (model.tokenV3?.refresh_token.count ?? 0 > 0) {
                     Button(action: {
                         let pasteBoard = UIPasteboard.general
-                        pasteBoard.string = refreshV3
+                        pasteBoard.string = model.tokenV3?.refresh_token
                     }, label: {
                         Text("Refresh token")
                     }).frame(maxWidth: .infinity)
                 }
 
-                if (tokenV2.count > 0) {
+                if (model.tokenV2?.access_token.count ?? 0 > 0) {
                     Button(action: {
                         let pasteBoard = UIPasteboard.general
-                        pasteBoard.string = tokenV2
+                        pasteBoard.string = model.tokenV2?.access_token
                     }, label: {
                         Text("Access token")
                     }).frame(maxWidth: .infinity)
@@ -169,11 +164,9 @@ struct ContentView: View {
                 print(credential.oauthToken)
                 
                 let token = Token(access_token: credential.oauthToken, token_type: "bearer", expires_in: 300, refresh_token: credential.oauthRefreshToken, expires_at: credential.oauthTokenExpiresAt)//  Date().addingTimeInterval(TimeInterval(3888000))) //credential.oauthTokenExpiresAt ??
-                tokenV3 = token.access_token
-                refreshV3 = token.refresh_token
-                AuthController.shared().setJwtToken(token)
-                AuthController.shared().acquireTokenSilent(forceRefresh: true) { (token) in
-                    tokenV2 = token?.access_token ?? ""
+                model.setJwtToken(token)
+                model.acquireTokenSilent(forceRefresh: true) { (token) in
+                    //
                 }
 //                AuthController.shared().getVehicles({ (vehicles, message) in
 //                    if (vehicles != nil)
