@@ -87,7 +87,7 @@ class AuthViewModel: ObservableObject {
         {
             if (token.expires_at ?? Date() <= Date().addingTimeInterval(60))
             {
-                oauthRenew(token.refresh_token) { (refreshedToken) in
+                oauthRenew(token.refresh_token, token.region ?? .global) { (refreshedToken) in
                     if let refreshedToken = refreshedToken, let encodedToken = try? JSONEncoder().encode(refreshedToken)
                     {
                         logRequestEvent(message: "Setting V3 token from acquireTokenV3Silent: \(encodedToken)")
@@ -113,23 +113,19 @@ class AuthViewModel: ObservableObject {
         completion(nil)
     }
 
-    func getAuthRegion(completion: @escaping (_ result: String?) -> ()) {
-        let url = URL(string: "https://auth-global.tesla.com/oauth2/v3/token")!
-        let request = URLRequest(url: url)
-        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-            if let response = response as? HTTPURLResponse {
-                completion(response.url?.absoluteString)
-            }
-            else
-            {
-                completion(nil)
-            }
+    func getAuthRegion(region: TokenRegion, completion: @escaping (_ result: String?) -> ()) {
+        switch region {
+        case .global:
+            completion("https://auth.tesla.com/oauth2/v3/token")
+            return
+        case.china:
+            completion("https://auth.tesla.cn/oauth2/v3/token")
+            return
         }
-        task.resume()
     }
 
-    fileprivate func oauthRenew(_ refreshToken: String, retries: Int = 0, _ completion: @escaping (Token?) -> ()) {
-        getAuthRegion { (url) in
+    fileprivate func oauthRenew(_ refreshToken: String, _ region: TokenRegion, retries: Int = 0, _ completion: @escaping (Token?) -> ()) {
+        getAuthRegion(region: region) { (url) in
             guard let url = url else { completion(nil); return }
             
             self.networkingAuth.headerFields = ["User-Agent": "TeslaWatch"]
@@ -151,7 +147,7 @@ class AuthViewModel: ObservableObject {
                     {
                         let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
 
-                        token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt)
+                        token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
                         if let encodedToken = try? JSONEncoder().encode(token) {
                             logRequestEvent(message: "Setting V3 token from oauthRenew: \(encodedToken)")
                             KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
@@ -172,7 +168,7 @@ class AuthViewModel: ObservableObject {
                         if retries < 3
                         {
                             logRequestEvent(message: "Refresh token v3 failure 400: retrying \(retries + 1)")
-                            self.oauthRenew(refreshToken, retries: retries + 1, completion)
+                            self.oauthRenew(refreshToken, region, retries: retries + 1, completion)
                             return
                         }
                         logRequestEvent(message: "Refresh token v3 failure 400: giving up")
@@ -188,7 +184,7 @@ class AuthViewModel: ObservableObject {
                         if retries < 3
                         {
                             logRequestEvent(message: "Refresh token v3 failure 401: retrying \(retries + 1)")
-                            self.oauthRenew(refreshToken, retries: retries + 1, completion)
+                            self.oauthRenew(refreshToken, region, retries: retries + 1, completion)
                             return
                         }
                         logRequestEvent(message: "Refresh token v3 failure 401: giving up")
@@ -206,7 +202,7 @@ class AuthViewModel: ObservableObject {
                         if retries < 3
                         {
                             logRequestEvent(message: "Refresh token v3 failure: retrying \(retries + 1)")
-                            self.oauthRenew(refreshToken, retries: retries + 1, completion)
+                            self.oauthRenew(refreshToken, region, retries: retries + 1, completion)
                             return
                         }
                         logRequestEvent(message: "Refresh token v3 failure: giving up")
@@ -220,7 +216,7 @@ class AuthViewModel: ObservableObject {
                         if retries < 3
                         {
                             logRequestEvent(message: "Refresh token v3 failure \(error.statusCode.description): retrying \(retries + 1)")
-                            self.oauthRenew(refreshToken, retries: retries + 1, completion)
+                            self.oauthRenew(refreshToken, region, retries: retries + 1, completion)
                             return
                         }
                         logRequestEvent(message: "Refresh token v3 failure: giving up")
@@ -234,7 +230,7 @@ class AuthViewModel: ObservableObject {
         }
     }
 
-    fileprivate func refreshClassicTokenWithJWTToken(_ accessToken: String, retries: Int = 0, _ completion: @escaping (Token?) -> ()) {
+    fileprivate func refreshClassicTokenWithJWTToken(_ accessToken: String, _ region: TokenRegion, retries: Int = 0, _ completion: @escaping (Token?) -> ()) {
         self.networking.headerFields = ["User-Agent": "TeslaWatch"]
         self.networking.headerFields = ["X-Tesla-User-Agent": "TeslaWatch"]
         self.networking.setAuthorizationHeader(token: accessToken)
@@ -249,6 +245,7 @@ class AuthViewModel: ObservableObject {
                 let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
                 var token = try? JSONDecoder().decode(Token.self, from: result.data)
                 token?.expires_at = expiresAt
+                token?.region = region
                 if let encodedToken = try? JSONEncoder().encode(token) {
                     KeychainWrapper.global.set(encodedToken, forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
                     self.tokenV2 = token
@@ -267,7 +264,7 @@ class AuthViewModel: ObservableObject {
                     if retries < 3
                     {
                         logRequestEvent(message: "Refresh token v4 failure 400: retrying \(retries + 1)")
-                        self.refreshClassicTokenWithJWTToken(accessToken, retries: retries + 1, completion)
+                        self.refreshClassicTokenWithJWTToken(accessToken, region, retries: retries + 1, completion)
                         return
                     }
                     logRequestEvent(message: "Refresh token v4 failure 400: giving up")
@@ -282,7 +279,7 @@ class AuthViewModel: ObservableObject {
                     if retries < 3
                     {
                         logRequestEvent(message: "Refresh token v4 failure 401: retrying \(retries + 1)")
-                        self.refreshClassicTokenWithJWTToken(accessToken, retries: retries + 1, completion)
+                        self.refreshClassicTokenWithJWTToken(accessToken, region, retries: retries + 1, completion)
                         return
                     }
                     logRequestEvent(message: "Refresh token v4 failure 401: giving up")
@@ -299,7 +296,7 @@ class AuthViewModel: ObservableObject {
                     if retries < 3
                     {
                         logRequestEvent(message: "Refresh token v4 failure: retrying \(retries + 1)")
-                        self.refreshClassicTokenWithJWTToken(accessToken, retries: retries + 1, completion)
+                        self.refreshClassicTokenWithJWTToken(accessToken, region, retries: retries + 1, completion)
                         return
                     }
                     logRequestEvent(message: "Refresh token v4 failure: giving up")
@@ -314,7 +311,7 @@ class AuthViewModel: ObservableObject {
                     if retries < 3
                     {
                         logRequestEvent(message: "Refresh token v4 failure \(error.statusCode.description): retrying \(retries + 1)")
-                        self.refreshClassicTokenWithJWTToken(accessToken, retries: retries + 1, completion)
+                        self.refreshClassicTokenWithJWTToken(accessToken, region, retries: retries + 1, completion)
                         return
                     }
                     logRequestEvent(message: "Refresh token v4 failure: giving up")
@@ -357,7 +354,7 @@ class AuthViewModel: ObservableObject {
             acquireTokenV3Silent { (v3Token) in
                 if let v3Token = v3Token
                 {
-                    self.refreshClassicTokenWithJWTToken(v3Token.access_token) { (refreshedToken) in
+                    self.refreshClassicTokenWithJWTToken(v3Token.access_token, token?.region ?? .global) { (refreshedToken) in
                         if let refreshedToken = refreshedToken, let _ = try? JSONEncoder().encode(refreshedToken)
                         {
                             //no-op

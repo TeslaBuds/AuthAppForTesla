@@ -35,6 +35,7 @@ struct ContentView: View {
     @State var message = ""
     @State var loading = false
     @State var showRequestLog = false
+    @State var region: TokenRegion = .global
     
     let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
@@ -60,6 +61,15 @@ struct ContentView: View {
                 }, label: {
                     Text("Login with Tesla")
                 }).frame(maxWidth: .infinity)
+                
+                Picker(selection: $region, label: Text("Region: \(self.region.rawValue.capitalized)")) {
+                    ForEach(TokenRegion.allCases) { region in
+                        Text("\(region.rawValue.capitalized)").tag(region)
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
+                .frame(maxWidth: .infinity)
+                    
                 Spacer()
                 }
                 
@@ -117,14 +127,22 @@ struct ContentView: View {
         .navigationBarTitle("Login")
     }
     
-    var oauthswift = OAuth2Swift(
+    var oauthswiftGlobal = OAuth2Swift(
         consumerKey: "ownerapi",
         consumerSecret: kTeslaSecret,
-        authorizeUrl: "https://auth-global.tesla.com/oauth2/v3/authorize",
+        authorizeUrl: "https://auth.tesla.com/oauth2/v3/authorize",
         accessTokenUrl: "",
         responseType: "code"
     )
-    
+
+    var oauthswiftChina = OAuth2Swift(
+        consumerKey: "ownerapi",
+        consumerSecret: kTeslaSecret,
+        authorizeUrl: "https://auth.tesla.cn/oauth2/v3/authorize",
+        accessTokenUrl: "",
+        responseType: "code"
+    )
+
     private func verifier(forKey key: String) -> String {
         let verifier = key.data(using: .utf8)!.base64EncodedString()
             .replacingOccurrences(of: "+", with: "-")
@@ -147,9 +165,18 @@ struct ContentView: View {
     
     var credential: OAuthSwiftCredential?
     
+    var oauthswift: OAuth2Swift {
+        switch self.region {
+        case .global:
+            return oauthswiftGlobal
+        case.china:
+            return oauthswiftChina
+        }
+    }
+    
     func authenticateV3() {
         
-        model.getAuthRegion { (url) in
+        model.getAuthRegion(region: self.region) { (url) in
             guard let url = url else { return }
             
             oauthswift.accessTokenUrl = url
@@ -170,7 +197,7 @@ struct ContentView: View {
                     case .success(let (credential, _, _)):
                         print(credential.oauthToken)
                         
-                        let token = Token(access_token: credential.oauthToken, token_type: "bearer", expires_in: 300, refresh_token: credential.oauthRefreshToken, expires_at: credential.oauthTokenExpiresAt)//  Date().addingTimeInterval(TimeInterval(3888000))) //credential.oauthTokenExpiresAt ??
+                        let token = Token(access_token: credential.oauthToken, token_type: "bearer", expires_in: 300, refresh_token: credential.oauthRefreshToken, expires_at: credential.oauthTokenExpiresAt, region: self.region)//  Date().addingTimeInterval(TimeInterval(3888000))) //credential.oauthTokenExpiresAt ??
                         model.setJwtToken(token)
                         model.acquireTokenSilent(forceRefresh: true) { (token) in
                             //
