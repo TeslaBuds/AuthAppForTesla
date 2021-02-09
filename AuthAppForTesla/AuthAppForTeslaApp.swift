@@ -14,4 +14,5 @@ struct AuthAppForTeslaApp: App {
             ContentView(model: AuthViewModel())
         }
     }
+    
 }

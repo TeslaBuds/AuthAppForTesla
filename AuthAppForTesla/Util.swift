@@ -9,6 +9,15 @@ import Foundation
 import CryptoKit
 import SwiftDate
 
+extension CGSize {
+    var least: CGFloat {
+        return self.width < self.height ? self.width : self.height
+    }
+    var most: CGFloat {
+        return self.width < self.height ? self.height : self.width
+    }
+}
+
 extension String {
     var sha256:String {
            get {
@@ -68,7 +77,7 @@ func getRequestEventText() -> String {
     if let backgroundEventLogJson = UserDefaults.standard.data(forKey: kRequestEventLog), let backgroundEventLog = try? JSONDecoder().decode([RequestEvent].self, from: backgroundEventLogJson)
     {
         for event in backgroundEventLog {
-            eventLog += "\n\(DateInRegion(event.when, region: Region.local).toString(DateToStringStyles.time(DateFormatter.Style.short))): \(event.message)"
+            eventLog += "\(DateInRegion(event.when, region: Region.local).toString(DateToStringStyles.time(DateFormatter.Style.short))): \(event.message)\n"
         }
     }
     

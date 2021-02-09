@@ -41,7 +41,21 @@ struct ContentView: View {
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
 
     var body: some View {
+        ZStack{
+            GeometryReader { proxy in
+                RadialGradient(gradient: Gradient(colors: [Color(UIColor(named: "BackgroundGradientStart")!), Color(UIColor(named: "BackgroundGradientEnd")!)]), center: .center, startRadius: .zero, endRadius: proxy.size.most)
+                    .edgesIgnoringSafeArea(.all)
+            }
+            
         ScrollView {
+            VStack (spacing: 8) {
+                Group {
+                    Text("Auth app for Tesla")
+                    Text("v. \(self.version) build \(self.build)").font(.footnote).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .center)
+
+                }
+            }
+
             VStack (alignment: .leading, spacing: 8) {
                 if (message.count > 0)
                 {
@@ -54,32 +68,42 @@ struct ContentView: View {
                 }
                                 
                 Group {
-                Spacer()
                 Button(action: {
                     model.logOut()
                     self.authenticateV3()
                 }, label: {
-                    Text("Login with Tesla")
-                }).frame(maxWidth: .infinity)
-                
-                Picker(selection: $region, label: Text("Region: \(self.region.rawValue.capitalized)")) {
-                    ForEach(TokenRegion.allCases) { region in
-                        Text("\(region.rawValue.capitalized)").tag(region)
-                    }
-                }
-                .pickerStyle(MenuPickerStyle())
+                    Text("Login with Tesla").frame(maxWidth: .infinity)
+                })
                 .frame(maxWidth: .infinity)
-                    
-                Spacer()
+                .padding()
+                .modifier(LightBackground())
+                
+                VStack {
+                    Picker(selection: $region, label: Text("Region: \(self.region.rawValue.capitalized)").frame(maxWidth: .infinity)) {
+                        ForEach(TokenRegion.allCases) { region in
+                            Text("\(region.rawValue.capitalized)").tag(region)
+                        }
+                    }
+                    .pickerStyle(MenuPickerStyle())
+                    .frame(maxWidth: .infinity)
                 }
+                .padding()
+                .modifier(LightBackground())
+                }
+
                 
                 if (model.tokenV3?.refresh_token.count ?? 0 > 0) {
                     Button(action: {
                         let pasteBoard = UIPasteboard.general
                         pasteBoard.string = model.tokenV3?.refresh_token
                     }, label: {
-                        Text("Refresh token")
-                    }).frame(maxWidth: .infinity)
+                        VStack {
+                            Text("Copy refresh token")
+                        }.frame(maxWidth: .infinity)
+                    })
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .modifier(LightBackground())
                 }
 
                 if (model.tokenV2?.access_token.count ?? 0 > 0) {
@@ -87,8 +111,14 @@ struct ContentView: View {
                         let pasteBoard = UIPasteboard.general
                         pasteBoard.string = model.tokenV2?.access_token
                     }, label: {
-                        Text("Access token")
-                    }).frame(maxWidth: .infinity)
+                        VStack {
+                            Text("Copy access token")
+                            Text("Valid for ") + Text(model.tokenV2?.expires_at ?? Date.distantPast, style: .relative)
+                        }.frame(maxWidth: .infinity)
+                    })
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .modifier(LightBackground())
                 }
             
                 if (message.count > 0)
@@ -102,6 +132,8 @@ struct ContentView: View {
                     Divider()
                 }
 
+                Spacer()
+                
                 Group {
                     Text("v. \(self.version) build \(self.build)").font(.footnote).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .center)
                         .onTapGesture {
@@ -111,20 +143,29 @@ struct ContentView: View {
                     if (self.showRequestLog)
                     {
                         Text("Authentication events")
-                        VStack (alignment: .leading) {
-                            ForEach(getRequestEventLog()) { event in
-                                Text("\(DateInRegion(event.when, region: Region.local).toString(DateToStringStyles.time(DateFormatter.Style.short))): \(event.message)")
-                                    .fixedSize(horizontal: false, vertical: true)
-                                    .multilineTextAlignment(.leading)
-                                    .foregroundColor(.gray)
-                            }
-                        }
+                        
+                        Text(getRequestEventText())
+                            .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.leading)
+                            .foregroundColor(.gray)
+
+                        
+//                        VStack (alignment: .leading) {
+//                            ForEach(getRequestEventLog()) { event in
+//                                Text("\(DateInRegion(event.when, region: Region.local).toString(DateToStringStyles.time(DateFormatter.Style.short))): \(event.message)")
+//                                    .fixedSize(horizontal: false, vertical: true)
+//                                    .multilineTextAlignment(.leading)
+//                                    .foregroundColor(.gray)
+//                            }
+//                        }
                     }
                 }
 
             }.disabled(loading)
+            .padding()
         }
         .navigationBarTitle("Login")
+        }
     }
     
     var oauthswiftGlobal = OAuth2Swift(
