@@ -163,6 +163,10 @@ class AuthViewModel: ObservableObject {
                     return
                 case .failure(let error):
                     // print("Error refreshing token: \(error)")
+                    if let stringData = String(data: error.data, encoding: .utf8) {
+                        logRequestEvent(message: "Error response body: \(stringData)")
+                    }
+
                     if error.statusCode == 400
                     {
                         if retries < 3
@@ -259,6 +263,10 @@ class AuthViewModel: ObservableObject {
                 return
             case .failure(let error):
                 // print("Error refreshing token: \(error)")
+                if let stringData = String(data: error.data, encoding: .utf8) {
+                    logRequestEvent(message: "Error response body: \(stringData)")
+                }
+
                 if error.statusCode == 400
                 {
                     if retries < 3
