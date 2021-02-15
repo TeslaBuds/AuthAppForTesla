@@ -14,3 +14,14 @@ platform :ios, '14.3'
   pod 'OAuthSwift'
   pod 'SwiftDate'
 end
+
+target 'TokenIntents' do
+  platform :ios, '14.3'
+    # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+    use_frameworks!
+  
+    # Pods for AuthAppForTesla
+    pod 'Networking'
+    # pod 'OAuthSwift'
+    pod 'SwiftDate'
+  end

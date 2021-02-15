@@ -135,6 +135,7 @@ struct ContentView: View {
                             let pasteBoard = UIPasteboard.general
                             pasteBoard.string = model.tokenV3?.refresh_token
                             animateCheck()
+                            model.donateRefreshTokenInteraction()
                         }, label: {
                             VStack {
                                 Text("Copy refresh token")
@@ -154,6 +155,7 @@ struct ContentView: View {
                             let pasteBoard = UIPasteboard.general
                             pasteBoard.string = model.tokenV2?.access_token
                             animateCheck()
+                            model.donateAccessTokenInteraction()
                         }, label: {
                             VStack {
                                 Text("Copy access token")
@@ -282,7 +284,7 @@ struct ContentView: View {
     
     func authenticateV3() {
         
-        model.getAuthRegion(region: self.region) { (url) in
+        AuthController.shared().getAuthRegion(region: self.region) { (url) in
             guard let url = url else { return }
             
             oauthswift.accessTokenUrl = url

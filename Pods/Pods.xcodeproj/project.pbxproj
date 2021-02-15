@@ -19,11 +19,13 @@
 		1629C4B5726835A176893197171DD30C /* OAuthSwiftURLHandlerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8893CAA72EDA7459DD5627E365D71B4A /* OAuthSwiftURLHandlerType.swift */; };
 		178867F7A00AA6A89217480413725914 /* Networking.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D52F22B68568DBFD9DFB6E151A45D4C /* Networking.swift */; };
 		1CDAC4EE4363A20785D8D1B1AE2FDD9F /* NetworkActivityIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9FE3C088ED54C5166BE63A424987EC4 /* NetworkActivityIndicator.swift */; };
+		1F6E624315DF36C1D30B09DEA0EE2261 /* Pods-TokenIntents-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 07EB100B122C7F16C1D165D4902B2C1C /* Pods-TokenIntents-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		232D03DD89D4F85B6BFC05CF2AE58AF5 /* Pods-TokenIntents-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 6540CA7226134C2E6AD5F1BAE0C8236B /* Pods-TokenIntents-dummy.m */; };
 		28985E0EB67584AE9C0FE79F7C85ED01 /* NSError+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C102D855F8C4ACE52A3023A34E88F8 /* NSError+OAuthSwift.swift */; };
 		2B5E07B521E4AADF4E24EC39B7014080 /* Date+Compare.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3389DFBBC614C766CC62CFB243504DB /* Date+Compare.swift */; };
 		2D5B4F161C175508C1269966646A7F97 /* NotificationCenter+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97AA24844D5AB1CA73CD874A51CD2378 /* NotificationCenter+OAuthSwift.swift */; };
 		2DC5D4C745D8F3FA17B86F6483C1892C /* OAuthSwiftResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82489D9241506C41CE2C44C34403AD7E /* OAuthSwiftResponse.swift */; };
-		305A7B618599D8FCFC4379DBDDB6E7A8 /* Pods-AuthAppForTesla-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F7A1300905248610435301BE86793539 /* Pods-AuthAppForTesla-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		305A7B618599D8FCFC4379DBDDB6E7A8 /* Pods-AuthAppForTesla-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 2AD4229375F040A616B565268EE20D80 /* Pods-AuthAppForTesla-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		34E144090DE9261559D1F5707EAB93A5 /* Networking-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C28FF32E4AFB16F52922F11444F7D270 /* Networking-dummy.m */; };
 		36385D88156CC42B11548DB3CE618D5A /* UIApplication+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78791B962574F1506834976F84ACF261 /* UIApplication+OAuthSwift.swift */; };
 		36BEC5617259C56934C39D350DE32F17 /* Locales.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D15701CB6C20428E2D6EDC0B7FD662B /* Locales.swift */; };
@@ -43,6 +45,7 @@
 		678E43954A4EB360F356B90A6B68C460 /* Calendars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83F3A0DAE5F5E9B54E9C4E306A3F3C99 /* Calendars.swift */; };
 		6A15282F3FCAC7CF4154B5155001A63D /* RelativeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D875ECB40E78991F875BA37F3EA22976 /* RelativeFormatter.swift */; };
 		6AA458D361CB0B6A6424318191046CA3 /* SwiftDate-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 88B65200F5B188AD40AA8C3E4A9B46E2 /* SwiftDate-dummy.m */; };
+		6D93E554A359205D253DF2AD33654677 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		700ED1A5C0A766B293223FD3818AFFBA /* URL+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = D38BFE48C2F95510E2E40185A8277379 /* URL+OAuthSwift.swift */; };
 		72B3FA09072C7DCA75B0D2B9C6D7C570 /* DateInRegion+Math.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88DB9960115CDB945ECA0D4B51A39ABA /* DateInRegion+Math.swift */; };
 		72CEB8D2AA9A82759E40D3DF91E8DE46 /* TimeStructures.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FE8CC80E7DC6ACADB612A44D141D358 /* TimeStructures.swift */; };
@@ -91,11 +94,25 @@
 		F4771B5E9728FE589F1888C720412D09 /* Commons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5D1297F85ECD2EFD9CD27AAC4C0EF2 /* Commons.swift */; };
 		F659137D17D1E461A59EB7340D16BA82 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 648FBF92A458E2EA55631E02FE283F54 /* Utils.swift */; };
 		F705950FA31C2729E1112069D577C1A2 /* SwiftDate-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = A1C37724821A0D02BF3A2D59054E1C8B /* SwiftDate-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		FA5F0750F3F9515F234FC72E169EB30F /* Pods-AuthAppForTesla-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 28316FB3522CA8A1C8DA0DFDA39E0F7A /* Pods-AuthAppForTesla-dummy.m */; };
+		FA5F0750F3F9515F234FC72E169EB30F /* Pods-AuthAppForTesla-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = F0533B77C4B08167C8412E8DDF2D3A1F /* Pods-AuthAppForTesla-dummy.m */; };
 		FB67E162F70E22C08F56C4BCC20CAD91 /* Data+OAuthSwift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 259E663AF430D5BC1B77EC8BA33B9925 /* Data+OAuthSwift.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		06A205CC2C40E228DE6D2FD9479011F5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6038CE6006EFBE9D905454CF01909C42;
+			remoteInfo = SwiftDate;
+		};
+		0A19047BB80172625F6BEF713B58D42B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B2267C2D9D018961E49AA58CF3DC094C;
+			remoteInfo = Networking;
+		};
 		312B297AABA4976A8F4DAA8A02F01865 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
@@ -122,19 +139,27 @@
 /* Begin PBXFileReference section */
 		00B6665989677640EC2EEAAB761A318E /* OAuthSwiftMultipartData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OAuthSwiftMultipartData.swift; path = Sources/OAuthSwiftMultipartData.swift; sourceTree = "<group>"; };
 		07A6CFFF7E75B621A1CD089D13A79737 /* RelativeFormatter+Style.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "RelativeFormatter+Style.swift"; path = "Sources/SwiftDate/Formatters/RelativeFormatter/RelativeFormatter+Style.swift"; sourceTree = "<group>"; };
+		07EB100B122C7F16C1D165D4902B2C1C /* Pods-TokenIntents-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-TokenIntents-umbrella.h"; sourceTree = "<group>"; };
+		09D715A413B3E31501887BDF50A1B583 /* Pods-TokenIntents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-TokenIntents.debug.xcconfig"; sourceTree = "<group>"; };
 		0BB369B7FD28B904737F852383D1A590 /* OAuthSwiftCredential.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OAuthSwiftCredential.swift; path = Sources/OAuthSwiftCredential.swift; sourceTree = "<group>"; };
 		0FE8CC80E7DC6ACADB612A44D141D358 /* TimeStructures.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimeStructures.swift; path = Sources/SwiftDate/Supports/TimeStructures.swift; sourceTree = "<group>"; };
 		100A32F09E3039AA5949FA5A9FD3985F /* FakeRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FakeRequest.swift; path = Sources/FakeRequest.swift; sourceTree = "<group>"; };
-		108430133E58C8C5277789702DE64400 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1069E04F602C8082FA608B8AF6407C4F /* Pods-AuthAppForTesla.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AuthAppForTesla.release.xcconfig"; sourceTree = "<group>"; };
+		108430133E58C8C5277789702DE64400 /* Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Networking.framework; path = Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		16A09CD9D9F572019401E27D45430ACE /* TimePeriodChain.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimePeriodChain.swift; path = Sources/SwiftDate/TimePeriod/Groups/TimePeriodChain.swift; sourceTree = "<group>"; };
 		17D028EE9248880EC1DC1A387D35B4A7 /* NetworkingResult.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkingResult.swift; path = Sources/NetworkingResult.swift; sourceTree = "<group>"; };
+		1D42AA39DE6D29367FA608E56C274DBB /* Pods-AuthAppForTesla-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AuthAppForTesla-acknowledgements.plist"; sourceTree = "<group>"; };
+		1D514F1787FE8D280DE53C0E80DBBB10 /* Pods-AuthAppForTesla-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AuthAppForTesla-acknowledgements.markdown"; sourceTree = "<group>"; };
+		210EAE603580DF2436C97F82779B8DE0 /* Pods-AuthAppForTesla.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AuthAppForTesla.modulemap"; sourceTree = "<group>"; };
+		213AB9F189CEC363CBCFE8D1EC610A36 /* Pods-TokenIntents.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-TokenIntents.modulemap"; sourceTree = "<group>"; };
 		23626E77583D3C16C712A46EFA887B4B /* OAuthSwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = OAuthSwift.release.xcconfig; sourceTree = "<group>"; };
 		259E663AF430D5BC1B77EC8BA33B9925 /* Data+OAuthSwift.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+OAuthSwift.swift"; path = "Sources/Data+OAuthSwift.swift"; sourceTree = "<group>"; };
 		26853B86A6FE3A2B610DB56E8C2CD366 /* TimePeriodGroup.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimePeriodGroup.swift; path = Sources/SwiftDate/TimePeriod/Groups/TimePeriodGroup.swift; sourceTree = "<group>"; };
 		2808EF9EB90C0DDD49BA77607BBFFCE6 /* DateRepresentable.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DateRepresentable.swift; path = Sources/SwiftDate/DateRepresentable.swift; sourceTree = "<group>"; };
-		28316FB3522CA8A1C8DA0DFDA39E0F7A /* Pods-AuthAppForTesla-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AuthAppForTesla-dummy.m"; sourceTree = "<group>"; };
+		2AD4229375F040A616B565268EE20D80 /* Pods-AuthAppForTesla-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AuthAppForTesla-umbrella.h"; sourceTree = "<group>"; };
 		2C1BFB65FA02772EACF2945B10C66286 /* TimeInterval+Formatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "TimeInterval+Formatter.swift"; path = "Sources/SwiftDate/Foundation+Extras/TimeInterval+Formatter.swift"; sourceTree = "<group>"; };
 		2D3A2485C9506CCAE65513FB214FBC13 /* Int+OAuthSwift.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Int+OAuthSwift.swift"; path = "Sources/Int+OAuthSwift.swift"; sourceTree = "<group>"; };
+		2E54D4327D188031B0B14E6DC60DF2BC /* Pods-TokenIntents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-TokenIntents.release.xcconfig"; sourceTree = "<group>"; };
 		2FCE4FEE169947788402623E2093AC1D /* Image.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Image.swift; path = Sources/Image.swift; sourceTree = "<group>"; };
 		302C6DE100EB56624815D12473367EE7 /* Region.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Region.swift; path = Sources/SwiftDate/DateInRegion/Region.swift; sourceTree = "<group>"; };
 		30C2292CDB2768E697363FC3A8018903 /* String+OAuthSwift.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "String+OAuthSwift.swift"; path = "Sources/String+OAuthSwift.swift"; sourceTree = "<group>"; };
@@ -144,17 +169,17 @@
 		3747AD06E20556EA5468EACC22E4B29C /* OAuthSwift-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "OAuthSwift-dummy.m"; sourceTree = "<group>"; };
 		3786C2FF968CC90128FA61DEDF567E48 /* SwiftDate.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = SwiftDate.modulemap; sourceTree = "<group>"; };
 		3A6C35A4EC2F1331B8EBF7D26BE14F95 /* SwiftDate.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SwiftDate.debug.xcconfig; sourceTree = "<group>"; };
-		3B7126D82DD3CAA87BB2827329B92648 /* Pods-AuthAppForTesla-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AuthAppForTesla-Info.plist"; sourceTree = "<group>"; };
-		411E9B2BA2A61ADDB983D48252C73CBF /* OAuthSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = OAuthSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		3C8947900B9551FBE02B97EE5E5B1B23 /* Pods-AuthAppForTesla-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AuthAppForTesla-Info.plist"; sourceTree = "<group>"; };
+		411E9B2BA2A61ADDB983D48252C73CBF /* OAuthSwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = OAuthSwift.framework; path = OAuthSwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		41AB0EDBF1405406B7D82D9532546F1A /* SwiftDate-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "SwiftDate-Info.plist"; sourceTree = "<group>"; };
 		427E4AD6AB1A4B6D8D9EFB347491FABF /* Networking.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Networking.h; path = Sources/Networking.h; sourceTree = "<group>"; };
 		43F760214179B954158BC379784B1C94 /* OAuthSwift-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "OAuthSwift-prefix.pch"; sourceTree = "<group>"; };
-		467212EEACF17F6E8365FF5A8709FD92 /* Pods-AuthAppForTesla-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-AuthAppForTesla-acknowledgements.markdown"; sourceTree = "<group>"; };
 		471E36D2B3F58EF2470EE71AF5CCA6CC /* OAuthSwift-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "OAuthSwift-Info.plist"; sourceTree = "<group>"; };
 		4F502365D3AB93722F073D7377336F85 /* Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = Networking.release.xcconfig; sourceTree = "<group>"; };
+		526A41941EECF8C3090683CB26B91D2C /* Pods-AuthAppForTesla.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AuthAppForTesla.debug.xcconfig"; sourceTree = "<group>"; };
 		57390325A03BC44EFAFB07C4FAD8465C /* Networking-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Networking-Info.plist"; sourceTree = "<group>"; };
 		57F457BE2C9CF74ABCD69E4E196B792B /* TimePeriod+Support.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "TimePeriod+Support.swift"; path = "Sources/SwiftDate/TimePeriod/TimePeriod+Support.swift"; sourceTree = "<group>"; };
-		58AE0544E0C381DDBD09356C357EC82B /* SwiftDate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SwiftDate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		58AE0544E0C381DDBD09356C357EC82B /* SwiftDate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = SwiftDate.framework; path = SwiftDate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		59DB49EB2EDC729BE01CEFE254BE0D88 /* Date+Create.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Date+Create.swift"; path = "Sources/SwiftDate/Date/Date+Create.swift"; sourceTree = "<group>"; };
 		5B5D1297F85ECD2EFD9CD27AAC4C0EF2 /* Commons.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Commons.swift; path = Sources/SwiftDate/Supports/Commons.swift; sourceTree = "<group>"; };
 		5C0DC22CF92DDC1AECBBBAC37205902E /* TestCheck.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TestCheck.swift; path = Sources/TestCheck.swift; sourceTree = "<group>"; };
@@ -163,20 +188,22 @@
 		6279AC6016E6B75B61C570C90AFC7F13 /* DotNetParserFormatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DotNetParserFormatter.swift; path = Sources/SwiftDate/Formatters/DotNetParserFormatter.swift; sourceTree = "<group>"; };
 		63F6900E5A8FE1B1681F1DA61CC6C8CA /* JSON.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = JSON.swift; path = Sources/JSON.swift; sourceTree = "<group>"; };
 		648FBF92A458E2EA55631E02FE283F54 /* Utils.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Utils.swift; path = Sources/Utils.swift; sourceTree = "<group>"; };
-		653EF4E84A264CE3988E072F41796F68 /* Pods-AuthAppForTesla-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AuthAppForTesla-frameworks.sh"; sourceTree = "<group>"; };
-		65E8F177B7D82921176295D66FEDD418 /* Pods_AuthAppForTesla.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AuthAppForTesla.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6540CA7226134C2E6AD5F1BAE0C8236B /* Pods-TokenIntents-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-TokenIntents-dummy.m"; sourceTree = "<group>"; };
+		65E8F177B7D82921176295D66FEDD418 /* Pods_AuthAppForTesla.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_AuthAppForTesla.framework; path = "Pods-AuthAppForTesla.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6D52F22B68568DBFD9DFB6E151A45D4C /* Networking.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Networking.swift; path = Sources/Networking.swift; sourceTree = "<group>"; };
 		6DE65F6644DFAEBD5D92D127AF3C750D /* Networking+Private.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Networking+Private.swift"; path = "Sources/Networking+Private.swift"; sourceTree = "<group>"; };
 		6E7B1CB275CF1A14BED379F0CB7932CC /* FormDataPart.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = FormDataPart.swift; path = Sources/FormDataPart.swift; sourceTree = "<group>"; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		73F6299648D093E9E19ABB471A716506 /* OAuthSwift-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "OAuthSwift-umbrella.h"; sourceTree = "<group>"; };
+		77D584852BF6F43408EA3031E42BE7B4 /* Pods_TokenIntents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_TokenIntents.framework; path = "Pods-TokenIntents.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		78791B962574F1506834976F84ACF261 /* UIApplication+OAuthSwift.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "UIApplication+OAuthSwift.swift"; path = "Sources/UIApplication+OAuthSwift.swift"; sourceTree = "<group>"; };
+		7EB0C9FFA28D26FFA3DE68758E125F3E /* Pods-TokenIntents-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-TokenIntents-acknowledgements.plist"; sourceTree = "<group>"; };
+		823CF26092963BC1D5C62471A0882167 /* Pods-AuthAppForTesla-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-AuthAppForTesla-frameworks.sh"; sourceTree = "<group>"; };
 		82489D9241506C41CE2C44C34403AD7E /* OAuthSwiftResponse.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OAuthSwiftResponse.swift; path = Sources/OAuthSwiftResponse.swift; sourceTree = "<group>"; };
 		83BF499C50288503E924F2F0BC2DF005 /* Dictionary+OAuthSwift.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Dictionary+OAuthSwift.swift"; path = "Sources/Dictionary+OAuthSwift.swift"; sourceTree = "<group>"; };
 		83F3A0DAE5F5E9B54E9C4E306A3F3C99 /* Calendars.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Calendars.swift; path = Sources/SwiftDate/Supports/Calendars.swift; sourceTree = "<group>"; };
 		84461AEEEA05156EC783FBC2FDDE6017 /* Networking.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = Networking.modulemap; sourceTree = "<group>"; };
 		84C102D855F8C4ACE52A3023A34E88F8 /* NSError+OAuthSwift.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "NSError+OAuthSwift.swift"; path = "Sources/NSError+OAuthSwift.swift"; sourceTree = "<group>"; };
-		858CF6A75B60927C9BD3C1F1F67E1A43 /* Pods-AuthAppForTesla-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-AuthAppForTesla-acknowledgements.plist"; sourceTree = "<group>"; };
 		8847C37FBBD325F622EDBB0B89A58C71 /* Date+Components.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Date+Components.swift"; path = "Sources/SwiftDate/Date/Date+Components.swift"; sourceTree = "<group>"; };
 		8893CAA72EDA7459DD5627E365D71B4A /* OAuthSwiftURLHandlerType.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OAuthSwiftURLHandlerType.swift; path = Sources/OAuthSwiftURLHandlerType.swift; sourceTree = "<group>"; };
 		88B65200F5B188AD40AA8C3E4A9B46E2 /* SwiftDate-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "SwiftDate-dummy.m"; sourceTree = "<group>"; };
@@ -188,7 +215,7 @@
 		965C93875B73CB160650A0D7514C4818 /* TimePeriodProtocol.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimePeriodProtocol.swift; path = Sources/SwiftDate/TimePeriod/TimePeriodProtocol.swift; sourceTree = "<group>"; };
 		96DAF078D02147FAFEB0CDA3FE8C4DAC /* OAuthSwift.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OAuthSwift.swift; path = Sources/OAuthSwift.swift; sourceTree = "<group>"; };
 		97AA24844D5AB1CA73CD874A51CD2378 /* NotificationCenter+OAuthSwift.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "NotificationCenter+OAuthSwift.swift"; path = "Sources/NotificationCenter+OAuthSwift.swift"; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9E185BFA3E2F9B16EDED38F00EA527C7 /* DateInRegion+Create.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "DateInRegion+Create.swift"; path = "Sources/SwiftDate/DateInRegion/DateInRegion+Create.swift"; sourceTree = "<group>"; };
 		9F54E9C4FDE0529564338C22C985B455 /* SwiftDate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SwiftDate.swift; path = Sources/SwiftDate/SwiftDate.swift; sourceTree = "<group>"; };
 		A1C37724821A0D02BF3A2D59054E1C8B /* SwiftDate-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SwiftDate-umbrella.h"; sourceTree = "<group>"; };
@@ -197,10 +224,11 @@
 		A9309D711D1AA8309FF7B09F5004FD2A /* TimePeriod.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TimePeriod.swift; path = Sources/SwiftDate/TimePeriod/TimePeriod.swift; sourceTree = "<group>"; };
 		A94A98592D05B40107CF59F46A8E80CC /* OAuthWebViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OAuthWebViewController.swift; path = Sources/OAuthWebViewController.swift; sourceTree = "<group>"; };
 		B05D3AA110CA88036C5663717C3E2122 /* SwiftDate.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = SwiftDate.release.xcconfig; sourceTree = "<group>"; };
-		B69E176B2C2CF99A1BDA655C5DCA4CEB /* langs */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = langs; path = Sources/SwiftDate/Formatters/RelativeFormatter/langs; sourceTree = "<group>"; };
+		B69E176B2C2CF99A1BDA655C5DCA4CEB /* langs */ = {isa = PBXFileReference; includeInIndex = 1; name = langs; path = Sources/SwiftDate/Formatters/RelativeFormatter/langs; sourceTree = "<group>"; };
 		B7D1F548FE4A1D80ECEF4C6A00D94656 /* SwiftDate-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SwiftDate-prefix.pch"; sourceTree = "<group>"; };
 		B89639F1DF6BDD25F02D872741D063D2 /* DateInRegion+Compare.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "DateInRegion+Compare.swift"; path = "Sources/SwiftDate/DateInRegion/DateInRegion+Compare.swift"; sourceTree = "<group>"; };
 		BA554E11DFF288D228FCBA4627DDE810 /* Collection+OAuthSwift.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Collection+OAuthSwift.swift"; path = "Sources/Collection+OAuthSwift.swift"; sourceTree = "<group>"; };
+		BA7AAA97CC4EC13AF1A4C30E6F8860B0 /* Pods-TokenIntents-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-TokenIntents-Info.plist"; sourceTree = "<group>"; };
 		BDEC29C7C086D23C49170BD9519211C3 /* OAuthSwiftClient.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OAuthSwiftClient.swift; path = Sources/OAuthSwiftClient.swift; sourceTree = "<group>"; };
 		BF7F83FCDC99768CF04BAAE09AE14A21 /* Int+DateComponents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Int+DateComponents.swift"; path = "Sources/SwiftDate/Foundation+Extras/Int+DateComponents.swift"; sourceTree = "<group>"; };
 		C12703C849014D0B13AE5A75BD75DB15 /* Networking-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Networking-umbrella.h"; sourceTree = "<group>"; };
@@ -209,7 +237,6 @@
 		CBDDB858F1D6FB7E3C307218D6ED16A4 /* OAuthSwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = OAuthSwift.debug.xcconfig; sourceTree = "<group>"; };
 		CD8C09B19E5F18060EB89779D3C910E0 /* OAuth1Swift.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OAuth1Swift.swift; path = Sources/OAuth1Swift.swift; sourceTree = "<group>"; };
 		CEABE96541678261A68FBE2BCAE2FD08 /* DateComponents+Extras.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "DateComponents+Extras.swift"; path = "Sources/SwiftDate/Foundation+Extras/DateComponents+Extras.swift"; sourceTree = "<group>"; };
-		D100F8820A404BA88415109AD9B08C45 /* Pods-AuthAppForTesla.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-AuthAppForTesla.modulemap"; sourceTree = "<group>"; };
 		D13581D184CBF606CBECBF40D44C12F3 /* OAuthSwiftHTTPRequest.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OAuthSwiftHTTPRequest.swift; path = Sources/OAuthSwiftHTTPRequest.swift; sourceTree = "<group>"; };
 		D38BFE48C2F95510E2E40185A8277379 /* URL+OAuthSwift.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URL+OAuthSwift.swift"; path = "Sources/URL+OAuthSwift.swift"; sourceTree = "<group>"; };
 		D59E77FBC71039BE98B3EC00AB05276F /* String+Parser.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "String+Parser.swift"; path = "Sources/SwiftDate/Foundation+Extras/String+Parser.swift"; sourceTree = "<group>"; };
@@ -220,16 +247,15 @@
 		DA2465FF66C1A5E5AE69419E690B91D1 /* Helpers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Helpers.swift; path = Sources/Helpers.swift; sourceTree = "<group>"; };
 		DF8EFF1F020D27307A6EF228CF8024C0 /* OAuthSwift.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = OAuthSwift.modulemap; sourceTree = "<group>"; };
 		E23AE2AD997693B83A55ED58B34211BD /* AssociatedValues.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AssociatedValues.swift; path = Sources/SwiftDate/Supports/AssociatedValues.swift; sourceTree = "<group>"; };
-		E79F0E1A17330DFC1CBD83710F40F291 /* Pods-AuthAppForTesla.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AuthAppForTesla.release.xcconfig"; sourceTree = "<group>"; };
 		EBBB88DC7DF46A65615EC81770A0617B /* Formatter+Protocols.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Formatter+Protocols.swift"; path = "Sources/SwiftDate/Formatters/Formatter+Protocols.swift"; sourceTree = "<group>"; };
+		F0533B77C4B08167C8412E8DDF2D3A1F /* Pods-AuthAppForTesla-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-AuthAppForTesla-dummy.m"; sourceTree = "<group>"; };
 		F194177A8A3FC08366CFBD57CC0F99D8 /* DateInRegion+Components.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "DateInRegion+Components.swift"; path = "Sources/SwiftDate/DateInRegion/DateInRegion+Components.swift"; sourceTree = "<group>"; };
 		F1E1189E044431E5347439893D62B077 /* SHA1.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SHA1.swift; path = Sources/SHA1.swift; sourceTree = "<group>"; };
 		F204C38387FF5D9EC743271431FE2668 /* OAuth2Swift.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OAuth2Swift.swift; path = Sources/OAuth2Swift.swift; sourceTree = "<group>"; };
-		F4DA5717CDBBF4DAF1A5B82EA05FAD30 /* Pods-AuthAppForTesla.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-AuthAppForTesla.debug.xcconfig"; sourceTree = "<group>"; };
-		F7A1300905248610435301BE86793539 /* Pods-AuthAppForTesla-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-AuthAppForTesla-umbrella.h"; sourceTree = "<group>"; };
 		F82E34752B413B6707A9871147785967 /* Response.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Response.swift; path = Sources/Response.swift; sourceTree = "<group>"; };
 		F9FE3C088ED54C5166BE63A424987EC4 /* NetworkActivityIndicator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkActivityIndicator.swift; path = Sources/NetworkActivityIndicator.swift; sourceTree = "<group>"; };
 		FF4B2DDA087370DFC716B04AB53C9A66 /* URLConvertible.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = URLConvertible.swift; path = Sources/URLConvertible.swift; sourceTree = "<group>"; };
+		FFF6974948646E6EF96B6F02EDF3C0AC /* Pods-TokenIntents-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-TokenIntents-acknowledgements.markdown"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -238,6 +264,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				D349B626AF23886448BA282BE584D877 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		30EF2EF39B912E90CF2993DCD3A2499C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6D93E554A359205D253DF2AD33654677 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -268,17 +302,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0A437B24AC48D89DB1161F1618B8B0B9 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				108430133E58C8C5277789702DE64400 /* Networking.framework */,
-				411E9B2BA2A61ADDB983D48252C73CBF /* OAuthSwift.framework */,
-				65E8F177B7D82921176295D66FEDD418 /* Pods_AuthAppForTesla.framework */,
-				58AE0544E0C381DDBD09356C357EC82B /* SwiftDate.framework */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		0BE00B73C67C52AAE0E9B50C313E60BD /* OAuthSwift */ = {
 			isa = PBXGroup;
 			children = (
@@ -308,13 +331,15 @@
 				648FBF92A458E2EA55631E02FE283F54 /* Utils.swift */,
 				ED692229038DE802B17C880D4CBFEB9D /* Support Files */,
 			);
+			name = OAuthSwift;
 			path = OAuthSwift;
 			sourceTree = "<group>";
 		};
-		2CE3EB704A4CD547E0A74467B2BDEE72 /* Targets Support Files */ = {
+		107BF821F9A9D16AF73066F0CB5E4411 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				A8ABCFA588AF6B715933A9E90111AA3B /* Pods-AuthAppForTesla */,
+				376314D7D20BBDCDF235961DE700B8D3 /* Pods-AuthAppForTesla */,
+				ECB2F2ABFF65387D87C927D5AB19CE04 /* Pods-TokenIntents */,
 			);
 			name = "Targets Support Files";
 			sourceTree = "<group>";
@@ -325,6 +350,23 @@
 				B69E176B2C2CF99A1BDA655C5DCA4CEB /* langs */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		376314D7D20BBDCDF235961DE700B8D3 /* Pods-AuthAppForTesla */ = {
+			isa = PBXGroup;
+			children = (
+				210EAE603580DF2436C97F82779B8DE0 /* Pods-AuthAppForTesla.modulemap */,
+				1D514F1787FE8D280DE53C0E80DBBB10 /* Pods-AuthAppForTesla-acknowledgements.markdown */,
+				1D42AA39DE6D29367FA608E56C274DBB /* Pods-AuthAppForTesla-acknowledgements.plist */,
+				F0533B77C4B08167C8412E8DDF2D3A1F /* Pods-AuthAppForTesla-dummy.m */,
+				823CF26092963BC1D5C62471A0882167 /* Pods-AuthAppForTesla-frameworks.sh */,
+				3C8947900B9551FBE02B97EE5E5B1B23 /* Pods-AuthAppForTesla-Info.plist */,
+				2AD4229375F040A616B565268EE20D80 /* Pods-AuthAppForTesla-umbrella.h */,
+				526A41941EECF8C3090683CB26B91D2C /* Pods-AuthAppForTesla.debug.xcconfig */,
+				1069E04F602C8082FA608B8AF6407C4F /* Pods-AuthAppForTesla.release.xcconfig */,
+			);
+			name = "Pods-AuthAppForTesla";
+			path = "Target Support Files/Pods-AuthAppForTesla";
 			sourceTree = "<group>";
 		};
 		4ECAA9305BFF3439ECBC96F509377189 /* Networking */ = {
@@ -345,6 +387,7 @@
 				5C0DC22CF92DDC1AECBBBAC37205902E /* TestCheck.swift */,
 				C85591432131BC1B0590F021FDD0588D /* Support Files */,
 			);
+			name = Networking;
 			path = Networking;
 			sourceTree = "<group>";
 		};
@@ -381,21 +424,16 @@
 			path = "../Target Support Files/SwiftDate";
 			sourceTree = "<group>";
 		};
-		A8ABCFA588AF6B715933A9E90111AA3B /* Pods-AuthAppForTesla */ = {
+		B4EE5F42D157CEE290D7187845F5F6F9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				D100F8820A404BA88415109AD9B08C45 /* Pods-AuthAppForTesla.modulemap */,
-				467212EEACF17F6E8365FF5A8709FD92 /* Pods-AuthAppForTesla-acknowledgements.markdown */,
-				858CF6A75B60927C9BD3C1F1F67E1A43 /* Pods-AuthAppForTesla-acknowledgements.plist */,
-				28316FB3522CA8A1C8DA0DFDA39E0F7A /* Pods-AuthAppForTesla-dummy.m */,
-				653EF4E84A264CE3988E072F41796F68 /* Pods-AuthAppForTesla-frameworks.sh */,
-				3B7126D82DD3CAA87BB2827329B92648 /* Pods-AuthAppForTesla-Info.plist */,
-				F7A1300905248610435301BE86793539 /* Pods-AuthAppForTesla-umbrella.h */,
-				F4DA5717CDBBF4DAF1A5B82EA05FAD30 /* Pods-AuthAppForTesla.debug.xcconfig */,
-				E79F0E1A17330DFC1CBD83710F40F291 /* Pods-AuthAppForTesla.release.xcconfig */,
+				108430133E58C8C5277789702DE64400 /* Networking.framework */,
+				411E9B2BA2A61ADDB983D48252C73CBF /* OAuthSwift.framework */,
+				65E8F177B7D82921176295D66FEDD418 /* Pods_AuthAppForTesla.framework */,
+				77D584852BF6F43408EA3031E42BE7B4 /* Pods_TokenIntents.framework */,
+				58AE0544E0C381DDBD09356C357EC82B /* SwiftDate.framework */,
 			);
-			name = "Pods-AuthAppForTesla";
-			path = "Target Support Files/Pods-AuthAppForTesla";
+			name = Products;
 			sourceTree = "<group>";
 		};
 		C85591432131BC1B0590F021FDD0588D /* Support Files */ = {
@@ -419,8 +457,8 @@
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
 				96693F5C3D0E9B1EBC07932719EE63AD /* Pods */,
-				0A437B24AC48D89DB1161F1618B8B0B9 /* Products */,
-				2CE3EB704A4CD547E0A74467B2BDEE72 /* Targets Support Files */,
+				B4EE5F42D157CEE290D7187845F5F6F9 /* Products */,
+				107BF821F9A9D16AF73066F0CB5E4411 /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -430,6 +468,22 @@
 				578452D2E740E91742655AC8F1636D1F /* iOS */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		ECB2F2ABFF65387D87C927D5AB19CE04 /* Pods-TokenIntents */ = {
+			isa = PBXGroup;
+			children = (
+				213AB9F189CEC363CBCFE8D1EC610A36 /* Pods-TokenIntents.modulemap */,
+				FFF6974948646E6EF96B6F02EDF3C0AC /* Pods-TokenIntents-acknowledgements.markdown */,
+				7EB0C9FFA28D26FFA3DE68758E125F3E /* Pods-TokenIntents-acknowledgements.plist */,
+				6540CA7226134C2E6AD5F1BAE0C8236B /* Pods-TokenIntents-dummy.m */,
+				BA7AAA97CC4EC13AF1A4C30E6F8860B0 /* Pods-TokenIntents-Info.plist */,
+				07EB100B122C7F16C1D165D4902B2C1C /* Pods-TokenIntents-umbrella.h */,
+				09D715A413B3E31501887BDF50A1B583 /* Pods-TokenIntents.debug.xcconfig */,
+				2E54D4327D188031B0B14E6DC60DF2BC /* Pods-TokenIntents.release.xcconfig */,
+			);
+			name = "Pods-TokenIntents";
+			path = "Target Support Files/Pods-TokenIntents";
 			sourceTree = "<group>";
 		};
 		ED692229038DE802B17C880D4CBFEB9D /* Support Files */ = {
@@ -489,6 +543,7 @@
 				362FAB556E8183D344B846151A8161BD /* Resources */,
 				9BAE58B90EB041A8BA7159DA83FD16EE /* Support Files */,
 			);
+			name = SwiftDate;
 			path = SwiftDate;
 			sourceTree = "<group>";
 		};
@@ -525,6 +580,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				F705950FA31C2729E1112069D577C1A2 /* SwiftDate-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FBAF3AE2970C586BCB4FBF5069ABAD02 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F6E624315DF36C1D30B09DEA0EE2261 /* Pods-TokenIntents-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -585,6 +648,26 @@
 			productReference = 108430133E58C8C5277789702DE64400 /* Networking.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		BD68C29F65CD9E2A6515AEA99C29FD34 /* Pods-TokenIntents */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 711DA6A4238280D092A8EAF98F57BF00 /* Build configuration list for PBXNativeTarget "Pods-TokenIntents" */;
+			buildPhases = (
+				FBAF3AE2970C586BCB4FBF5069ABAD02 /* Headers */,
+				58278B0BF076CD400492F1E47EBDCB1C /* Sources */,
+				30EF2EF39B912E90CF2993DCD3A2499C /* Frameworks */,
+				3F121E84A217609AE00A5A3FC234F51B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B2FCD965D38C01563F81CC8E32193F24 /* PBXTargetDependency */,
+				1682C0A37B341BDA9CB352032CE9740D /* PBXTargetDependency */,
+			);
+			name = "Pods-TokenIntents";
+			productName = "Pods-TokenIntents";
+			productReference = 77D584852BF6F43408EA3031E42BE7B4 /* Pods_TokenIntents.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		C01C82EE1B02698AAB75410A8A7D3D38 /* Pods-AuthAppForTesla */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CBD812DF92C58D9854C5CCBD1E1D1EEE /* Build configuration list for PBXNativeTarget "Pods-AuthAppForTesla" */;
@@ -613,7 +696,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1100;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1100;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
 			compatibilityVersion = "Xcode 10.0";
@@ -624,19 +707,27 @@
 				Base,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
-			productRefGroup = 0A437B24AC48D89DB1161F1618B8B0B9 /* Products */;
+			productRefGroup = B4EE5F42D157CEE290D7187845F5F6F9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				B2267C2D9D018961E49AA58CF3DC094C /* Networking */,
 				3C91E7D1D6000FAB10BA1FA4D7DC1553 /* OAuthSwift */,
 				C01C82EE1B02698AAB75410A8A7D3D38 /* Pods-AuthAppForTesla */,
+				BD68C29F65CD9E2A6515AEA99C29FD34 /* Pods-TokenIntents */,
 				6038CE6006EFBE9D905454CF01909C42 /* SwiftDate */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		3F121E84A217609AE00A5A3FC234F51B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		83E31DD8254C83D559E145FEA5125532 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -686,6 +777,14 @@
 				F118E41892EBA244C26BC249CE12EDCC /* NetworkingResult.swift in Sources */,
 				498653E8595E358E2194C7B06062F011 /* Response.swift in Sources */,
 				AC0E0D1F81B07D4131192AC4C9C3436A /* TestCheck.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		58278B0BF076CD400492F1E47EBDCB1C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				232D03DD89D4F85B6BFC05CF2AE58AF5 /* Pods-TokenIntents-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -782,6 +881,12 @@
 			target = 6038CE6006EFBE9D905454CF01909C42 /* SwiftDate */;
 			targetProxy = 312B297AABA4976A8F4DAA8A02F01865 /* PBXContainerItemProxy */;
 		};
+		1682C0A37B341BDA9CB352032CE9740D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SwiftDate;
+			target = 6038CE6006EFBE9D905454CF01909C42 /* SwiftDate */;
+			targetProxy = 06A205CC2C40E228DE6D2FD9479011F5 /* PBXContainerItemProxy */;
+		};
 		2F663565A6FC7CEDB46695C11EF59503 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Networking;
@@ -793,6 +898,12 @@
 			name = OAuthSwift;
 			target = 3C91E7D1D6000FAB10BA1FA4D7DC1553 /* OAuthSwift */;
 			targetProxy = A071B76452F97123A5E9D1AC77E7A191 /* PBXContainerItemProxy */;
+		};
+		B2FCD965D38C01563F81CC8E32193F24 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = Networking;
+			target = B2267C2D9D018961E49AA58CF3DC094C /* Networking */;
+			targetProxy = 0A19047BB80172625F6BEF713B58D42B /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -879,7 +990,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/Networking/Networking-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/Networking/Networking-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -900,7 +1011,7 @@
 		};
 		71E53538BA4472E30B533FF84ED86C3B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F4DA5717CDBBF4DAF1A5B82EA05FAD30 /* Pods-AuthAppForTesla.debug.xcconfig */;
+			baseConfigurationReference = 526A41941EECF8C3090683CB26B91D2C /* Pods-AuthAppForTesla.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -935,6 +1046,44 @@
 			};
 			name = Debug;
 		};
+		7BF30EDAAEC028CF8F65A813EB0F4575 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2E54D4327D188031B0B14E6DC60DF2BC /* Pods-TokenIntents.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-TokenIntents/Pods-TokenIntents-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-TokenIntents/Pods-TokenIntents.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		7DFA68A330F19D44EC229B4D866306D0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 23626E77583D3C16C712A46EFA887B4B /* OAuthSwift.release.xcconfig */;
@@ -950,7 +1099,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/OAuthSwift/OAuthSwift-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/OAuthSwift/OAuthSwift-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1034,7 +1183,7 @@
 		};
 		94C825592967FE73B110FB4CBE16368B /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E79F0E1A17330DFC1CBD83710F40F291 /* Pods-AuthAppForTesla.release.xcconfig */;
+			baseConfigurationReference = 1069E04F602C8082FA608B8AF6407C4F /* Pods-AuthAppForTesla.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -1086,7 +1235,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/Networking/Networking-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/Networking/Networking-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1106,6 +1255,43 @@
 			};
 			name = Release;
 		};
+		B0A1E7E3EB2FB71D3CB94F610116001A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 09D715A413B3E31501887BDF50A1B583 /* Pods-TokenIntents.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "Target Support Files/Pods-TokenIntents/Pods-TokenIntents-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.3;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MODULEMAP_FILE = "Target Support Files/Pods-TokenIntents/Pods-TokenIntents.modulemap";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOLFLAGS = "";
+				PODS_ROOT = "$(SRCROOT)";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 		C4BD66961D312E1922E24CEEDDCD2710 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B05D3AA110CA88036C5663717C3E2122 /* SwiftDate.release.xcconfig */;
@@ -1121,7 +1307,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/SwiftDate/SwiftDate-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/SwiftDate/SwiftDate-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1156,7 +1342,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/OAuthSwift/OAuthSwift-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/OAuthSwift/OAuthSwift-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1190,7 +1376,7 @@
 				GCC_PREFIX_HEADER = "Target Support Files/SwiftDate/SwiftDate-prefix.pch";
 				INFOPLIST_FILE = "Target Support Files/SwiftDate/SwiftDate-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1235,6 +1421,15 @@
 			buildConfigurations = (
 				125C51B0F88E28C868DC90BD45E4E727 /* Debug */,
 				92A3E9AC052A7345115439021B218E3B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		711DA6A4238280D092A8EAF98F57BF00 /* Build configuration list for PBXNativeTarget "Pods-TokenIntents" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0A1E7E3EB2FB71D3CB94F610116001A /* Debug */,
+				7BF30EDAAEC028CF8F65A813EB0F4575 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
