@@ -14,6 +14,7 @@ struct AuthAppForTeslaApp: App {
             NavigationView {
                 ContentView(model: AuthViewModel())
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
     }
     
