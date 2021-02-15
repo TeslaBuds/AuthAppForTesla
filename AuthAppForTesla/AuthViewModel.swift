@@ -15,12 +15,11 @@ class AuthViewModel: ObservableObject {
     init() {
         self.acquireTokenV3Silent { (token) in
             self.tokenV3 = token
-        }
-        self.acquireTokenSilent { (token) in
-            self.tokenV2 = token
+            self.acquireTokenSilent { (token) in
+                self.tokenV2 = token
+            }
         }
     }
-    
     
     private lazy var networkingAuth: Networking = {
         let configuration = URLSessionConfiguration.default
@@ -36,6 +35,16 @@ class AuthViewModel: ObservableObject {
         return Networking(baseURL: "https://owner-api.teslamotors.com", configuration: configuration)
     }()
 
+    
+    public func refreshAll()
+    {
+        self.acquireTokenV3Silent(forceRefresh: true) { (token) in
+            self.tokenV3 = token
+            self.acquireTokenSilent(forceRefresh: true) { (token) in
+                self.tokenV2 = token
+            }
+        }
+    }
 
     public func logOut()
     {
@@ -78,14 +87,14 @@ class AuthViewModel: ObservableObject {
         return nil
     }
 
-    func acquireTokenV3Silent(_ completion: @escaping (Token?) -> ()) {
+    func acquireTokenV3Silent(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
         var token: Token?
         if let tokenJson = getV3Token()
         { token = try? JSONDecoder().decode(Token.self, from: tokenJson) }
         
         if let token = token
         {
-            if (token.expires_at ?? Date() <= Date().addingTimeInterval(60))
+            if (forceRefresh || token.expires_at ?? Date() <= Date().addingTimeInterval(60))
             {
                 oauthRenew(token.refresh_token, token.region ?? .global) { (refreshedToken) in
                     if let refreshedToken = refreshedToken, let encodedToken = try? JSONEncoder().encode(refreshedToken)

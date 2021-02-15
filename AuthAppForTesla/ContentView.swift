@@ -5,27 +5,37 @@
 //  Created by Kim Hansen on 03/02/2021.
 //
 
-//import SwiftUI
-//
-//struct ContentView: View {
-//    var body: some View {
-//        Text("Hello, world!")
-//            .padding()
-//    }
-//}
-//
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        ContentView()
-//    }
-//}
-
 import Foundation
 import SwiftUI
 import Combine
 import OAuthSwift
 import SwiftDate
 import Networking
+
+
+// A modifier that animates a font through various sizes.
+struct AnimatableCustomFontModifier: AnimatableModifier {
+    var size: CGFloat
+    
+    var animatableData: CGFloat {
+        get { size }
+        set { size = newValue }
+    }
+    
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: size))
+    }
+}
+
+// To make that easier to use, I recommend wrapping
+// it in a `View` extension, like this:
+extension View {
+    func animatableFont(size: CGFloat) -> some View {
+        self.modifier(AnimatableCustomFontModifier(size: size))
+    }
+}
+
 
 struct ContentView: View {
     @ObservedObject var model: AuthViewModel
@@ -36,10 +46,24 @@ struct ContentView: View {
     @State var loading = false
     @State var showRequestLog = false
     @State var region: TokenRegion = .global
+    @State private var fontSize: CGFloat = 32
+    @State private var checkOpacity: Double = 0
     
     let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
-
+    
+    fileprivate func animateCheck() {
+        fontSize = 32
+        checkOpacity = 1
+        
+        withAnimation(Animation.spring(response: 0.5, dampingFraction: 0.5, blendDuration: 0.3)) {
+            fontSize = 144
+        }
+        withAnimation(Animation.easeIn(duration: 0.2).delay(0.4)) {
+            checkOpacity = 0
+        }
+    }
+    
     var body: some View {
         ZStack{
             GeometryReader { proxy in
@@ -47,126 +71,167 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(.all)
             }
             
-        ScrollView {
-            VStack (spacing: 8) {
-                Group {
-                    Text("Auth app for Tesla")
-                    Text("v. \(self.version) build \(self.build)").font(.footnote).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .center)
-
-                }
-            }
-
-            VStack (alignment: .leading, spacing: 8) {
-                if (message.count > 0)
-                {
-                    Text(message)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.red)
-                    Divider()
-                }
-                                
-                Group {
-                Button(action: {
-                    model.logOut()
-                    self.authenticateV3()
-                }, label: {
-                    Text("Login with Tesla").frame(maxWidth: .infinity)
-                })
-                .frame(maxWidth: .infinity)
-                .padding()
-                .modifier(LightBackground())
-                
-                VStack {
-                    Picker(selection: $region, label: Text("Region: \(self.region.rawValue.capitalized)").frame(maxWidth: .infinity)) {
-                        ForEach(TokenRegion.allCases) { region in
-                            Text("\(region.rawValue.capitalized)").tag(region)
-                        }
+            ScrollView {
+                VStack (spacing: 8) {
+                    Group {
+                        Text("Auth app for Tesla")
+                        Text("v. \(self.version) build \(self.build)").font(.footnote).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .center)
+                        
                     }
-                    .pickerStyle(MenuPickerStyle())
-                    .frame(maxWidth: .infinity)
                 }
-                .padding()
-                .modifier(LightBackground())
-                }
-
+                .padding(.top)
                 
-                if (model.tokenV3?.refresh_token.count ?? 0 > 0) {
-                    Button(action: {
-                        let pasteBoard = UIPasteboard.general
-                        pasteBoard.string = model.tokenV3?.refresh_token
-                    }, label: {
-                        VStack {
-                            Text("Copy refresh token")
-                        }.frame(maxWidth: .infinity)
-                    })
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .modifier(LightBackground())
-                }
-
-                if (model.tokenV2?.access_token.count ?? 0 > 0) {
-                    Button(action: {
-                        let pasteBoard = UIPasteboard.general
-                        pasteBoard.string = model.tokenV2?.access_token
-                    }, label: {
-                        VStack {
-                            Text("Copy access token")
-                            Text("Valid for ") + Text(model.tokenV2?.expires_at ?? Date.distantPast, style: .relative)
-                        }.frame(maxWidth: .infinity)
-                    })
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .modifier(LightBackground())
-                }
-            
-                if (message.count > 0)
-                {
-                    Divider()
-                    Text(message)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(.red)
-                    Divider()
-                }
-
-                Spacer()
-                
-                Group {
-                    Text("v. \(self.version) build \(self.build)").font(.footnote).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .center)
-                        .onTapGesture {
-                            self.showRequestLog.toggle()
-                        }
-                    
-                    if (self.showRequestLog)
+                VStack (alignment: .leading, spacing: 8) {
+                    if (message.count > 0)
                     {
-                        Text("Authentication events")
-                        
-                        Text(getRequestEventText())
+                        Text(message)
                             .fixedSize(horizontal: false, vertical: true)
-                            .multilineTextAlignment(.leading)
-                            .foregroundColor(.gray)
-
-                        
-//                        VStack (alignment: .leading) {
-//                            ForEach(getRequestEventLog()) { event in
-//                                Text("\(DateInRegion(event.when, region: Region.local).toString(DateToStringStyles.time(DateFormatter.Style.short))): \(event.message)")
-//                                    .fixedSize(horizontal: false, vertical: true)
-//                                    .multilineTextAlignment(.leading)
-//                                    .foregroundColor(.gray)
-//                            }
-//                        }
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.red)
+                        Divider()
                     }
-                }
-
-            }.disabled(loading)
-            .padding()
+                    
+                    if (model.tokenV3?.refresh_token.count ?? 0 == 0)
+                    {
+                        Group {
+                            Button(action: {
+                                model.logOut()
+                                self.authenticateV3()
+                            }, label: {
+                                Text("Login with Tesla").frame(maxWidth: .infinity)
+                            })
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .modifier(LightBackground())
+                            
+                            VStack {
+                                Picker(selection: $region, label: Text("Region: \(self.region.rawValue.capitalized)").frame(maxWidth: .infinity)) {
+                                    ForEach(TokenRegion.allCases) { region in
+                                        Text("\(region.rawValue.capitalized)").tag(region)
+                                    }
+                                }
+                                .pickerStyle(MenuPickerStyle())
+                                .frame(maxWidth: .infinity)
+                            }
+                            .padding()
+                            .modifier(LightBackground())
+                        }
+                    }
+                    else
+                    {
+                        Button(action: {
+                            model.logOut()
+                        }, label: {
+                            Text("Logout").frame(maxWidth: .infinity)
+                        })
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .modifier(LightBackground())
+                    }
+                    
+                    if (model.tokenV3?.refresh_token.count ?? 0 > 0) {
+                        Button(action: {
+                            let pasteBoard = UIPasteboard.general
+                            pasteBoard.string = model.tokenV3?.refresh_token
+                            animateCheck()
+                        }, label: {
+                            VStack {
+                                Text("Copy refresh token")
+                                Text("\(model.tokenV3?.access_token ?? "")")
+                                    .font(.caption2)
+                                    .lineLimit(1)
+                                    .padding(.top, 2)
+                            }.frame(maxWidth: .infinity)
+                        })
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .modifier(LightBackground())
+                    }
+                    
+                    if (model.tokenV2?.access_token.count ?? 0 > 0) {
+                        Button(action: {
+                            let pasteBoard = UIPasteboard.general
+                            pasteBoard.string = model.tokenV2?.access_token
+                            animateCheck()
+                        }, label: {
+                            VStack {
+                                Text("Copy access token")
+                                Group {
+                                    Text("Valid for ") + Text(model.tokenV2?.expires_at ?? Date.distantPast, style: .relative)
+                                }
+                                .padding(.top, 2)
+                                Text("\(model.tokenV2?.access_token ?? "")")
+                                    .font(.caption2)
+                                    .lineLimit(1)
+                                    .padding(.top, 2)
+                            }
+                            .frame(maxWidth: .infinity)
+                        })
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .modifier(LightBackground())
+                    }
+                    
+                    if (model.tokenV3?.refresh_token.count ?? 0 > 0) {
+                        Button(action: {
+                            model.refreshAll()
+                        }, label: {
+                            VStack {
+                                Text("Refresh tokens")
+                            }.frame(maxWidth: .infinity)
+                        })
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .modifier(LightBackground())
+                    }
+                    
+                    if (message.count > 0)
+                    {
+                        Divider()
+                        Text(message)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(.red)
+                        Divider()
+                    }
+                    
+                    Spacer()
+                    
+                    Group {
+                        Text("v. \(self.version) build \(self.build)").font(.footnote).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .center)
+                            .onTapGesture {
+                                self.showRequestLog.toggle()
+                            }
+                        
+                        if (self.showRequestLog)
+                        {
+                            Text("Authentication events")
+                            
+                            Text(getRequestEventText())
+                                .fixedSize(horizontal: false, vertical: true)
+                                .multilineTextAlignment(.leading)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    
+                }.disabled(loading)
+                .padding()
+            }
+            .navigationBarTitle("Auth app for Tesla")
+            .navigationBarHidden(true)
+            
+            Group {
+                Image(systemName: "checkmark.seal")
+                    .foregroundColor(Color(UIColor(named: "AccentColor")!))
+                    .animatableFont(size: fontSize)
+                    .opacity(checkOpacity)
+            }
         }
-        .navigationBarTitle("Login")
-        }
+        
     }
+    
     
     var oauthswiftGlobal = OAuth2Swift(
         consumerKey: "ownerapi",
@@ -175,7 +240,7 @@ struct ContentView: View {
         accessTokenUrl: "",
         responseType: "code"
     )
-
+    
     var oauthswiftChina = OAuth2Swift(
         consumerKey: "ownerapi",
         consumerSecret: kTeslaSecret,
@@ -183,7 +248,7 @@ struct ContentView: View {
         accessTokenUrl: "",
         responseType: "code"
     )
-
+    
     private func verifier(forKey key: String) -> String {
         let verifier = key.data(using: .utf8)!.base64EncodedString()
             .replacingOccurrences(of: "+", with: "-")
@@ -227,10 +292,7 @@ struct ContentView: View {
                 let codeChallenge = self.challenge(forVerifier: codeVerifier)
                 
                 let internalController = AuthWebViewController()
-                //        internalController.callbackURL = "https://auth.tesla.com/void/callback"
-                //        internalController.callingViewController = self
                 oauthswift.authorizeURLHandler = internalController
-                //        oauthswift.authorizeURLHandler = SafariURLHandler(viewController: self, oauthSwift: oauthswift)
                 let state = generateState(withLength: 20)
                 
                 oauthswift.authorize(withCallbackURL: "https://auth.tesla.com/void/callback", scope: "openid email offline_access", state: state, codeChallenge: codeChallenge, codeChallengeMethod: "S256", codeVerifier: codeVerifier) { result in
@@ -241,22 +303,13 @@ struct ContentView: View {
                         let token = Token(access_token: credential.oauthToken, token_type: "bearer", expires_in: 300, refresh_token: credential.oauthRefreshToken, expires_at: credential.oauthTokenExpiresAt, region: self.region)//  Date().addingTimeInterval(TimeInterval(3888000))) //credential.oauthTokenExpiresAt ??
                         model.setJwtToken(token)
                         model.acquireTokenSilent(forceRefresh: true) { (token) in
-                            //
                         }
-        //                AuthController.shared().getVehicles({ (vehicles, message) in
-        //                    if (vehicles != nil)
-        //                    {
-        //                        self.loading = false
-        //                        TeslaController.shared().startPolling()
-        //                        self.model.loggedIn = true
-        //                    }
-        //                })
                     case .failure(let error):
                         print(error)
                     }
                 }
             }
-
+            
         }
     }
 }
