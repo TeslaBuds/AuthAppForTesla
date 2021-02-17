@@ -42,9 +42,6 @@ struct ContentView: View {
     
     @State var username = ""
     @State var password = ""
-    @State var message = ""
-    @State var loading = false
-    @State var showRequestLog = false
     @State var region: TokenRegion = .global
     @State private var fontSize: CGFloat = 32
     @State private var checkOpacity: Double = 0
@@ -72,26 +69,9 @@ struct ContentView: View {
             }
             
             ScrollView {
-                VStack (spacing: 8) {
-                    Group {
-                        Text("Auth app for Tesla")
-                        Text("v. \(self.version) build \(self.build)").font(.footnote).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .center)
-                        
-                    }
-                }
-                .padding(.top)
-                
-                VStack (alignment: .leading, spacing: 8) {
-                    if (message.count > 0)
-                    {
-                        Text(message)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.red)
-                        Divider()
-                    }
-                    
+
+                VStack (alignment: .leading, spacing: 16) {
+
                     if (model.tokenV3?.refresh_token.count ?? 0 == 0)
                     {
                         Group {
@@ -129,8 +109,10 @@ struct ContentView: View {
                         .padding()
                         .modifier(LightBackground())
                     }
-                    
+                                        
                     if (model.tokenV3?.refresh_token.count ?? 0 > 0) {
+                        Divider()
+
                         Button(action: {
                             let pasteBoard = UIPasteboard.general
                             pasteBoard.string = model.tokenV3?.refresh_token
@@ -143,6 +125,7 @@ struct ContentView: View {
                                     .font(.caption2)
                                     .lineLimit(1)
                                     .padding(.top, 2)
+                                    .foregroundColor(Color(UIColor(named: "AccentColor")!))
                             }.frame(maxWidth: .infinity)
                         })
                         .frame(maxWidth: .infinity)
@@ -162,11 +145,13 @@ struct ContentView: View {
                                 Group {
                                     Text("Valid for ") + Text(model.tokenV2?.expires_at ?? Date.distantPast, style: .relative)
                                 }
+                                .foregroundColor(Color(UIColor(named: "AccentColor")!))
                                 .padding(.top, 2)
                                 Text("\(model.tokenV2?.access_token ?? "")")
                                     .font(.caption2)
                                     .lineLimit(1)
                                     .padding(.top, 2)
+                                    .foregroundColor(Color(UIColor(named: "AccentColor")!))
                             }
                             .frame(maxWidth: .infinity)
                         })
@@ -188,41 +173,27 @@ struct ContentView: View {
                         .modifier(LightBackground())
                     }
                     
-                    if (message.count > 0)
-                    {
-                        Divider()
-                        Text(message)
-                            .fixedSize(horizontal: false, vertical: true)
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                            .multilineTextAlignment(.center)
-                            .foregroundColor(.red)
-                        Divider()
+                    Divider()
+                    
+                    NavigationLink(destination: AboutView()) {
+                        Text("About").frame(maxWidth: .infinity)
                     }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .modifier(LightBackground())
                     
                     Spacer()
                     
                     Group {
                         Text("v. \(self.version) build \(self.build)").font(.footnote).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .center)
-                            .onTapGesture {
-                                self.showRequestLog.toggle()
-                            }
-                        
-                        if (self.showRequestLog)
-                        {
-                            Text("Authentication events")
-                            
-                            Text(getRequestEventText())
-                                .fixedSize(horizontal: false, vertical: true)
-                                .multilineTextAlignment(.leading)
-                                .foregroundColor(.gray)
-                        }
                     }
                     
-                }.disabled(loading)
+                }
                 .padding()
             }
             .navigationBarTitle("Auth app for Tesla")
-            .navigationBarHidden(true)
+            .navigationBarTitleDisplayMode(.inline)
+            //            .navigationBarHidden(true)
             
             Group {
                 Image(systemName: "checkmark.seal")
