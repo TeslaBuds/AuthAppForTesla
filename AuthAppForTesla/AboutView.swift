@@ -122,12 +122,41 @@ struct AboutView: View {
                             .frame(width: 60)
                             .padding(.top,  20)
                         Text("Auth app for Tesla")
-                        Text("v. \(self.version) build \(self.build)").font(.footnote).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .center)
-                        Text("© 2021 Kim Hansen").font(.footnote).foregroundColor(.gray)
-                        
+//                        Text("v. \(self.version) build \(self.build)").font(.footnote).foregroundColor(.gray).frame(maxWidth: .infinity, alignment: .center)
+//                        Text("© 2021 Kim Hansen").font(.footnote).foregroundColor(.gray)
+                        Group {
+                            Text("v. \(version) build \(build)")
+                            Text("© 2021 Kim Hansen")
+                            VStack {
+                                Text("About to buy a new Tesla?")
+                                Text("Use my referral code!")
+                                Text("https://ts.la/kim85428")
+                            }
+                            
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(theme.backgroundColor2))
+                            .cornerRadius(8)
+                            .shadow(radius: theme.shadow)
+
+                            
+                            
+                            
+//                            .padding()
+//                            .frame(maxWidth: .infinity)
+//                            .modifier(LightBackground())
+                            .onTapGesture {
+                                #if os(iOS)
+                                guard let writeReviewURL = URL(string: "https://ts.la/kim85428")
+                                    else { fatalError("Expected a valid URL") }
+                                UIApplication.shared.open(writeReviewURL, options: [:], completionHandler: nil)
+                                #endif
+                            }
+                            }.font(.footnote).foregroundColor(.gray)
+
                     }
                 }
-                .padding(.top)
+                .padding([.top, .leading, .trailing])
                 
                 VStack (alignment: .leading, spacing: 16) {
                     Group {
