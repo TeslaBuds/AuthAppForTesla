@@ -44,6 +44,13 @@ struct AboutViewFooter: View {
     }
 }
 
+struct Friend {
+    let name: String
+    let appId: String?
+    let appUrl: String?
+    let icon: String
+}
+
 struct AboutViewFooter_Previews: PreviewProvider {
     static var previews: some View {
         AboutViewFooter()
