@@ -4,7 +4,7 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.global</string>
+		<string>group.infinytum.tesla</string>
 	</array>
 </dict>
 </plist>
