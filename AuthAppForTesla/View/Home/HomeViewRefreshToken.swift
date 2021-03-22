@@ -16,8 +16,8 @@ struct HomeViewRefreshToken: View {
         }, label: {
             Text("Refresh Tokens")
                 .font(.system(size: 18))
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .bottom)
         })
-        .frame(minWidth: 0, maxWidth: .infinity, alignment: .bottom)
         .padding(.vertical, 15)
         .foregroundColor(Color.white)
         .background(Color("TeslaRed"))

@@ -35,11 +35,11 @@ extension String {
 }
 
 extension KeychainWrapper {
-    public static let global = KeychainWrapper.init(serviceName: "AuthForTesla", accessGroup: "group.infinytum.tesla", iCloudSync: true)
+    public static let global = KeychainWrapper.init(serviceName: "AuthForTesla", accessGroup: "group.global", iCloudSync: true)
 }
 
 extension UserDefaults {
-    public static let standard = UserDefaults.init(suiteName: "group.infinytum.tesla")!
+    public static let standard = UserDefaults.init(suiteName: "group.global")!
 }
 
 func logRequestEvent(message: String) {
