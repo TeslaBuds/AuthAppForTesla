@@ -27,11 +27,25 @@ class GetRefreshTokenIntentHandler: NSObject, GetRefreshTokenIntentHandling {
         AuthController.shared().acquireTokenV3Silent { (token) in
             if let token = token
             {
-                completion(GetRefreshTokenIntentResponse.success(refreshToken: token.refresh_token))
+                let response = GetRefreshTokenIntentResponse(code: .success, userActivity: nil)
+                let tokenResponse = TokenResponse(identifier: "tokenResponse", display: token.refresh_token)
+                tokenResponse.expiresAt = Calendar.current.dateComponents(
+                    [.calendar, .timeZone,
+                     .era, .quarter,
+                     .year, .month, .day,
+                     .hour, .minute, .second, .nanosecond,
+                     .weekday, .weekdayOrdinal,
+                     .weekOfMonth, .weekOfYear, .yearForWeekOfYear],
+                    from: token.expires_at ?? Date.distantPast)
+                tokenResponse.region = token.region?.rawValue
+                tokenResponse.token = token.refresh_token
+
+                response.token = tokenResponse
+                completion(response)
             }
             else
             {
-                completion(GetRefreshTokenIntentResponse.success(refreshToken: ""))
+                completion(GetRefreshTokenIntentResponse(code: .failure, userActivity: nil))
             }
         }
     }

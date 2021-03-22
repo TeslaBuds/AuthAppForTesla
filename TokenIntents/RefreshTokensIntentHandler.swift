@@ -7,27 +7,29 @@
 
 import Foundation
 import SwiftUI
+import Intents
+import Contacts
 
-class GetAccessTokenIntentHandler: NSObject, GetAccessTokenIntentHandling {
+class RefreshTokensIntentHandler: NSObject, RefreshTokensIntentHandling {
     
-    func confirm(intent: GetAccessTokenIntent, completion: @escaping (GetAccessTokenIntentResponse) -> Void) {
-        AuthController.shared().acquireTokenSilent { (token) in
+    func confirm(intent: RefreshTokensIntent, completion: @escaping (RefreshTokensIntentResponse) -> Void) {
+        AuthController.shared().acquireTokenV3Silent { (token) in
             if token != nil
             {
-                completion(GetAccessTokenIntentResponse(code: .ready, userActivity: nil))
+                completion(RefreshTokensIntentResponse(code: .ready, userActivity: nil))
             }
             else
             {
-                completion(GetAccessTokenIntentResponse(code: .failure, userActivity: nil))
+                completion(RefreshTokensIntentResponse(code: .failure, userActivity: nil))
             }
         }
     }
     
-    func handle(intent: GetAccessTokenIntent, completion: @escaping (GetAccessTokenIntentResponse) -> Void) {
-        AuthController.shared().acquireTokenSilent { (token) in
+    func handle(intent: RefreshTokensIntent, completion: @escaping (RefreshTokensIntentResponse) -> Void) {
+        AuthController.shared().acquireTokenSilent(forceRefresh: true) { (token) in
             if let token = token
             {
-                let response = GetAccessTokenIntentResponse(code: .success, userActivity: nil)
+                let response = RefreshTokensIntentResponse(code: .success, userActivity: nil)
                 let tokenResponse = TokenResponse(identifier: "tokenResponse", display: token.access_token)
                 tokenResponse.expiresAt = Calendar.current.dateComponents(
                     [.calendar, .timeZone,
@@ -45,7 +47,7 @@ class GetAccessTokenIntentHandler: NSObject, GetAccessTokenIntentHandling {
             }
             else
             {
-                completion(GetAccessTokenIntentResponse(code: .failure, userActivity: nil))
+                completion(RefreshTokensIntentResponse(code: .failure, userActivity: nil))
             }
         }
     }

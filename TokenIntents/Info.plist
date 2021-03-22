@@ -32,6 +32,7 @@
 			<array>
 				<string>GetAccessTokenIntent</string>
 				<string>GetRefreshTokenIntent</string>
+				<string>RefreshTokensIntent</string>
 			</array>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>

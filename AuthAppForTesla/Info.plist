@@ -26,6 +26,7 @@
 	<array>
 		<string>GetAccessTokenIntent</string>
 		<string>GetRefreshTokenIntent</string>
+		<string>RefreshTokensIntent</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
