@@ -7,8 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		20007B9B25E15E6B00958060 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20007B9A25E15E6B00958060 /* SetupView.swift */; };
+		20CDC54725E1B52500E895C8 /* IconBackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CDC54625E1B52500E895C8 /* IconBackgroundView.swift */; };
+		20CDC54925E1C1AB00E895C8 /* SetupViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CDC54825E1C1AB00E895C8 /* SetupViewHeader.swift */; };
+		20CDC54B25E1C21C00E895C8 /* SetupViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CDC54A25E1C21C00E895C8 /* SetupViewFooter.swift */; };
+		20CDC54D25E1C27E00E895C8 /* SetupViewSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CDC54C25E1C27E00E895C8 /* SetupViewSignIn.swift */; };
+		20CDC55425E1CC0A00E895C8 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CDC55325E1CC0A00E895C8 /* HomeView.swift */; };
+		20CDC55725E1D11600E895C8 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CDC55625E1D11600E895C8 /* AboutView.swift */; };
+		20CDC55A25E1D13600E895C8 /* AboutViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CDC55925E1D13600E895C8 /* AboutViewHeader.swift */; };
+		20CDC55C25E1D26700E895C8 /* AboutViewFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CDC55B25E1D26700E895C8 /* AboutViewFooter.swift */; };
+		20CDC55E25E1D3B800E895C8 /* AboutViewFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CDC55D25E1D3B800E895C8 /* AboutViewFriend.swift */; };
+		20F8775825E2D9DA00953E51 /* HomeViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775725E2D9DA00953E51 /* HomeViewHeader.swift */; };
+		20F8775A25E2DA4300953E51 /* HomeViewToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775925E2DA4300953E51 /* HomeViewToken.swift */; };
+		20F8775C25E2DA5300953E51 /* HomeViewRefreshToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775B25E2DA5300953E51 /* HomeViewRefreshToken.swift */; };
+		20F8775F25E2F67800953E51 /* LicenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775E25E2F67800953E51 /* LicenseView.swift */; };
+		20F8776125E2F73800953E51 /* LicenseViewEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8776025E2F73800953E51 /* LicenseViewEntry.swift */; };
 		2CA1BF7335719F000B92F8EF /* Pods_TokenIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1ACE59C88990538A18785DF /* Pods_TokenIntents.framework */; };
-		EA1C8C9525D33BFA002B7E6D /* ViewModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1C8C9425D33BFA002B7E6D /* ViewModifiers.swift */; };
+		EA30D58A26092DB800B21DE1 /* RefreshTokensIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA30D58926092DB800B21DE1 /* RefreshTokensIntentHandler.swift */; };
 		EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */; };
 		EA63697425CAB11D000216BF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697325CAB11D000216BF /* ContentView.swift */; };
 		EA63697625CAB11D000216BF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA63697525CAB11D000216BF /* Assets.xcassets */; };
@@ -37,7 +52,6 @@
 		EA9EA87325DAAF25002FE23E /* AuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9EA86D25DAAAA6002FE23E /* AuthController.swift */; };
 		EA9EA87925DAB42A002FE23E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA63697525CAB11D000216BF /* Assets.xcassets */; };
 		EA9EA88825DAB808002FE23E /* GetRefreshTokenIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9EA88725DAB808002FE23E /* GetRefreshTokenIntentHandler.swift */; };
-		EA9EAA9F25DD20F7002FE23E /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9EAA9E25DD20F7002FE23E /* AboutView.swift */; };
 		FEFDE3CBF424AD0B182E9D6E /* Pods_AuthAppForTesla.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45769FA58A6F7E602DA51A7E /* Pods_AuthAppForTesla.framework */; };
 /* End PBXBuildFile section */
 
@@ -67,11 +81,26 @@
 
 /* Begin PBXFileReference section */
 		183181C9830E9DD876915C1B /* Pods-AuthAppForTesla.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AuthAppForTesla.release.xcconfig"; path = "Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla.release.xcconfig"; sourceTree = "<group>"; };
+		20007B9A25E15E6B00958060 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
+		20CDC54625E1B52500E895C8 /* IconBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconBackgroundView.swift; sourceTree = "<group>"; };
+		20CDC54825E1C1AB00E895C8 /* SetupViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupViewHeader.swift; sourceTree = "<group>"; };
+		20CDC54A25E1C21C00E895C8 /* SetupViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupViewFooter.swift; sourceTree = "<group>"; };
+		20CDC54C25E1C27E00E895C8 /* SetupViewSignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupViewSignIn.swift; sourceTree = "<group>"; };
+		20CDC55325E1CC0A00E895C8 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		20CDC55625E1D11600E895C8 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		20CDC55925E1D13600E895C8 /* AboutViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewHeader.swift; sourceTree = "<group>"; };
+		20CDC55B25E1D26700E895C8 /* AboutViewFooter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewFooter.swift; sourceTree = "<group>"; };
+		20CDC55D25E1D3B800E895C8 /* AboutViewFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewFriend.swift; sourceTree = "<group>"; };
+		20F8775725E2D9DA00953E51 /* HomeViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewHeader.swift; sourceTree = "<group>"; };
+		20F8775925E2DA4300953E51 /* HomeViewToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewToken.swift; sourceTree = "<group>"; };
+		20F8775B25E2DA5300953E51 /* HomeViewRefreshToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewRefreshToken.swift; sourceTree = "<group>"; };
+		20F8775E25E2F67800953E51 /* LicenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseView.swift; sourceTree = "<group>"; };
+		20F8776025E2F73800953E51 /* LicenseViewEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseViewEntry.swift; sourceTree = "<group>"; };
 		45769FA58A6F7E602DA51A7E /* Pods_AuthAppForTesla.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AuthAppForTesla.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		77149D1A1E06D0C37B8DC9E7 /* Pods-AuthAppForTesla.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AuthAppForTesla.debug.xcconfig"; path = "Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla.debug.xcconfig"; sourceTree = "<group>"; };
 		A1ACE59C88990538A18785DF /* Pods_TokenIntents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TokenIntents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6BD1E65FD59B4291829C916 /* Pods-TokenIntents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokenIntents.release.xcconfig"; path = "Target Support Files/Pods-TokenIntents/Pods-TokenIntents.release.xcconfig"; sourceTree = "<group>"; };
-		EA1C8C9425D33BFA002B7E6D /* ViewModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModifiers.swift; sourceTree = "<group>"; };
+		EA30D58926092DB800B21DE1 /* RefreshTokensIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshTokensIntentHandler.swift; sourceTree = "<group>"; };
 		EA63696E25CAB11D000216BF /* AuthAppForTesla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthAppForTesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAppForTeslaApp.swift; sourceTree = "<group>"; };
 		EA63697325CAB11D000216BF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -97,7 +126,6 @@
 		EA9EA86D25DAAAA6002FE23E /* AuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthController.swift; sourceTree = "<group>"; };
 		EA9EA87625DAB3B0002FE23E /* TokenIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TokenIntents.entitlements; sourceTree = "<group>"; };
 		EA9EA88725DAB808002FE23E /* GetRefreshTokenIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRefreshTokenIntentHandler.swift; sourceTree = "<group>"; };
-		EA9EAA9E25DD20F7002FE23E /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		F2C93B02C29A2E49A50DBB5A /* Pods-TokenIntents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokenIntents.debug.xcconfig"; path = "Target Support Files/Pods-TokenIntents/Pods-TokenIntents.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -130,6 +158,68 @@
 				A1ACE59C88990538A18785DF /* Pods_TokenIntents.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		20007B9925E15E3800958060 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				20F8775D25E2F54000953E51 /* License */,
+				20CDC55825E1D12D00E895C8 /* About */,
+				20CDC55525E1CC0F00E895C8 /* Home */,
+				20CDC54525E1B49300E895C8 /* Shared */,
+				20007B9C25E15E6E00958060 /* Setup */,
+				20CDC55325E1CC0A00E895C8 /* HomeView.swift */,
+				20007B9A25E15E6B00958060 /* SetupView.swift */,
+				20CDC55625E1D11600E895C8 /* AboutView.swift */,
+				20F8775E25E2F67800953E51 /* LicenseView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		20007B9C25E15E6E00958060 /* Setup */ = {
+			isa = PBXGroup;
+			children = (
+				20CDC54825E1C1AB00E895C8 /* SetupViewHeader.swift */,
+				20CDC54A25E1C21C00E895C8 /* SetupViewFooter.swift */,
+				20CDC54C25E1C27E00E895C8 /* SetupViewSignIn.swift */,
+			);
+			path = Setup;
+			sourceTree = "<group>";
+		};
+		20CDC54525E1B49300E895C8 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				20CDC54625E1B52500E895C8 /* IconBackgroundView.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		20CDC55525E1CC0F00E895C8 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				20F8775725E2D9DA00953E51 /* HomeViewHeader.swift */,
+				20F8775925E2DA4300953E51 /* HomeViewToken.swift */,
+				20F8775B25E2DA5300953E51 /* HomeViewRefreshToken.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		20CDC55825E1D12D00E895C8 /* About */ = {
+			isa = PBXGroup;
+			children = (
+				20CDC55925E1D13600E895C8 /* AboutViewHeader.swift */,
+				20CDC55B25E1D26700E895C8 /* AboutViewFooter.swift */,
+				20CDC55D25E1D3B800E895C8 /* AboutViewFriend.swift */,
+			);
+			path = About;
+			sourceTree = "<group>";
+		};
+		20F8775D25E2F54000953E51 /* License */ = {
+			isa = PBXGroup;
+			children = (
+				20F8776025E2F73800953E51 /* LicenseViewEntry.swift */,
+			);
+			path = License;
 			sourceTree = "<group>";
 		};
 		BE65635A7F9DC1BA543408A5 /* Pods */ = {
@@ -167,6 +257,7 @@
 		EA63697025CAB11D000216BF /* AuthAppForTesla */ = {
 			isa = PBXGroup;
 			children = (
+				20007B9925E15E3800958060 /* View */,
 				EA9EA7F725DA7E13002FE23E /* AuthAppForTesla.entitlements */,
 				EA63699C25CABA68000216BF /* KeychainItemAccessibility.swift */,
 				EA63699D25CABA68000216BF /* KeychainWrapper.swift */,
@@ -182,8 +273,6 @@
 				EA63699125CAB6A8000216BF /* Models.swift */,
 				EA6369A625CAD79D000216BF /* AuthViewModel.swift */,
 				EA9EA86D25DAAAA6002FE23E /* AuthController.swift */,
-				EA1C8C9425D33BFA002B7E6D /* ViewModifiers.swift */,
-				EA9EAA9E25DD20F7002FE23E /* AboutView.swift */,
 				EA6D588525DDA02A007EC2B7 /* ViewControllerBridge.swift */,
 			);
 			path = AuthAppForTesla;
@@ -204,6 +293,7 @@
 				EA9EA83525DA89EF002FE23E /* IntentHandler.swift */,
 				EA9EA83725DA89EF002FE23E /* Info.plist */,
 				EA9EA88725DAB808002FE23E /* GetRefreshTokenIntentHandler.swift */,
+				EA30D58926092DB800B21DE1 /* RefreshTokensIntentHandler.swift */,
 				EA9EA84A25DA8B1B002FE23E /* GetAccessTokenIntentHandler.swift */,
 			);
 			path = TokenIntents;
@@ -377,19 +467,32 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA6D588625DDA02A007EC2B7 /* ViewControllerBridge.swift in Sources */,
+				20F8775A25E2DA4300953E51 /* HomeViewToken.swift in Sources */,
+				20CDC55725E1D11600E895C8 /* AboutView.swift in Sources */,
 				EA6369A725CAD79D000216BF /* AuthViewModel.swift in Sources */,
 				EA9EA87325DAAF25002FE23E /* AuthController.swift in Sources */,
 				EA63699F25CABA68000216BF /* KeychainWrapper.swift in Sources */,
 				EA63697425CAB11D000216BF /* ContentView.swift in Sources */,
-				EA9EAA9F25DD20F7002FE23E /* AboutView.swift in Sources */,
 				EA9EA84225DA8A06002FE23E /* Intents.intentdefinition in Sources */,
+				20CDC54725E1B52500E895C8 /* IconBackgroundView.swift in Sources */,
+				20F8775F25E2F67800953E51 /* LicenseView.swift in Sources */,
+				20CDC54D25E1C27E00E895C8 /* SetupViewSignIn.swift in Sources */,
 				EA63698C25CAB620000216BF /* Consts.swift in Sources */,
+				20F8775825E2D9DA00953E51 /* HomeViewHeader.swift in Sources */,
+				20CDC54B25E1C21C00E895C8 /* SetupViewFooter.swift in Sources */,
 				EA63698F25CAB660000216BF /* Util.swift in Sources */,
-				EA1C8C9525D33BFA002B7E6D /* ViewModifiers.swift in Sources */,
+				20CDC55A25E1D13600E895C8 /* AboutViewHeader.swift in Sources */,
+				20CDC55E25E1D3B800E895C8 /* AboutViewFriend.swift in Sources */,
+				20F8776125E2F73800953E51 /* LicenseViewEntry.swift in Sources */,
+				20F8775C25E2DA5300953E51 /* HomeViewRefreshToken.swift in Sources */,
+				20CDC55425E1CC0A00E895C8 /* HomeView.swift in Sources */,
 				EA63699225CAB6A8000216BF /* Models.swift in Sources */,
 				EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */,
 				EA63699E25CABA68000216BF /* KeychainItemAccessibility.swift in Sources */,
+				20007B9B25E15E6B00958060 /* SetupView.swift in Sources */,
+				20CDC54925E1C1AB00E895C8 /* SetupViewHeader.swift in Sources */,
 				EA63698925CAB3EF000216BF /* AuthWebViewController.swift in Sources */,
+				20CDC55C25E1D26700E895C8 /* AboutViewFooter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -402,6 +505,7 @@
 				EA9EA88825DAB808002FE23E /* GetRefreshTokenIntentHandler.swift in Sources */,
 				EA9EA86925DA9044002FE23E /* Consts.swift in Sources */,
 				EA9EA84525DA8A0B002FE23E /* Intents.intentdefinition in Sources */,
+				EA30D58A26092DB800B21DE1 /* RefreshTokensIntentHandler.swift in Sources */,
 				EA9EA84B25DA8B1B002FE23E /* GetAccessTokenIntentHandler.swift in Sources */,
 				EA9EA86525DA9038002FE23E /* KeychainWrapper.swift in Sources */,
 				EA9EA83625DA89EF002FE23E /* IntentHandler.swift in Sources */,

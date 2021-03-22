@@ -20,10 +20,7 @@ struct AuthAppForTeslaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationView {
-                ContentView(model: AuthViewModel())
-            }
-            .navigationViewStyle(StackNavigationViewStyle())
+            ContentView(model: AuthViewModel())
         }
     }
     

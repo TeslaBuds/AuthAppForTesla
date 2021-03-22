@@ -23,6 +23,11 @@ class IntentHandler: INExtension {
             return GetRefreshTokenIntentHandler()
         }
 
+        if intent is RefreshTokensIntent
+        {
+            return RefreshTokensIntentHandler()
+        }
+
         return self
     }
     
