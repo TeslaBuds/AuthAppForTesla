@@ -30,7 +30,7 @@ struct IconBackgroundView<Content: View>: View {
                     VStack(content: content)
                 }
             }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
-        }.edgesIgnoringSafeArea(.top)//.edgesIgnoringSafeArea(.bottom)
+        }//.edgesIgnoringSafeArea(.top)//.edgesIgnoringSafeArea(.bottom)
     }
 }
 
