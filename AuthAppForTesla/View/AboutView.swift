@@ -11,10 +11,12 @@ struct AboutView: View {
     var body: some View {
         NavigationView {
             IconBackgroundView{
+                ScrollView {
                 AboutViewHeader()
                     .padding(.top, 50)
                 Spacer()
                 AboutViewFooter()
+                }
             }.navigationViewStyle(StackNavigationViewStyle())
             .navigationBarTitle("")
             .navigationBarHidden(true)

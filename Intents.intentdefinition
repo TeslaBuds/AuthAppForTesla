@@ -29,6 +29,10 @@
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Got Access Token</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>Ev1W9w</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
 					<true/>
 				</dict>
@@ -43,6 +47,10 @@
 					<true/>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Got Access Token</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>6GyEl1</string>
 				</dict>
 			</dict>
 			<key>INIntentResponse</key>
@@ -124,6 +132,10 @@
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Got Refresh Token</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>txxGFn</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
 					<true/>
 				</dict>
@@ -138,6 +150,10 @@
 					<true/>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Got Refresh Token</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>pFcfau</string>
 				</dict>
 			</dict>
 			<key>INIntentResponse</key>
@@ -221,6 +237,10 @@
 				<dict>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
+					<key>INIntentParameterCombinationTitle</key>
+					<string>Refreshed Tokens</string>
+					<key>INIntentParameterCombinationTitleID</key>
+					<string>Q0p728</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
 					<true/>
 				</dict>

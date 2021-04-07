@@ -6,11 +6,16 @@
 //
 
 import SwiftUI
+import SafariServices
 
 struct AboutViewHeader: View {
     let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
+
     @State private var selection: String? = nil
+    @State var showSafari = false
+    @State var safariUrl = ""
+
     var body: some View {
         VStack{
             Spacer()
@@ -23,9 +28,9 @@ struct AboutViewHeader: View {
             Text("Auth for Tesla")
                 .font(.system(size: 35, weight: .bold, design: .default))
                 .padding(.bottom, 0.5)
-            Text("V \(version) build \(build)")
+            Text("v. \(version) build \(build)")
                 .font(.system(size: 15, weight: .semibold, design: .default))
-            Text("(c) 2021 Kim Hansen, Michael Teuscher")
+            Text("© 2021 Kim Hansen, Michael Teuscher")
                 .font(.system(size: 15, weight: .semibold, design: .default))
             
             VStack {
@@ -35,7 +40,26 @@ struct AboutViewHeader: View {
                     .font(.system(size: 15, weight: .semibold, design: .default))
                 Text("https://ts.la/kim85428")
                     .font(.system(size: 15, weight: .semibold, design: .default))
-            }.padding(.top, 1)
+            }
+            .padding(.top, 1)
+            .onTapGesture {
+                safariUrl = "https://ts.la/kim85428"
+                showSafari = true
+            }
+            .background(
+                ViewControllerBridge(isActive: $showSafari, parameter: $safariUrl) { vc, active, parameter in
+                    if active {
+                        let safariVC = SFSafariViewController(url: URL(string: parameter)!)
+                        vc.present(safariVC, animated: true) {
+                            // Set the variable to false when the user dismisses the safari VC
+                            self.showSafari = false
+                        }
+                    }
+                }
+                .frame(width: 0, height: 0)
+            )
+
+            
             Text("Open Source Licenses")
                 .font(.system(size: 15, weight: .semibold, design: .default))
                 .foregroundColor(Color("TeslaRed"))

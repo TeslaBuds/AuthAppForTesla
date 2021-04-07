@@ -20,14 +20,17 @@ struct IconBackgroundView<Content: View>: View {
             VStack {
                 ZStack(alignment: .topLeading){
                     VStack {
-                        Image(colorScheme == .dark ? "IconPatternDark" : "IconPattern")
+                        //Image(colorScheme == .dark ? "IconPatternDark" : "IconPattern")
+                        Image("IconPatternSVG")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
+                            .foregroundColor(Color("IconPatternAccentColor"))
+                            .background(Color("IconPatternBackgroundColor"))
                     }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
                     VStack(content: content)
                 }
             }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
-        }.edgesIgnoringSafeArea(.bottom).edgesIgnoringSafeArea(.top)
+        }//.edgesIgnoringSafeArea(.top)//.edgesIgnoringSafeArea(.bottom)
     }
 }
 

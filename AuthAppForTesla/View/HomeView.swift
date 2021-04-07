@@ -14,9 +14,10 @@ struct HomeView: View {
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
     
     var body: some View {
+        
         VStack {
             HomeViewHeader(model: model)
-            Spacer()
+            ScrollView {
             VStack {
                 HomeViewToken(title: "Refresh Token", description: "A refresh token is a special kind of token used to obtain a renewed access token.", token: model.tokenV3?.refresh_token) {
                     model.donateRefreshTokenInteraction()
@@ -28,8 +29,9 @@ struct HomeView: View {
             }
             .padding(.vertical, 15)
             HomeViewRefreshToken(model: model)
-            Spacer()
-            Text("V. \(version) build \(build)")
+            }
+//            Spacer()
+            Text("v. \(version) build \(build)")
                 .font(.system(size: 12, weight: .regular, design: .default))
                 .multilineTextAlignment(.center)
                 .foregroundColor(.gray)
