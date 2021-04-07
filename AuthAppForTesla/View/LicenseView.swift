@@ -9,13 +9,13 @@ import SwiftUI
 
 struct LicenseView: View {
     var body: some View {
+        ScrollView {
         VStack {
-            ScrollView {
                 LicenseViewEntry(author: "Elvis Nuñez", name: "Networking", link: "https://github.com/3lvis/Networking", license: mitLicense)
                 LicenseViewEntry(author: "Dongri Jin", name: "OAuthSwift", link: "https://github.com/OAuthSwift/OAuthSwift", license: mitLicense)
                 LicenseViewEntry(author: "Daniele Margutti", name: "SwiftDate", link: "https://github.com/malcommac/SwiftDate", license: mitLicense)
-            }
-        }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+            }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+        }
     }
     
     let apacheLicense = """
