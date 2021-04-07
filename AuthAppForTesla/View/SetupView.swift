@@ -16,6 +16,7 @@ struct SetupView: View {
             SetupViewHeader()
             Spacer()
             SetupViewFooter(model: model)
+                .edgesIgnoringSafeArea(.bottom)
         }
     }
 }

@@ -23,7 +23,6 @@ struct AboutViewFooter: View {
     
     var body: some View {
         VStack{
-            ScrollView {
             Text("Friends of the App")
                 .font(.system(size: 30, weight: .regular, design: .default))
                 .padding(.bottom, -5)
@@ -38,9 +37,8 @@ struct AboutViewFooter: View {
                         .multilineTextAlignment(.center)
                 }
             }
-            }
         }
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
+//        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
         .padding(.top, 15)
         .background(Color("SheetColor").shadow(radius: 6))
     }
