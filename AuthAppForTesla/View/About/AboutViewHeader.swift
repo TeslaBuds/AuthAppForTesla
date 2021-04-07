@@ -28,9 +28,9 @@ struct AboutViewHeader: View {
             Text("Auth for Tesla")
                 .font(.system(size: 35, weight: .bold, design: .default))
                 .padding(.bottom, 0.5)
-            Text("V \(version) build \(build)")
+            Text("v. \(version) build \(build)")
                 .font(.system(size: 15, weight: .semibold, design: .default))
-            Text("(c) 2021 Kim Hansen, Michael Teuscher")
+            Text("© 2021 Kim Hansen, Michael Teuscher")
                 .font(.system(size: 15, weight: .semibold, design: .default))
             
             VStack {

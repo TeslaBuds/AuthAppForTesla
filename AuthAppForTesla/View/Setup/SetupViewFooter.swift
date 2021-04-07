@@ -30,7 +30,7 @@ struct SetupViewFooter: View {
                 .padding(.horizontal, 35)
                 .foregroundColor(.gray)
             Spacer()
-            Text("V. \(version) build \(build)")
+            Text("v. \(version) build \(build)")
                 .font(.system(size: 12, weight: .regular, design: .default))
                 .multilineTextAlignment(.center)
                 .padding(.bottom, 15)

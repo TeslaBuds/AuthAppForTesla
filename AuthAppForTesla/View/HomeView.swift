@@ -31,7 +31,7 @@ struct HomeView: View {
             HomeViewRefreshToken(model: model)
             }
 //            Spacer()
-            Text("V. \(version) build \(build)")
+            Text("v. \(version) build \(build)")
                 .font(.system(size: 12, weight: .regular, design: .default))
                 .multilineTextAlignment(.center)
                 .foregroundColor(.gray)
