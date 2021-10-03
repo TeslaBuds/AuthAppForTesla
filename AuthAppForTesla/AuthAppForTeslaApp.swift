@@ -16,6 +16,7 @@ struct AuthAppForTeslaApp: App {
         UINavigationBar.appearance().scrollEdgeAppearance = appearance
         UINavigationBar.appearance().standardAppearance = appearance
         UINavigationBar.appearance().tintColor = UIColor(named: "NavigationTitleColor")
+#if !targetEnvironment(macCatalyst)
         if #available(iOS 15.0, *) {
             let tbapp = UITabBarAppearance()
             tbapp.backgroundColor = UIColor(named: "NavigationBarColor")
@@ -24,6 +25,7 @@ struct AuthAppForTeslaApp: App {
         } else {
             // Fallback on earlier versions
         }
+        #endif
     }
     
     var body: some Scene {

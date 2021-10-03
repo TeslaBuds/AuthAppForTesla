@@ -94,4 +94,23 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
+    
+    func donateAccessTokenV3Interaction() {
+        let intent = GetAccessTokenV3Intent()
+        
+        intent.suggestedInvocationPhrase = "Get access token V3"
+        
+        let interaction = INInteraction(intent: intent, response: nil)
+        
+        interaction.donate { (error) in
+            if error != nil {
+                if let error = error as NSError? {
+                    print("Interaction donation failed: \(error.description)")
+                } else {
+                    print("Successfully donated interaction")
+                }
+            }
+        }
+    }
+
 }

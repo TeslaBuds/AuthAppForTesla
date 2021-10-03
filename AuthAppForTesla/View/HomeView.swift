@@ -19,11 +19,15 @@ struct HomeView: View {
             HomeViewHeader(model: model)
             ScrollView {
             VStack {
-                HomeViewToken(title: "Refresh Token", description: "A refresh token is a special kind of token used to obtain a renewed access token.", token: model.tokenV3?.refresh_token) {
+                HomeViewToken(title: "Refresh Token (Recommended)", description: "A refresh token allows for continuous interaction with your Tesla Account and is usually what is requested by other apps and third-party services. This is used to generate new access tokens.", token: model.tokenV3?.refresh_token) {
                     model.donateRefreshTokenInteraction()
                 }
                 Divider()
-                HomeViewToken(title: "Access Token", description: "Access tokens are used in token-based authentication to allow an application to access the Tesla API with your account.", token: model.tokenV2?.access_token) {
+                HomeViewToken(title: "Access Token", description: "An access token allows for temporary access to your Tesla Account and typically expires after several hours. This token can be used to generate Owners tokens.", token: model.tokenV3?.refresh_token) {
+                    model.donateAccessTokenV3Interaction()
+                }
+                Divider()
+                HomeViewToken(title: "Owners Access Token", description: "An owners access token allows for temporary access to your vehicles and solar products and typically expires after fourty five days.", token: model.tokenV2?.access_token) {
                     model.donateAccessTokenInteraction()
                 }
             }

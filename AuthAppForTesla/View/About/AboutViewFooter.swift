@@ -13,6 +13,7 @@ struct AboutViewFooter: View {
         GridItem(.fixed(150), spacing: 8),
     ]
     
+#if !targetEnvironment(macCatalyst)
     let friends = [
         Friend(name: "Watch app for Tesla", appId: "1512108917", appUrl: nil, icon: "WatchAppForTesla"),
         Friend(name: "TeSlate", appId: "1532406445", appUrl: nil, icon: "TeSlate"),
@@ -20,7 +21,13 @@ struct AboutViewFooter: View {
         Friend(name: "Teslascope", appId: nil, appUrl: "https://teslascope.com", icon: "TeslaScope"),
         Friend(name: "Tesla iOS Shortcuts", appId: nil, appUrl: "https://github.com/dburkland/tesla_ios_shortcuts/blob/master/README.md", icon: "tesla_ios_shortcuts")
     ]
-    
+    #else
+    let friends = [
+        Friend(name: "Watch app for Tesla", appId: "1512108917", appUrl: nil, icon: "WatchAppForTesla"),
+        Friend(name: "Teslascope", appId: nil, appUrl: "https://teslascope.com", icon: "TeslaScope"),
+        Friend(name: "Tesla iOS Shortcuts", appId: nil, appUrl: "https://github.com/dburkland/tesla_ios_shortcuts/blob/master/README.md", icon: "tesla_ios_shortcuts")
+    ]
+    #endif
     var body: some View {
         VStack{
             Text("Friends of the App")

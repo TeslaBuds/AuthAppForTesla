@@ -14,13 +14,23 @@ struct SetupViewSignIn: View {
     
     var body: some View {
         VStack {
-            Picker(selection: $region, label: Text("Region: \(self.region.rawValue.capitalized)").frame(maxWidth: .infinity).foregroundColor(Color("TeslaRed"))) {
+            
+            
+            Text("Choose login region")
+            Picker("", selection: $region) {
                 ForEach(TokenRegion.allCases) { region in
-                    Text("\(region.rawValue.capitalized)").tag(region)
+                    Text("\(NSLocalizedString(region.rawValue.capitalized, comment: ""))").tag(region)
                 }
             }
-            .pickerStyle(MenuPickerStyle())
-            .frame(maxWidth: .infinity)
+            .pickerStyle(SegmentedPickerStyle())
+            
+//            Picker(selection: $region, label: Text("Region: \(self.region.rawValue.capitalized)").frame(maxWidth: .infinity).foregroundColor(Color("TeslaRed"))) {
+//                ForEach(TokenRegion.allCases) { region in
+//                    Text("\(region.rawValue.capitalized)").tag(region)
+//                }
+//            }
+//            .pickerStyle(MenuPickerStyle())
+//            .frame(maxWidth: .infinity)
             .padding(.bottom, 10)
             Button("Sign in with Tesla", action: {
                 model.logOut()

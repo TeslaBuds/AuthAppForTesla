@@ -16,7 +16,9 @@ struct HomeViewHeader: View {
                 Text("Auth for Tesla")
                     .font(.title)
                     .fontWeight(.bold)
-                Text("Valid for ").font(.subheadline) + Text(model.tokenV2?.expires_at ?? Date.distantPast, style: .relative)
+                Text("Access Token valid for ").font(.subheadline) + Text(model.tokenV3?.expires_at ?? Date.distantPast, style: .relative)
+                    .font(.subheadline)
+                Text("Owners Token valid for ").font(.subheadline) + Text(model.tokenV2?.expires_at ?? Date.distantPast, style: .relative)
                     .font(.subheadline)
             }
             Spacer()

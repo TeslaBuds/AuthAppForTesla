@@ -18,6 +18,11 @@ class IntentHandler: INExtension {
             return GetAccessTokenIntentHandler()
         }
 
+        if intent is GetAccessTokenV3Intent
+        {
+            return GetAccessTokenV3IntentHandler()
+        }
+
         if intent is GetRefreshTokenIntent
         {
             return GetRefreshTokenIntentHandler()

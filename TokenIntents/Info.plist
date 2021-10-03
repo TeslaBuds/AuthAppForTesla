@@ -30,7 +30,7 @@
 			<array/>
 			<key>IntentsSupported</key>
 			<array>
-				<string>GetAccessTokenIntent</string>
+				<string>GetAccessTokenV3Intent</string>
 				<string>GetRefreshTokenIntent</string>
 				<string>RefreshTokensIntent</string>
 			</array>
