@@ -8,26 +8,26 @@
 import Foundation
 import SwiftUI
 
-class GetAccessTokenV3IntentHandler: NSObject, GetAccessTokenV3IntentHandling {
+class GetOwnersAccessTokenIntentHandler: NSObject, GetOwnersAccessTokenIntentHandling {
     
-    func confirm(intent: GetAccessTokenV3Intent, completion: @escaping (GetAccessTokenV3IntentResponse) -> Void) {
+    func confirm(intent: GetOwnersAccessTokenIntent, completion: @escaping (GetOwnersAccessTokenIntentResponse) -> Void) {
         AuthController.shared().acquireTokenSilent { (token) in
             if token != nil
             {
-                completion(GetAccessTokenV3IntentResponse(code: .ready, userActivity: nil))
+                completion(GetOwnersAccessTokenIntentResponse(code: .ready, userActivity: nil))
             }
             else
             {
-                completion(GetAccessTokenV3IntentResponse(code: .failure, userActivity: nil))
+                completion(GetOwnersAccessTokenIntentResponse(code: .failure, userActivity: nil))
             }
         }
     }
     
-    func handle(intent: GetAccessTokenV3Intent, completion: @escaping (GetAccessTokenV3IntentResponse) -> Void) {
+    func handle(intent: GetOwnersAccessTokenIntent, completion: @escaping (GetOwnersAccessTokenIntentResponse) -> Void) {
         AuthController.shared().acquireTokenSilent { (token) in
             if let token = token
             {
-                let response = GetAccessTokenV3IntentResponse(code: .success, userActivity: nil)
+                let response = GetOwnersAccessTokenIntentResponse(code: .success, userActivity: nil)
                 let tokenResponse = TokenResponse(identifier: "tokenResponse", display: token.access_token)
                 tokenResponse.expiresAt = Calendar.current.dateComponents(
                     [.calendar, .timeZone,
@@ -45,7 +45,7 @@ class GetAccessTokenV3IntentHandler: NSObject, GetAccessTokenV3IntentHandling {
             }
             else
             {
-                completion(GetAccessTokenV3IntentResponse(code: .failure, userActivity: nil))
+                completion(GetOwnersAccessTokenIntentResponse(code: .failure, userActivity: nil))
             }
         }
     }

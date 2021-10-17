@@ -36,7 +36,7 @@
 		EA63699F25CABA68000216BF /* KeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63699D25CABA68000216BF /* KeychainWrapper.swift */; };
 		EA6369A725CAD79D000216BF /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6369A625CAD79D000216BF /* AuthViewModel.swift */; };
 		EA6D588625DDA02A007EC2B7 /* ViewControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6D588525DDA02A007EC2B7 /* ViewControllerBridge.swift */; };
-		EA8B560727041EF30000C325 /* GetAccessTokenV3IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8B560627041EF30000C325 /* GetAccessTokenV3IntentHandler.swift */; };
+		EA8B560727041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8B560627041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift */; };
 		EA9EA83325DA89EF002FE23E /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9EA83225DA89EF002FE23E /* Intents.framework */; };
 		EA9EA83625DA89EF002FE23E /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9EA83525DA89EF002FE23E /* IntentHandler.swift */; };
 		EA9EA83A25DA89EF002FE23E /* TokenIntents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = EA9EA83125DA89EF002FE23E /* TokenIntents.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -117,7 +117,7 @@
 		EA63699D25CABA68000216BF /* KeychainWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainWrapper.swift; sourceTree = "<group>"; };
 		EA6369A625CAD79D000216BF /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		EA6D588525DDA02A007EC2B7 /* ViewControllerBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerBridge.swift; sourceTree = "<group>"; };
-		EA8B560627041EF30000C325 /* GetAccessTokenV3IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAccessTokenV3IntentHandler.swift; sourceTree = "<group>"; };
+		EA8B560627041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetOwnersAccessTokenIntentHandler.swift; sourceTree = "<group>"; };
 		EA9EA7F725DA7E13002FE23E /* AuthAppForTesla.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AuthAppForTesla.entitlements; sourceTree = "<group>"; };
 		EA9EA83125DA89EF002FE23E /* TokenIntents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TokenIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA9EA83225DA89EF002FE23E /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
@@ -296,7 +296,7 @@
 				EA9EA83725DA89EF002FE23E /* Info.plist */,
 				EA9EA88725DAB808002FE23E /* GetRefreshTokenIntentHandler.swift */,
 				EA30D58926092DB800B21DE1 /* RefreshTokensIntentHandler.swift */,
-				EA8B560627041EF30000C325 /* GetAccessTokenV3IntentHandler.swift */,
+				EA8B560627041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift */,
 				EA9EA84A25DA8B1B002FE23E /* GetAccessTokenIntentHandler.swift */,
 			);
 			path = TokenIntents;
@@ -509,7 +509,7 @@
 				EA9EA86925DA9044002FE23E /* Consts.swift in Sources */,
 				EA9EA84525DA8A0B002FE23E /* Intents.intentdefinition in Sources */,
 				EA30D58A26092DB800B21DE1 /* RefreshTokensIntentHandler.swift in Sources */,
-				EA8B560727041EF30000C325 /* GetAccessTokenV3IntentHandler.swift in Sources */,
+				EA8B560727041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift in Sources */,
 				EA9EA84B25DA8B1B002FE23E /* GetAccessTokenIntentHandler.swift in Sources */,
 				EA9EA86525DA9038002FE23E /* KeychainWrapper.swift in Sources */,
 				EA9EA83625DA89EF002FE23E /* IntentHandler.swift in Sources */,
@@ -656,7 +656,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = GlobalAccentColor;
 				CODE_SIGN_ENTITLEMENTS = AuthAppForTesla/AuthAppForTesla.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_ASSET_PATHS = "\"AuthAppForTesla/Preview Content\"";
 				DEVELOPMENT_TEAM = R8S8D227CC;
 				ENABLE_PREVIEWS = YES;
@@ -684,7 +684,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = GlobalAccentColor;
 				CODE_SIGN_ENTITLEMENTS = AuthAppForTesla/AuthAppForTesla.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_ASSET_PATHS = "\"AuthAppForTesla/Preview Content\"";
 				DEVELOPMENT_TEAM = R8S8D227CC;
 				ENABLE_PREVIEWS = YES;
@@ -709,7 +709,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TokenIntents/TokenIntents.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = R8S8D227CC;
 				INFOPLIST_FILE = TokenIntents/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -733,7 +733,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TokenIntents/TokenIntents.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 23;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = R8S8D227CC;
 				INFOPLIST_FILE = TokenIntents/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

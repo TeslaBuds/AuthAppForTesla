@@ -335,7 +335,7 @@
 				</dict>
 			</dict>
 			<key>INIntentName</key>
-			<string>GetAccessTokenV3</string>
+			<string>GetOwnersAccessToken</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
 				<key></key>
@@ -408,7 +408,7 @@
 				</array>
 			</dict>
 			<key>INIntentTitle</key>
-			<string>Get Access Token V3</string>
+			<string>Get Owners Token</string>
 			<key>INIntentTitleID</key>
 			<string>o9T1QJ</string>
 			<key>INIntentType</key>

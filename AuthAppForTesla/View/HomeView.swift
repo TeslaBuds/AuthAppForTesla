@@ -23,13 +23,14 @@ struct HomeView: View {
                     model.donateRefreshTokenInteraction()
                 }
                 Divider()
-                HomeViewToken(title: "Access Token", description: "An access token allows for temporary access to your Tesla Account and typically expires after several hours. This token can be used to generate Owners tokens.", token: model.tokenV3?.refresh_token) {
-                    model.donateAccessTokenV3Interaction()
-                }
-                Divider()
-                HomeViewToken(title: "Owners Access Token", description: "An owners access token allows for temporary access to your vehicles and solar products and typically expires after fourty five days.", token: model.tokenV2?.access_token) {
+                HomeViewToken(title: "Access Token", description: "An access token allows for temporary access to your Tesla Account and typically expires after several hours.", token: model.tokenV3?.access_token) {
                     model.donateAccessTokenInteraction()
                 }
+                .opacity(0.5)
+//                Divider()
+//                HomeViewToken(title: "Owners Access Token", description: "An owners access token allows for temporary access to your vehicles and solar products and typically expires after fourty five days.", token: model.tokenV2?.access_token) {
+//                    model.donateOwnersAccessTokenInteraction()
+//                }
             }
             .padding(.vertical, 15)
             HomeViewRefreshToken(model: model)

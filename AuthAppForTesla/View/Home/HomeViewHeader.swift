@@ -18,8 +18,8 @@ struct HomeViewHeader: View {
                     .fontWeight(.bold)
                 Text("Access Token valid for ").font(.subheadline) + Text(model.tokenV3?.expires_at ?? Date.distantPast, style: .relative)
                     .font(.subheadline)
-                Text("Owners Token valid for ").font(.subheadline) + Text(model.tokenV2?.expires_at ?? Date.distantPast, style: .relative)
-                    .font(.subheadline)
+//                Text("Owners Token valid for ").font(.subheadline) + Text(model.tokenV2?.expires_at ?? Date.distantPast, style: .relative)
+//                    .font(.subheadline)
             }
             Spacer()
             Menu {

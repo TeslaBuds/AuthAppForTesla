@@ -95,10 +95,10 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    func donateAccessTokenV3Interaction() {
-        let intent = GetAccessTokenV3Intent()
+    func donateOwnersAccessTokenInteraction() {
+        let intent = GetOwnersAccessTokenIntent()
         
-        intent.suggestedInvocationPhrase = "Get access token V3"
+        intent.suggestedInvocationPhrase = "Get owners access token"
         
         let interaction = INInteraction(intent: intent, response: nil)
         
