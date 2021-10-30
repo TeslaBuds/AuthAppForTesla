@@ -1,0 +1,9 @@
+/* 
+  InfoPlist.strings
+  AuthAppForTesla
+
+  Created by Kim Hansen on 30/10/2021.
+  
+*/
+/* Localized Bundle Display Name */
+"CFBundleDisplayName" = "Auth for Tesla";
