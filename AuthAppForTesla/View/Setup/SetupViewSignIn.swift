@@ -24,23 +24,38 @@ struct SetupViewSignIn: View {
             }
             .pickerStyle(SegmentedPickerStyle())
             
-//            Picker(selection: $region, label: Text("Region: \(self.region.rawValue.capitalized)").frame(maxWidth: .infinity).foregroundColor(Color("TeslaRed"))) {
-//                ForEach(TokenRegion.allCases) { region in
-//                    Text("\(region.rawValue.capitalized)").tag(region)
-//                }
-//            }
-//            .pickerStyle(MenuPickerStyle())
-//            .frame(maxWidth: .infinity)
+            //            Picker(selection: $region, label: Text("Region: \(self.region.rawValue.capitalized)").frame(maxWidth: .infinity).foregroundColor(Color("TeslaRed"))) {
+            //                ForEach(TokenRegion.allCases) { region in
+            //                    Text("\(region.rawValue.capitalized)").tag(region)
+            //                }
+            //            }
+            //            .pickerStyle(MenuPickerStyle())
+            //            .frame(maxWidth: .infinity)
             .padding(.bottom, 10)
             Button("Sign in with Tesla", action: {
+#if DEBUG
+                if CommandLine.arguments.contains("enable-testing") {
+                    for arg in CommandLine.arguments {
+                        if arg.starts(with: "token:") {
+                            let tokenArg = arg.replacingOccurrences(of: "token:", with: "")
+                            let token = Token(access_token: "", token_type: "bearer", expires_in: 300, refresh_token: tokenArg, expires_at: Date.future(), region: TokenRegion.global)
+                            model.setJwtToken(token)
+                            model.acquireTokenSilent(forceRefresh: true) { (token) in
+                            }
+                            return
+                        }
+                    }
+                }
+#endif
                 model.logOut()
                 self.authenticateV3()
             })
-            .frame(minWidth: 0, maxWidth: .infinity, alignment: .bottom)
-            .padding(.vertical, 15)
-            .foregroundColor(Color.white)
-            .background(Color("TeslaRed"))
-            .cornerRadius(10.0)
+                .accessibilityIdentifier("loginButton")
+                .frame(minWidth: 0, maxWidth: .infinity, alignment: .bottom)
+                .padding(.vertical, 15)
+                .foregroundColor(Color.white)
+                .background(Color("TeslaRed"))
+                .cornerRadius(10.0)
         }
         .padding(.horizontal, 35)
         .padding(.vertical, 20)

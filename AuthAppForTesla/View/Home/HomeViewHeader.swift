@@ -26,10 +26,12 @@ struct HomeViewHeader: View {
                 Button("Logout", action: {
                     model.logOut()
                 })
+                    .accessibilityIdentifier("logoutButton")
             } label: {
                 Image(systemName: "person.crop.circle")
                     .foregroundColor(Color("TeslaRed"))
                     .font(.system(size: 30))
+                    .accessibilityIdentifier("homeMenu")
             }
         }
     }

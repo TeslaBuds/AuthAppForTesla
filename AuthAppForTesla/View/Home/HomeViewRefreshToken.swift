@@ -17,6 +17,7 @@ struct HomeViewRefreshToken: View {
             Text("Refresh Tokens")
                 .font(.system(size: 18))
                 .frame(minWidth: 0, maxWidth: .infinity, alignment: .bottom)
+                .accessibilityIdentifier("refreshTokensButton")
         })
         .padding(.vertical, 15)
         .foregroundColor(Color.white)

@@ -27,6 +27,9 @@
 		EA1A333E272D88A100B66EB0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EA1A3340272D88A100B66EB0 /* InfoPlist.strings */; };
 		EA1A3343272D8DED00B66EB0 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = EA1A3346272D8DED00B66EB0 /* Intents.intentdefinition */; };
 		EA1A3344272D8DED00B66EB0 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = EA1A3346272D8DED00B66EB0 /* Intents.intentdefinition */; };
+		EA1A3364272D999B00B66EB0 /* AuthAppForTeslaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1A3363272D999B00B66EB0 /* AuthAppForTeslaUITests.swift */; };
+		EA1A3366272D999B00B66EB0 /* AuthAppForTeslaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1A3365272D999B00B66EB0 /* AuthAppForTeslaUITestsLaunchTests.swift */; };
+		EA1A336C272D99D200B66EB0 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1A334B272D985B00B66EB0 /* SnapshotHelper.swift */; };
 		EA30D58A26092DB800B21DE1 /* RefreshTokensIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA30D58926092DB800B21DE1 /* RefreshTokensIntentHandler.swift */; };
 		EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */; };
 		EA63697425CAB11D000216BF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697325CAB11D000216BF /* ContentView.swift */; };
@@ -59,6 +62,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		EA1A3367272D999B00B66EB0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = EA63696625CAB11D000216BF /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EA63696D25CAB11D000216BF;
+			remoteInfo = AuthAppForTesla;
+		};
 		EA9EA83825DA89EF002FE23E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = EA63696625CAB11D000216BF /* Project object */;
@@ -105,6 +115,11 @@
 		B6BD1E65FD59B4291829C916 /* Pods-TokenIntents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokenIntents.release.xcconfig"; path = "Target Support Files/Pods-TokenIntents/Pods-TokenIntents.release.xcconfig"; sourceTree = "<group>"; };
 		EA1A333F272D88A100B66EB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA1A3345272D8DED00B66EB0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
+		EA1A334B272D985B00B66EB0 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
+		EA1A334D272D988500B66EB0 /* Snapfile */ = {isa = PBXFileReference; lastKnownFileType = text; path = Snapfile; sourceTree = "<group>"; };
+		EA1A3361272D999B00B66EB0 /* AuthAppForTeslaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuthAppForTeslaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA1A3363272D999B00B66EB0 /* AuthAppForTeslaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAppForTeslaUITests.swift; sourceTree = "<group>"; };
+		EA1A3365272D999B00B66EB0 /* AuthAppForTeslaUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAppForTeslaUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		EA30D58926092DB800B21DE1 /* RefreshTokensIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshTokensIntentHandler.swift; sourceTree = "<group>"; };
 		EA63696E25CAB11D000216BF /* AuthAppForTesla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthAppForTesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAppForTeslaApp.swift; sourceTree = "<group>"; };
@@ -135,6 +150,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		EA1A335E272D999B00B66EB0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EA63696B25CAB11D000216BF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -238,13 +260,25 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		EA1A3362272D999B00B66EB0 /* AuthAppForTeslaUITests */ = {
+			isa = PBXGroup;
+			children = (
+				EA1A334B272D985B00B66EB0 /* SnapshotHelper.swift */,
+				EA1A3363272D999B00B66EB0 /* AuthAppForTeslaUITests.swift */,
+				EA1A3365272D999B00B66EB0 /* AuthAppForTeslaUITestsLaunchTests.swift */,
+			);
+			path = AuthAppForTeslaUITests;
+			sourceTree = "<group>";
+		};
 		EA63696525CAB11D000216BF = {
 			isa = PBXGroup;
 			children = (
+				EA1A334D272D988500B66EB0 /* Snapfile */,
 				EA1A3340272D88A100B66EB0 /* InfoPlist.strings */,
 				EA1A3346272D8DED00B66EB0 /* Intents.intentdefinition */,
 				EA63697025CAB11D000216BF /* AuthAppForTesla */,
 				EA9EA83425DA89EF002FE23E /* TokenIntents */,
+				EA1A3362272D999B00B66EB0 /* AuthAppForTeslaUITests */,
 				EA63696F25CAB11D000216BF /* Products */,
 				BE65635A7F9DC1BA543408A5 /* Pods */,
 				003A0F6CF2DBC27EAD7A2DB1 /* Frameworks */,
@@ -256,6 +290,7 @@
 			children = (
 				EA63696E25CAB11D000216BF /* AuthAppForTesla.app */,
 				EA9EA83125DA89EF002FE23E /* TokenIntents.appex */,
+				EA1A3361272D999B00B66EB0 /* AuthAppForTeslaUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -309,6 +344,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		EA1A3360272D999B00B66EB0 /* AuthAppForTeslaUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA1A3369272D999B00B66EB0 /* Build configuration list for PBXNativeTarget "AuthAppForTeslaUITests" */;
+			buildPhases = (
+				EA1A335D272D999B00B66EB0 /* Sources */,
+				EA1A335E272D999B00B66EB0 /* Frameworks */,
+				EA1A335F272D999B00B66EB0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EA1A3368272D999B00B66EB0 /* PBXTargetDependency */,
+			);
+			name = AuthAppForTeslaUITests;
+			productName = AuthAppForTeslaUITests;
+			productReference = EA1A3361272D999B00B66EB0 /* AuthAppForTeslaUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		EA63696D25CAB11D000216BF /* AuthAppForTesla */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EA63697D25CAB11D000216BF /* Build configuration list for PBXNativeTarget "AuthAppForTesla" */;
@@ -354,9 +407,13 @@
 		EA63696625CAB11D000216BF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1240;
+				LastSwiftUpdateCheck = 1310;
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
+					EA1A3360272D999B00B66EB0 = {
+						CreatedOnToolsVersion = 13.1;
+						TestTargetID = EA63696D25CAB11D000216BF;
+					};
 					EA63696D25CAB11D000216BF = {
 						CreatedOnToolsVersion = 12.4;
 					};
@@ -380,11 +437,19 @@
 			targets = (
 				EA63696D25CAB11D000216BF /* AuthAppForTesla */,
 				EA9EA83025DA89EF002FE23E /* TokenIntents */,
+				EA1A3360272D999B00B66EB0 /* AuthAppForTeslaUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		EA1A335F272D999B00B66EB0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EA63696C25CAB11D000216BF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -471,6 +536,16 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		EA1A335D272D999B00B66EB0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA1A3366272D999B00B66EB0 /* AuthAppForTeslaUITestsLaunchTests.swift in Sources */,
+				EA1A3364272D999B00B66EB0 /* AuthAppForTeslaUITests.swift in Sources */,
+				EA1A336C272D99D200B66EB0 /* SnapshotHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EA63696A25CAB11D000216BF /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -528,6 +603,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		EA1A3368272D999B00B66EB0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EA63696D25CAB11D000216BF /* AuthAppForTesla */;
+			targetProxy = EA1A3367272D999B00B66EB0 /* PBXContainerItemProxy */;
+		};
 		EA9EA83925DA89EF002FE23E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = EA9EA83025DA89EF002FE23E /* TokenIntents */;
@@ -555,6 +635,54 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		EA1A336A272D999B00B66EB0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R8S8D227CC;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dk.kimhansen.AuthAppForTeslaUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AuthAppForTesla;
+			};
+			name = Debug;
+		};
+		EA1A336B272D999B00B66EB0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = R8S8D227CC;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = dk.kimhansen.AuthAppForTeslaUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = AuthAppForTesla;
+			};
+			name = Release;
+		};
 		EA63697B25CAB11D000216BF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -778,6 +906,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		EA1A3369272D999B00B66EB0 /* Build configuration list for PBXNativeTarget "AuthAppForTeslaUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA1A336A272D999B00B66EB0 /* Debug */,
+				EA1A336B272D999B00B66EB0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		EA63696925CAB11D000216BF /* Build configuration list for PBXProject "AuthAppForTesla" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

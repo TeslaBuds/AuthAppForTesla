@@ -57,7 +57,8 @@ struct ContentView: View {
                             Image(systemName: "house")
                             Text("Home")
                         }
-                    }.tag(0)
+                    }
+                    .tag(0)
                 AboutView()
                     .font(.title)
                     .tabItem {
@@ -65,7 +66,8 @@ struct ContentView: View {
                             Image(systemName: "info.circle")
                             Text("About")
                         }
-                    }.tag(1)
+                    }
+                    .tag(1)
             }
         }
         

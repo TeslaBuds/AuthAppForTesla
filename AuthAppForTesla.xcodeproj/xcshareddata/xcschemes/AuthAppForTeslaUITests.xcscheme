@@ -9,14 +9,14 @@
          <BuildActionEntry
             buildForTesting = "YES"
             buildForRunning = "YES"
-            buildForProfiling = "YES"
-            buildForArchiving = "YES"
-            buildForAnalyzing = "YES">
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EA63696D25CAB11D000216BF"
-               BuildableName = "AuthAppForTesla.app"
-               BlueprintName = "AuthAppForTesla"
+               BlueprintIdentifier = "EA1A3360272D999B00B66EB0"
+               BuildableName = "AuthAppForTeslaUITests.xctest"
+               BlueprintName = "AuthAppForTeslaUITests"
                ReferencedContainer = "container:AuthAppForTesla.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -50,16 +50,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EA63696D25CAB11D000216BF"
-            BuildableName = "AuthAppForTesla.app"
-            BlueprintName = "AuthAppForTesla"
-            ReferencedContainer = "container:AuthAppForTesla.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -67,16 +57,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EA63696D25CAB11D000216BF"
-            BuildableName = "AuthAppForTesla.app"
-            BlueprintName = "AuthAppForTesla"
+            BlueprintIdentifier = "EA1A3360272D999B00B66EB0"
+            BuildableName = "AuthAppForTeslaUITests.xctest"
+            BlueprintName = "AuthAppForTeslaUITests"
             ReferencedContainer = "container:AuthAppForTesla.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

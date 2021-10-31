@@ -25,7 +25,15 @@ struct AuthAppForTeslaApp: App {
         } else {
             // Fallback on earlier versions
         }
-        #endif
+#endif
+        
+#if DEBUG
+        if CommandLine.arguments.contains("enable-testing") {
+            let token = Token(access_token: "", token_type: "bearer", expires_in: 0, refresh_token: "", expires_at: Date.distantPast, region: TokenRegion.global)
+            AuthController.shared().setJwtToken(token)
+        }
+#endif
+        
     }
     
     var body: some Scene {

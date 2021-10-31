@@ -1,0 +1,17 @@
+{
+    "device_frame_version": "latest",
+    "default": {
+      "title": {
+        "color": "#FFFFFF"
+      },
+      "background": "./background.jpeg",
+      "padding": 50,
+      "show_complete_frame": true,
+      "stack_title": false
+    },
+    "data": [
+      {
+        "filter": "i"
+      }
+    ]
+  }

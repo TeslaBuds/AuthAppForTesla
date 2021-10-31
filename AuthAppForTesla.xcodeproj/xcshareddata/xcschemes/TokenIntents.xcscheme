@@ -43,6 +43,16 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "EA1A3360272D999B00B66EB0"
+               BuildableName = "AuthAppForTeslaUITests.xctest"
+               BlueprintName = "AuthAppForTeslaUITests"
+               ReferencedContainer = "container:AuthAppForTesla.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
