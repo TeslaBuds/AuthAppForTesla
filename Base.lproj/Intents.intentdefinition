@@ -32,7 +32,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Got Access Token</string>
+					<string>Get Access Token</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>Ev1W9w</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -47,10 +47,14 @@
 				<dict>
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>Returns the v3 access token</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>06u3OU</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Got Access Token</string>
+					<string>Get Access Token</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>6GyEl1</string>
 				</dict>
@@ -137,7 +141,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Got Refresh Token</string>
+					<string>Get Refresh Token</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>txxGFn</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -152,10 +156,14 @@
 				<dict>
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>Returns the v3 refresh token</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>eJW59l</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Got Refresh Token</string>
+					<string>Get Refresh Token</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>pFcfau</string>
 				</dict>
@@ -244,7 +252,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Refreshed Tokens</string>
+					<string>Refresh Tokens</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>Q0p728</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -335,7 +343,7 @@
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Got Access Token</string>
+					<string>Get Owners Token</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>0rEK6U</string>
 					<key>INIntentParameterCombinationUpdatesLinked</key>
@@ -350,10 +358,14 @@
 				<dict>
 					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
+					<key>INIntentParameterCombinationSubtitle</key>
+					<string>Returns the legacy v2 access token</string>
+					<key>INIntentParameterCombinationSubtitleID</key>
+					<string>AehGKH</string>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
 					<true/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Got Access Token</string>
+					<string>Get Owners Token</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>QRHEAg</string>
 				</dict>
