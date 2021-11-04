@@ -1,8 +1,23 @@
 {
     "device_frame_version": "latest",
     "default": {
+      "keyword": {
+        "color": "#FFFFFF",
+        "fonts": [
+          {
+            "font": "./fonts/SF-Pro-Display-Heavy.otf",
+            "supported": ["en-US"]
+          }
+        ]
+      },
       "title": {
-        "color": "#FFFFFF"
+        "color": "#FFFFFF",
+        "fonts": [
+          {
+            "font": "./fonts/SF-Pro-Display-Thin.otf",
+            "supported": ["en-US"]
+          }
+        ]
       },
       "background": "./background.jpeg",
       "padding": 50,

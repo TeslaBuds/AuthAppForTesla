@@ -146,6 +146,8 @@
 		EA9EA86D25DAAAA6002FE23E /* AuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthController.swift; sourceTree = "<group>"; };
 		EA9EA87625DAB3B0002FE23E /* TokenIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TokenIntents.entitlements; sourceTree = "<group>"; };
 		EA9EA88725DAB808002FE23E /* GetRefreshTokenIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRefreshTokenIntentHandler.swift; sourceTree = "<group>"; };
+		EAFF01A6273466F200BB0AB4 /* title.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = title.strings; path = Screenshots/title.strings; sourceTree = "<group>"; };
+		EAFF01A72734670800BB0AB4 /* keyword.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = keyword.strings; path = Screenshots/keyword.strings; sourceTree = "<group>"; };
 		F2C93B02C29A2E49A50DBB5A /* Pods-TokenIntents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokenIntents.debug.xcconfig"; path = "Target Support Files/Pods-TokenIntents/Pods-TokenIntents.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -273,6 +275,7 @@
 		EA63696525CAB11D000216BF = {
 			isa = PBXGroup;
 			children = (
+				EAFF01A5273466E300BB0AB4 /* Screenshots */,
 				EA1A334D272D988500B66EB0 /* Snapfile */,
 				EA1A3340272D88A100B66EB0 /* InfoPlist.strings */,
 				EA1A3346272D8DED00B66EB0 /* Intents.intentdefinition */,
@@ -339,6 +342,15 @@
 				EA9EA84A25DA8B1B002FE23E /* GetAccessTokenIntentHandler.swift */,
 			);
 			path = TokenIntents;
+			sourceTree = "<group>";
+		};
+		EAFF01A5273466E300BB0AB4 /* Screenshots */ = {
+			isa = PBXGroup;
+			children = (
+				EAFF01A72734670800BB0AB4 /* keyword.strings */,
+				EAFF01A6273466F200BB0AB4 /* title.strings */,
+			);
+			name = Screenshots;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -808,7 +820,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = GlobalAccentColor;
 				CODE_SIGN_ENTITLEMENTS = AuthAppForTesla/AuthAppForTesla.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"AuthAppForTesla/Preview Content\"";
 				DEVELOPMENT_TEAM = R8S8D227CC;
 				ENABLE_PREVIEWS = YES;
@@ -836,7 +848,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = GlobalAccentColor;
 				CODE_SIGN_ENTITLEMENTS = AuthAppForTesla/AuthAppForTesla.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_ASSET_PATHS = "\"AuthAppForTesla/Preview Content\"";
 				DEVELOPMENT_TEAM = R8S8D227CC;
 				ENABLE_PREVIEWS = YES;
@@ -861,7 +873,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TokenIntents/TokenIntents.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_TEAM = R8S8D227CC;
 				INFOPLIST_FILE = TokenIntents/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -885,7 +897,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TokenIntents/TokenIntents.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = 32;
 				DEVELOPMENT_TEAM = R8S8D227CC;
 				INFOPLIST_FILE = TokenIntents/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
