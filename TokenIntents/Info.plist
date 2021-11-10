@@ -25,19 +25,9 @@
 		<key>NSExtensionAttributes</key>
 		<dict>
 			<key>IntentsRestrictedWhileLocked</key>
-			<array>
-				<string>GetAccessTokenIntent</string>
-				<string>GetOwnersAccessTokenIntent</string>
-				<string>GetRefreshTokenIntent</string>
-				<string>RefreshTokensIntent</string>
-			</array>
+			<array/>
 			<key>IntentsRestrictedWhileProtectedDataUnavailable</key>
-			<array>
-				<string>GetAccessTokenIntent</string>
-				<string>GetOwnersAccessTokenIntent</string>
-				<string>GetRefreshTokenIntent</string>
-				<string>RefreshTokensIntent</string>
-			</array>
+			<array/>
 			<key>IntentsSupported</key>
 			<array>
 				<string>GetAccessTokenIntent</string>
