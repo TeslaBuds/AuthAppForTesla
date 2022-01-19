@@ -11,6 +11,7 @@ import Intents
 class AuthViewModel: ObservableObject {
     @Published var tokenV3: Token?
     @Published var tokenV2: Token?
+    @Published var externalTokenRequest: ExternalTokenRequest?
     
     init() {
         AuthController.shared().acquireTokenV3Silent { (token) in

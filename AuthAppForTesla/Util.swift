@@ -42,6 +42,44 @@ extension UserDefaults {
     public static let standard = UserDefaults.init(suiteName: "group.global")!
 }
 
+extension URL {
+    subscript(key: String) -> String? {
+        if let components = URLComponents(string: self.absoluteString),
+           let items = components.queryItems,
+           let item = items.first(where: { $0.name == key }) {
+            return item.value
+        }
+        return nil
+    }
+}
+
+enum ExternalTokenRequestAppId: String {
+    case AutarkieManager = "AutarkieManager"
+}
+
+struct ExternalTokenRequest {
+    let appId: ExternalTokenRequestAppId
+    let appData: String
+}
+
+func handleUniversalLink(_ url: URL, _ model: AuthViewModel) {
+    guard url.pathComponents.count > 1 else {
+        return
+    }
+
+    let command = url.pathComponents[1]
+    switch command {
+    case "request-refresh-token":
+        if let appId: ExternalTokenRequestAppId = .init(rawValue: url["app_id"] ?? ""),
+           let appData: String = url["app_data"] {
+               model.externalTokenRequest = ExternalTokenRequest(appId: appId, appData: appData)
+           }
+        break
+    default:
+        break
+    }
+}
+
 func logRequestEvent(message: String) {
     var eventLog = [RequestEvent]()
     if let requestEventLogJson = UserDefaults.standard.data(forKey: kRequestEventLog), let requestEventLog = try? JSONDecoder().decode([RequestEvent].self, from: requestEventLogJson)

@@ -45,7 +45,8 @@ struct ContentView: View {
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
     
     var body: some View {
-        if (model.tokenV3?.refresh_token.count ?? 0 == 0)
+        if (model.tokenV3?.refresh_token.count ?? 0 == 0) ||
+           (model.externalTokenRequest != nil)
         {
             SetupView(model: model).frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
         } else {

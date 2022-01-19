@@ -38,8 +38,12 @@ struct AuthAppForTeslaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView(model: AuthViewModel())
+            let model = AuthViewModel()
+            ContentView(model: model)
                 .navigationViewStyle(StackNavigationViewStyle())
+                .onOpenURL() { url in
+                    handleUniversalLink(url, model)
+                }
         }
     }
     
