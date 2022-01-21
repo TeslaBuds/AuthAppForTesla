@@ -13,6 +13,7 @@ struct SetupViewSignIn: View {
     @State var region: TokenRegion = .global
     
     var body: some View {
+        
         // unfortunately the "onAppear modifier" is not called "properly"
         // therefore we have this ugly workaround here
         if model.externalTokenRequest != nil {
@@ -20,7 +21,10 @@ struct SetupViewSignIn: View {
                 self.authenticateV3()
             }
         }
+        
         return VStack {
+            
+            
             Text("Choose login region")
             Picker("", selection: $region) {
                 ForEach(TokenRegion.allCases) { region in
@@ -124,9 +128,11 @@ struct SetupViewSignIn: View {
             DispatchQueue.main.async {
                 let codeVerifier = self.verifier(forKey: kTeslaClientID)
                 let codeChallenge = self.challenge(forVerifier: codeVerifier)
+                
                 let internalController = AuthWebViewController()
                 oauthswift.authorizeURLHandler = internalController
                 let state = generateState(withLength: 20)
+                
                 oauthswift.authorize(withCallbackURL: "https://auth.tesla.com/void/callback", scope: "openid email offline_access", state: state, codeChallenge: codeChallenge, codeChallengeMethod: "S256", codeVerifier: codeVerifier) { result in
                     switch result {
                     case .success(let (credential, _, _)):
@@ -136,13 +142,15 @@ struct SetupViewSignIn: View {
                         model.setJwtToken(token)
                         model.acquireTokenSilent(forceRefresh: true) { (token) in
                         }
+                        
                         if let externalTokenRequest = model.externalTokenRequest {
-                            var externalTokenRequestResponseURL: URL
-                            switch externalTokenRequest.appId {
-                            case .AutarkieManager:
-                                externalTokenRequestResponseURL = URL(string: "https://www.otrky.com/tesla-refresh-token-login?refresh_token=\(token.refresh_token)&app_data=\(externalTokenRequest.appData)")!
+                            
+                            let responseURLString = String(format: externalTokenRequest.appDescription.responseURLTemplate,
+                                                     token.refresh_token,
+                                                     externalTokenRequest.appData)
+                            if let responseURL = URL(string: responseURLString) {
+                                UIApplication.shared.open(responseURL)
                             }
-                            UIApplication.shared.open(externalTokenRequestResponseURL)
                         }
                     case .failure(let error):
                         print(error)

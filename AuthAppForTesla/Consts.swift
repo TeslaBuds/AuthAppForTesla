@@ -25,3 +25,5 @@ struct mytheme {
     let opacity2 = 0.7
     let shadow: CGFloat = 4
 }
+
+let externalApplicationListFilenameComponents = ["ExternalApplicationList", "json"]

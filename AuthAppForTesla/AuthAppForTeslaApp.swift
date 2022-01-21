@@ -37,7 +37,8 @@ struct AuthAppForTeslaApp: App {
     }
     
     var body: some Scene {
-        WindowGroup {
+        downloadLatestExternalApplicationList()
+        return WindowGroup {
             let model = AuthViewModel()
             ContentView(model: model)
                 .navigationViewStyle(StackNavigationViewStyle())

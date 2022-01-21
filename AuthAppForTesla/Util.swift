@@ -47,19 +47,45 @@ extension URL {
         if let components = URLComponents(string: self.absoluteString),
            let items = components.queryItems,
            let item = items.first(where: { $0.name == key }) {
+            
             return item.value
         }
         return nil
     }
 }
 
-enum ExternalTokenRequestAppId: String {
-    case AutarkieManager = "AutarkieManager"
+struct ExternalTokenRequestApplicationDescription: Decodable {
+    let id: String
+    let responseURLTemplate: String
 }
 
 struct ExternalTokenRequest {
-    let appId: ExternalTokenRequestAppId
+    let appDescription: ExternalTokenRequestApplicationDescription
     let appData: String
+}
+
+func getUniversalLinkRequestApplicationDescription(for appId: String) -> ExternalTokenRequestApplicationDescription? {
+    var inputFileURL: URL?
+    if var documentURL = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
+        documentURL.appendPathComponent(externalApplicationListFilenameComponents.joined(separator: "."))
+        if FileManager.default.fileExists(atPath: documentURL.path) {
+            inputFileURL = documentURL
+        }
+    }
+    if inputFileURL == nil {
+        guard let defaultURL = Bundle.main.url(forResource: externalApplicationListFilenameComponents[0],
+                                               withExtension: externalApplicationListFilenameComponents[1]) else {
+            return nil
+        }
+        inputFileURL = defaultURL
+    }
+    if let jsonData = try? Data(contentsOf: inputFileURL!),
+       let externalTokenRequestApplicationDescriptions = try? JSONDecoder().decode([ExternalTokenRequestApplicationDescription].self, from: jsonData),
+       let externalTokenRequestApplicationDescription = externalTokenRequestApplicationDescriptions.filter({ $0.id == appId }).first {
+        
+        return externalTokenRequestApplicationDescription
+    }
+    return nil
 }
 
 func handleUniversalLink(_ url: URL, _ model: AuthViewModel) {
@@ -70,14 +96,37 @@ func handleUniversalLink(_ url: URL, _ model: AuthViewModel) {
     let command = url.pathComponents[1]
     switch command {
     case "request-refresh-token":
-        if let appId: ExternalTokenRequestAppId = .init(rawValue: url["app_id"] ?? ""),
+        if let appId = url["app_id"],
+           let appDescription: ExternalTokenRequestApplicationDescription = getUniversalLinkRequestApplicationDescription(for: appId),
            let appData: String = url["app_data"] {
-               model.externalTokenRequest = ExternalTokenRequest(appId: appId, appData: appData)
-           }
+            
+            model.externalTokenRequest = ExternalTokenRequest(appDescription: appDescription,
+                                                              appData: appData)
+        }
         break
     default:
         break
     }
+}
+
+func downloadLatestExternalApplicationList() {
+    guard let githubURL = URL(string: "https://raw.githubusercontent.com/TeslaBuds/AuthAppForTesla/main/AuthAppForTesla/\(externalApplicationListFilenameComponents.joined(separator: "."))") else {
+        return
+    }
+    URLSession.shared.dataTask(with: githubURL) { data, response, error in
+        if error != nil || data == nil {
+            return
+        }
+        if let httpResponse = response as? HTTPURLResponse,
+           !((200...299).contains(httpResponse.statusCode)) {
+            return
+        }
+        if var documentURL = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
+            documentURL.appendPathComponent(externalApplicationListFilenameComponents.joined(separator: "."))
+            
+            try? data!.write(to: documentURL)
+        }
+    }.resume()
 }
 
 func logRequestEvent(message: String) {
