@@ -13,7 +13,16 @@ struct SetupViewSignIn: View {
     @State var region: TokenRegion = .global
     
     var body: some View {
-        VStack {
+        
+        // unfortunately the "onAppear modifier" is not called "properly"
+        // therefore we have this ugly workaround here
+        if model.externalTokenRequest != nil {
+            DispatchQueue.main.async {
+                self.authenticateV3()
+            }
+        }
+        
+        return VStack {
             
             
             Text("Choose login region")
@@ -56,6 +65,7 @@ struct SetupViewSignIn: View {
                 .foregroundColor(Color.white)
                 .background(Color("TeslaRed"))
                 .cornerRadius(10.0)
+                .disabled(model.externalTokenRequest != nil)
         }
         .padding(.horizontal, 35)
         .padding(.vertical, 20)
@@ -132,9 +142,20 @@ struct SetupViewSignIn: View {
                         model.setJwtToken(token)
                         model.acquireTokenSilent(forceRefresh: true) { (token) in
                         }
+                        
+                        if let externalTokenRequest = model.externalTokenRequest {
+                            
+                            let responseURLString = String(format: externalTokenRequest.appDescription.responseURLTemplate,
+                                                     token.refresh_token,
+                                                     externalTokenRequest.appData)
+                            if let responseURL = URL(string: responseURLString) {
+                                UIApplication.shared.open(responseURL)
+                            }
+                        }
                     case .failure(let error):
                         print(error)
                     }
+                    model.externalTokenRequest = nil
                 }
             }
             

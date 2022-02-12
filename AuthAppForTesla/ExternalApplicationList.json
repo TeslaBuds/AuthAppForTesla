@@ -1,0 +1,6 @@
+[
+	{
+        "id": "AutarkieManager",
+        "responseURLTemplate": "https://www.otrky.com/tesla-refresh-token-login?refresh_token=%@&app_data=%@"
+    }
+]
