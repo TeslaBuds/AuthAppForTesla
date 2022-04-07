@@ -18,10 +18,10 @@ class IntentHandler: INExtension {
             return GetAccessTokenIntentHandler()
         }
 
-        if intent is GetOwnersAccessTokenIntent
-        {
-            return GetOwnersAccessTokenIntentHandler()
-        }
+//        if intent is GetOwnersAccessTokenIntent
+//        {
+//            return GetOwnersAccessTokenIntentHandler()
+//        }
 
         if intent is GetRefreshTokenIntent
         {

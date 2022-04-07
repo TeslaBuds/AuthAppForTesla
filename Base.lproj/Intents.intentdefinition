@@ -9,11 +9,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>ECUTRo</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>21A559</string>
+	<string>21E258</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>13A1030d</string>
+	<string>13E113</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>13.1</string>
+	<string>13.3</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -322,115 +322,6 @@
 			<string>Refresh Tokens</string>
 			<key>INIntentTitleID</key>
 			<string>bUx2Rq</string>
-			<key>INIntentType</key>
-			<string>Custom</string>
-			<key>INIntentVerb</key>
-			<string>Do</string>
-		</dict>
-		<dict>
-			<key>INIntentCategory</key>
-			<string>generic</string>
-			<key>INIntentConfigurable</key>
-			<true/>
-			<key>INIntentDescription</key>
-			<string>Returns the legacy v2 access token</string>
-			<key>INIntentDescriptionID</key>
-			<string>6dE1mo</string>
-			<key>INIntentManagedParameterCombinations</key>
-			<dict>
-				<key></key>
-				<dict>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Get Owners Token</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>0rEK6U</string>
-					<key>INIntentParameterCombinationUpdatesLinked</key>
-					<true/>
-				</dict>
-			</dict>
-			<key>INIntentName</key>
-			<string>GetOwnersAccessToken</string>
-			<key>INIntentParameterCombinations</key>
-			<dict>
-				<key></key>
-				<dict>
-					<key>INIntentParameterCombinationIsPrimary</key>
-					<true/>
-					<key>INIntentParameterCombinationSubtitle</key>
-					<string>Returns the legacy v2 access token</string>
-					<key>INIntentParameterCombinationSubtitleID</key>
-					<string>AehGKH</string>
-					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
-					<key>INIntentParameterCombinationTitle</key>
-					<string>Get Owners Token</string>
-					<key>INIntentParameterCombinationTitleID</key>
-					<string>QRHEAg</string>
-				</dict>
-			</dict>
-			<key>INIntentResponse</key>
-			<dict>
-				<key>INIntentResponseCodes</key>
-				<array>
-					<dict>
-						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>${token}</string>
-						<key>INIntentResponseCodeConciseFormatStringID</key>
-						<string>jsblsN</string>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Got access token</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>jjRBMy</string>
-						<key>INIntentResponseCodeName</key>
-						<string>success</string>
-						<key>INIntentResponseCodeSuccess</key>
-						<true/>
-					</dict>
-					<dict>
-						<key>INIntentResponseCodeConciseFormatString</key>
-						<string>Could not get access token</string>
-						<key>INIntentResponseCodeConciseFormatStringID</key>
-						<string>DprwnJ</string>
-						<key>INIntentResponseCodeFormatString</key>
-						<string>Could not get access token</string>
-						<key>INIntentResponseCodeFormatStringID</key>
-						<string>K6g5OU</string>
-						<key>INIntentResponseCodeName</key>
-						<string>failure</string>
-					</dict>
-				</array>
-				<key>INIntentResponseLastParameterTag</key>
-				<integer>2</integer>
-				<key>INIntentResponseOutput</key>
-				<string>token</string>
-				<key>INIntentResponseParameters</key>
-				<array>
-					<dict>
-						<key>INIntentResponseParameterDisplayName</key>
-						<string>Token</string>
-						<key>INIntentResponseParameterDisplayNameID</key>
-						<string>PPSr4Y</string>
-						<key>INIntentResponseParameterDisplayPriority</key>
-						<integer>1</integer>
-						<key>INIntentResponseParameterName</key>
-						<string>token</string>
-						<key>INIntentResponseParameterObjectType</key>
-						<string>TokenResponse</string>
-						<key>INIntentResponseParameterObjectTypeNamespace</key>
-						<string>ECUTRo</string>
-						<key>INIntentResponseParameterTag</key>
-						<integer>2</integer>
-						<key>INIntentResponseParameterType</key>
-						<string>Object</string>
-					</dict>
-				</array>
-			</dict>
-			<key>INIntentTitle</key>
-			<string>Get Owners Token</string>
-			<key>INIntentTitleID</key>
-			<string>o9T1QJ</string>
 			<key>INIntentType</key>
 			<string>Custom</string>
 			<key>INIntentVerb</key>

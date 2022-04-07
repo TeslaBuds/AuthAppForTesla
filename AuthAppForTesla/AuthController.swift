@@ -48,16 +48,16 @@ class AuthController {
     }
 
     
-    func getV2Token() -> Data? {
-        if let tokenJson = KeychainWrapper.global.data(forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
-        {
-            if (try? JSONDecoder().decode(Token.self, from: tokenJson)) != nil
-            {
-                return tokenJson
-            }
-        }
-        return nil
-    }
+//    func getV2Token() -> Data? {
+//        if let tokenJson = KeychainWrapper.global.data(forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
+//        {
+//            if (try? JSONDecoder().decode(Token.self, from: tokenJson)) != nil
+//            {
+//                return tokenJson
+//            }
+//        }
+//        return nil
+//    }
 
     func getV3Token() -> Data? {
         if let tokenJson = KeychainWrapper.global.data(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
@@ -224,163 +224,163 @@ class AuthController {
         }
     }
 
-    fileprivate func refreshClassicTokenWithJWTToken(_ accessToken: String, _ region: TokenRegion, retries: Int = 0, _ completion: @escaping (Token?) -> ()) {
-        self.networking.headerFields = ["User-Agent": "TeslaWatch"]
-        self.networking.headerFields = ["X-Tesla-User-Agent": "TeslaWatch"]
-        self.networking.setAuthorizationHeader(token: accessToken)
-        self.networking.post("/oauth/token", parameterType: .formURLEncoded, parameters:
-            [   "grant_type" : "urn:ietf:params:oauth:grant-type:jwt-bearer",
-                "client_id" : kTeslaClientID,
-                "client_secret" : kTeslaSecret]
-        ) { result in
-            switch result {
-            case .success(let result):
-                let expiresIn = result.dictionaryBody["expires_in"] as! Int
-                let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
-                var token = try? JSONDecoder().decode(Token.self, from: result.data)
-                token?.expires_at = expiresAt
-                token?.region = region
-                if let encodedToken = try? JSONEncoder().encode(token) {
-                    KeychainWrapper.global.set(encodedToken, forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
-//                    self.tokenV2 = token
-                }
-                else
-                {
-                    logRequestEvent(message: "Unable to encode token! Data: \(String(decoding: result.data, as: UTF8.self))")
-                }
-                logRequestEvent(message: "Refresh token V4 success: \(token == nil ? "Token received but was invalid" : "True")")
-                completion(token)
-                return
-            case .failure(let error):
-                // print("Error refreshing token: \(error)")
-                if let stringData = String(data: error.data, encoding: .utf8) {
-                    logRequestEvent(message: "Error response body: \(stringData)")
-                }
+//    fileprivate func refreshClassicTokenWithJWTToken(_ accessToken: String, _ region: TokenRegion, retries: Int = 0, _ completion: @escaping (Token?) -> ()) {
+//        self.networking.headerFields = ["User-Agent": "TeslaWatch"]
+//        self.networking.headerFields = ["X-Tesla-User-Agent": "TeslaWatch"]
+//        self.networking.setAuthorizationHeader(token: accessToken)
+//        self.networking.post("/oauth/token", parameterType: .formURLEncoded, parameters:
+//            [   "grant_type" : "urn:ietf:params:oauth:grant-type:jwt-bearer",
+//                "client_id" : kTeslaClientID,
+//                "client_secret" : kTeslaSecret]
+//        ) { result in
+//            switch result {
+//            case .success(let result):
+//                let expiresIn = result.dictionaryBody["expires_in"] as! Int
+//                let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
+//                var token = try? JSONDecoder().decode(Token.self, from: result.data)
+//                token?.expires_at = expiresAt
+//                token?.region = region
+//                if let encodedToken = try? JSONEncoder().encode(token) {
+//                    KeychainWrapper.global.set(encodedToken, forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
+////                    self.tokenV2 = token
+//                }
+//                else
+//                {
+//                    logRequestEvent(message: "Unable to encode token! Data: \(String(decoding: result.data, as: UTF8.self))")
+//                }
+//                logRequestEvent(message: "Refresh token V4 success: \(token == nil ? "Token received but was invalid" : "True")")
+//                completion(token)
+//                return
+//            case .failure(let error):
+//                // print("Error refreshing token: \(error)")
+//                if let stringData = String(data: error.data, encoding: .utf8) {
+//                    logRequestEvent(message: "Error response body: \(stringData)")
+//                }
+//
+//                if error.statusCode == 400
+//                {
+//                    if retries < 3
+//                    {
+//                        logRequestEvent(message: "Refresh token v4 failure 400: retrying \(retries + 1)")
+//                        self.refreshClassicTokenWithJWTToken(accessToken, region, retries: retries + 1, completion)
+//                        return
+//                    }
+//                    logRequestEvent(message: "Refresh token v4 failure 400: giving up")
+//                    logRequestEvent(message: "Refresh token V4 error 400, removing token")
+//                    KeychainWrapper.global.removeObject(forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
+////                    self.tokenV2 = nil
+//                }
+//                else if error.statusCode == 401
+//                {
+//                    if retries < 3
+//                    {
+//                        logRequestEvent(message: "Refresh token v4 failure 401: retrying \(retries + 1)")
+//                        self.refreshClassicTokenWithJWTToken(accessToken, region, retries: retries + 1, completion)
+//                        return
+//                    }
+//                    logRequestEvent(message: "Refresh token v4 failure 401: giving up")
+//                    logRequestEvent(message: "Refresh token V4 error 401, removing token")
+//                    KeychainWrapper.global.removeObject(forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
+////                    self.tokenV2 = nil
+//                }
+//                else if error.statusCode == 848
+//                {
+//                    //Mystical SSL error
+//                    logRequestEvent(message: "Refresh token v4 failure: SSL 848")
+//                    if retries < 3
+//                    {
+//                        logRequestEvent(message: "Refresh token v4 failure: retrying \(retries + 1)")
+//                        self.refreshClassicTokenWithJWTToken(accessToken, region, retries: retries + 1, completion)
+//                        return
+//                    }
+//                    logRequestEvent(message: "Refresh token v4 failure: giving up")
+//                    
+//                }
+//                else
+//                {
+//                    //19 - network connection was lost
+//                    //23 - request timed out
+//
+//                    logRequestEvent(message: "Refresh token V4 error: \(error.headers["Www-Authenticate"] as? String ?? error.statusCode.description)")
+//                    if retries < 3
+//                    {
+//                        logRequestEvent(message: "Refresh token v4 failure \(error.statusCode.description): retrying \(retries + 1)")
+//                        self.refreshClassicTokenWithJWTToken(accessToken, region, retries: retries + 1, completion)
+//                        return
+//                    }
+//                    logRequestEvent(message: "Refresh token v4 failure: giving up")
+//                    logRequestEvent(message: "Refresh token v4 failure: \(error.error.debugDescription)")
+//                }
+//                completion(nil)
+//            }
+//        }
+//    }
 
-                if error.statusCode == 400
-                {
-                    if retries < 3
-                    {
-                        logRequestEvent(message: "Refresh token v4 failure 400: retrying \(retries + 1)")
-                        self.refreshClassicTokenWithJWTToken(accessToken, region, retries: retries + 1, completion)
-                        return
-                    }
-                    logRequestEvent(message: "Refresh token v4 failure 400: giving up")
-                    logRequestEvent(message: "Refresh token V4 error 400, removing token")
-                    KeychainWrapper.global.removeObject(forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
-//                    self.tokenV2 = nil
-                }
-                else if error.statusCode == 401
-                {
-                    if retries < 3
-                    {
-                        logRequestEvent(message: "Refresh token v4 failure 401: retrying \(retries + 1)")
-                        self.refreshClassicTokenWithJWTToken(accessToken, region, retries: retries + 1, completion)
-                        return
-                    }
-                    logRequestEvent(message: "Refresh token v4 failure 401: giving up")
-                    logRequestEvent(message: "Refresh token V4 error 401, removing token")
-                    KeychainWrapper.global.removeObject(forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
-//                    self.tokenV2 = nil
-                }
-                else if error.statusCode == 848
-                {
-                    //Mystical SSL error
-                    logRequestEvent(message: "Refresh token v4 failure: SSL 848")
-                    if retries < 3
-                    {
-                        logRequestEvent(message: "Refresh token v4 failure: retrying \(retries + 1)")
-                        self.refreshClassicTokenWithJWTToken(accessToken, region, retries: retries + 1, completion)
-                        return
-                    }
-                    logRequestEvent(message: "Refresh token v4 failure: giving up")
-                    
-                }
-                else
-                {
-                    //19 - network connection was lost
-                    //23 - request timed out
-
-                    logRequestEvent(message: "Refresh token V4 error: \(error.headers["Www-Authenticate"] as? String ?? error.statusCode.description)")
-                    if retries < 3
-                    {
-                        logRequestEvent(message: "Refresh token v4 failure \(error.statusCode.description): retrying \(retries + 1)")
-                        self.refreshClassicTokenWithJWTToken(accessToken, region, retries: retries + 1, completion)
-                        return
-                    }
-                    logRequestEvent(message: "Refresh token v4 failure: giving up")
-                    logRequestEvent(message: "Refresh token v4 failure: \(error.error.debugDescription)")
-                }
-                completion(nil)
-            }
-        }
-    }
-
-    func acquireTokenSilent(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
-        var token: Token?
-        if let tokenJson = KeychainWrapper.global.data(forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
-        {
-            token = try? JSONDecoder().decode(Token.self, from: tokenJson)
-        }
-        
-        if let token = token
-        {
-            //If token is v2 and is expired, get valid v3 (refresh if needed) then get new v2
-            //If token is v2 and close to expiry or token is legacy v3 stored in wrong key and is close to expiry, we need to refresh
-            if (forceRefresh || (!token.refresh_token.starts(with: "ey") && token.expires_at ?? Date() <= Date().addingTimeInterval(60*60*24*7)) || (token.refresh_token.starts(with: "ey") && token.expires_at ?? Date() <= Date().addingTimeInterval(60))) //Token expired - 7 days before expiry, refresh the token
-            {
-                //So to simplify - literally remove v2 token key, retry this method which will fall down to v3 and either work or fail
-                logRequestEvent(message: "Removing expired v2 token")
-                KeychainWrapper.global.removeObject(forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
-//                self.tokenV2 = nil
-                logRequestEvent(message: "V2 token expired, retrying v3")
-                self.acquireTokenSilent(completion)
-                return
-            }
-            //Return validated token
-            //print(token)
-//            self.tokenV2 = token
-            completion(token)
-            return
-        }
-        else if let tokenv3 = getV3Token(), let _ = try? JSONDecoder().decode(Token.self, from: tokenv3)
-        {
-            acquireTokenV3Silent { (v3Token) in
-                if let v3Token = v3Token
-                {
-                    self.refreshClassicTokenWithJWTToken(v3Token.access_token, token?.region ?? .global) { (refreshedToken) in
-                        if let refreshedToken = refreshedToken, let _ = try? JSONEncoder().encode(refreshedToken)
-                        {
-                            //no-op
-                        }
-                        else
-                        {
-                            //self.logOut()
-                            logRequestEvent(message: "Acquire token silent error: Unable to refresh token using refreshClassicTokenWithJWTToken")
-//                            self.tokenV2 = nil
-                            completion(nil)
-                            return
-                        }
-//                        self.tokenV2 = refreshedToken
-                        completion(refreshedToken)
-                        return
-                    }
-                }
-                else
-                {
-                    logRequestEvent(message: "Acquire token silent error: Unable to acquire v3 token")
-//                    self.tokenV2 = nil
-                    completion(nil)
-                    return
-                }
-            }
-            //IMPORTANT!!! Need to return here, to not fall-through to below! Above method will ensure completion is eventually called!
-            return
-        }
-        logRequestEvent(message: "Acquire token silent error: Token not found")
-//        self.logOut()
-//        self.tokenV2 = nil
-        completion(nil)
-    }
+//    func acquireTokenSilent(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
+//        var token: Token?
+//        if let tokenJson = KeychainWrapper.global.data(forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
+//        {
+//            token = try? JSONDecoder().decode(Token.self, from: tokenJson)
+//        }
+//        
+//        if let token = token
+//        {
+//            //If token is v2 and is expired, get valid v3 (refresh if needed) then get new v2
+//            //If token is v2 and close to expiry or token is legacy v3 stored in wrong key and is close to expiry, we need to refresh
+//            if (forceRefresh || (!token.refresh_token.starts(with: "ey") && token.expires_at ?? Date() <= Date().addingTimeInterval(60*60*24*7)) || (token.refresh_token.starts(with: "ey") && token.expires_at ?? Date() <= Date().addingTimeInterval(60))) //Token expired - 7 days before expiry, refresh the token
+//            {
+//                //So to simplify - literally remove v2 token key, retry this method which will fall down to v3 and either work or fail
+//                logRequestEvent(message: "Removing expired v2 token")
+//                KeychainWrapper.global.removeObject(forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
+////                self.tokenV2 = nil
+//                logRequestEvent(message: "V2 token expired, retrying v3")
+//                self.acquireTokenSilent(completion)
+//                return
+//            }
+//            //Return validated token
+//            //print(token)
+////            self.tokenV2 = token
+//            completion(token)
+//            return
+//        }
+//        else if let tokenv3 = getV3Token(), let _ = try? JSONDecoder().decode(Token.self, from: tokenv3)
+//        {
+//            acquireTokenV3Silent { (v3Token) in
+//                if let v3Token = v3Token
+//                {
+//                    self.refreshClassicTokenWithJWTToken(v3Token.access_token, token?.region ?? .global) { (refreshedToken) in
+//                        if let refreshedToken = refreshedToken, let _ = try? JSONEncoder().encode(refreshedToken)
+//                        {
+//                            //no-op
+//                        }
+//                        else
+//                        {
+//                            //self.logOut()
+//                            logRequestEvent(message: "Acquire token silent error: Unable to refresh token using refreshClassicTokenWithJWTToken")
+////                            self.tokenV2 = nil
+//                            completion(nil)
+//                            return
+//                        }
+////                        self.tokenV2 = refreshedToken
+//                        completion(refreshedToken)
+//                        return
+//                    }
+//                }
+//                else
+//                {
+//                    logRequestEvent(message: "Acquire token silent error: Unable to acquire v3 token")
+////                    self.tokenV2 = nil
+//                    completion(nil)
+//                    return
+//                }
+//            }
+//            //IMPORTANT!!! Need to return here, to not fall-through to below! Above method will ensure completion is eventually called!
+//            return
+//        }
+//        logRequestEvent(message: "Acquire token silent error: Token not found")
+////        self.logOut()
+////        self.tokenV2 = nil
+//        completion(nil)
+//    }
     
 }

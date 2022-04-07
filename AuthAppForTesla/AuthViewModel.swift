@@ -10,15 +10,15 @@ import Intents
 
 class AuthViewModel: ObservableObject {
     @Published var tokenV3: Token?
-    @Published var tokenV2: Token?
+//    @Published var tokenV2: Token?
     @Published var externalTokenRequest: ExternalTokenRequest?
     
     init() {
         AuthController.shared().acquireTokenV3Silent { (token) in
             self.tokenV3 = token
-            AuthController.shared().acquireTokenSilent { (token) in
-                self.tokenV2 = token
-            }
+//            AuthController.shared().acquireTokenSilent { (token) in
+//                self.tokenV2 = token
+//            }
         }
     }
     
@@ -26,15 +26,15 @@ class AuthViewModel: ObservableObject {
     {
         AuthController.shared().acquireTokenV3Silent(forceRefresh: true) { (token) in
             self.tokenV3 = token
-            AuthController.shared().acquireTokenSilent(forceRefresh: true) { (token) in
-                self.tokenV2 = token
-            }
+//            AuthController.shared().acquireTokenSilent(forceRefresh: true) { (token) in
+//                self.tokenV2 = token
+//            }
         }
     }
 
     public func logOut()
     {
-        self.tokenV2 = nil
+//        self.tokenV2 = nil
         self.tokenV3 = nil
         AuthController.shared().logOut()
     }
@@ -46,16 +46,8 @@ class AuthViewModel: ObservableObject {
     }
     
     func acquireTokenSilent(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
-        AuthController.shared().acquireTokenSilent { (token) in
-            self.tokenV2 = token
-            if let tokenv3 = AuthController.shared().getV3Token(), let v3token = try? JSONDecoder().decode(Token.self, from: tokenv3)
-            {
-                self.tokenV3 = v3token
-            }
-            else
-            {
-                self.tokenV3 = nil
-            }
+        AuthController.shared().acquireTokenV3Silent(forceRefresh: forceRefresh) { token in
+            self.tokenV3 = token
             completion(token)
         }
     }
@@ -96,22 +88,22 @@ class AuthViewModel: ObservableObject {
         }
     }
     
-    func donateOwnersAccessTokenInteraction() {
-        let intent = GetOwnersAccessTokenIntent()
-        
-        intent.suggestedInvocationPhrase = "Get owners access token"
-        
-        let interaction = INInteraction(intent: intent, response: nil)
-        
-        interaction.donate { (error) in
-            if error != nil {
-                if let error = error as NSError? {
-                    print("Interaction donation failed: \(error.description)")
-                } else {
-                    print("Successfully donated interaction")
-                }
-            }
-        }
-    }
+//    func donateOwnersAccessTokenInteraction() {
+//        let intent = GetOwnersAccessTokenIntent()
+//        
+//        intent.suggestedInvocationPhrase = "Get owners access token"
+//        
+//        let interaction = INInteraction(intent: intent, response: nil)
+//        
+//        interaction.donate { (error) in
+//            if error != nil {
+//                if let error = error as NSError? {
+//                    print("Interaction donation failed: \(error.description)")
+//                } else {
+//                    print("Successfully donated interaction")
+//                }
+//            }
+//        }
+//    }
 
 }

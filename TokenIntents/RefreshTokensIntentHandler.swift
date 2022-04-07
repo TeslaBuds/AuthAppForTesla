@@ -26,7 +26,7 @@ class RefreshTokensIntentHandler: NSObject, RefreshTokensIntentHandling {
     }
     
     func handle(intent: RefreshTokensIntent, completion: @escaping (RefreshTokensIntentResponse) -> Void) {
-        AuthController.shared().acquireTokenSilent(forceRefresh: true) { (token) in
+        AuthController.shared().acquireTokenV3Silent(forceRefresh: true) { (token) in
             if let token = token
             {
                 let response = RefreshTokensIntentResponse(code: .success, userActivity: nil)
