@@ -7,6 +7,7 @@
 
 import SwiftUI
 import OAuthSwift
+import CryptoKit
 
 struct SetupViewSignIn: View {
     @ObservedObject var model: AuthViewModel
@@ -87,23 +88,32 @@ struct SetupViewSignIn: View {
         responseType: "code"
     )
     
-    private func verifier(forKey key: String) -> String {
-        let verifier = key.data(using: .utf8)!.base64EncodedString()
+    private func verifier() -> String {
+        let verifier = "\(Date().toISO())\(Date().toISO())\(Date().toISO())".data(using: .utf8)!.base64EncodedString()
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "=", with: "")
             .trimmingCharacters(in: .whitespaces)
-        return verifier
+            .prefix(43)
+        return String(verifier)
+
+//        let verifier = key.data(using: .utf8)!.base64EncodedString()
+//            .replacingOccurrences(of: "+", with: "-")
+//            .replacingOccurrences(of: "/", with: "_")
+//            .replacingOccurrences(of: "=", with: "")
+//            .trimmingCharacters(in: .whitespaces)
+//        return verifier
     }
     
     private func challenge(forVerifier verifier: String) -> String {
-        let hash = verifier.sha256
-        let challenge = hash.base64EncodedString()
+        let data = Data(verifier.utf8)
+        let hash = SHA256.hash(data: data)
+        let base64 = Data(hash).base64EncodedString()
+        let urlSafe = base64
             .replacingOccurrences(of: "+", with: "-")
             .replacingOccurrences(of: "/", with: "_")
             .replacingOccurrences(of: "=", with: "")
-            .trimmingCharacters(in: .whitespaces)
-        return challenge
+        return urlSafe
     }
     
     
@@ -126,7 +136,7 @@ struct SetupViewSignIn: View {
             oauthswift.accessTokenUrl = url
             
             DispatchQueue.main.async {
-                let codeVerifier = self.verifier(forKey: kTeslaClientID)
+                let codeVerifier = self.verifier()
                 let codeChallenge = self.challenge(forVerifier: codeVerifier)
                 
                 let internalController = AuthWebViewController()
