@@ -60,7 +60,8 @@ extension AuthController {
                 if let queryItems = urlComponents?.queryItems {
                     for queryItem in queryItems {
                         if queryItem.name == "code", let code = queryItem.value {
-                            self.oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri) { (token) in
+                            Task {
+                                let token = await self.oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri)
                                 if let token = token {
                                     completion(.success(token))
                                 } else {
@@ -83,138 +84,115 @@ extension AuthController {
 #endif
     
     fileprivate func oauthCodeV4(_ code: String, _ region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String, retries: Int = 0) async -> Token? {
-        return await withCheckedContinuation { continuation in
-            oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries) { result in
-                continuation.resume(returning: result)
-            }
-        }
-    }
-    
-    fileprivate func oauthCodeV4(_ code: String, _ region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String, retries: Int = 0, _ completion: @escaping (Token?) -> Void) {
         let url = getAuthByRegion(region: region)
                 
         let audience = "https://fleet-api.prd.\(String(code.prefix(2)).lowercased()).vn.cloud.tesla.\(region == .global ? "com" : "cn")"
         
-        NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
-                                        [   "grant_type": "authorization_code",
-                                            "client_id": fleetClientId,
-                                            "client_secret": fleetSecret,
-                                            "code": code,
-                                            "audience": audience,
-                                            "redirect_uri": fleetRedirectUri]
-        ) { result in
-            switch result {
-            case .success(let result):
-                //                print(String(decoding: result.data, as: UTF8.self))
-                var token: Token?
-                if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
-                   let access_token = result.dictionaryBody["access_token"] as? String,
-                   let token_type = result.dictionaryBody["token_type"] as? String,
-                   let refresh_token = result.dictionaryBody["refresh_token"] as? String {
-                    let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
-                    
-                    token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
-                    if let encodedToken = try? JSONEncoder().encode(token) {
-                        KeychainWrapper.global.set(encodedToken, forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-                    }
+        let result = await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
+                                                            [   "grant_type": "authorization_code",
+                                                                "client_id": fleetClientId,
+                                                                "client_secret": fleetSecret,
+                                                                "code": code,
+                                                                "audience": audience,
+                                                                "redirect_uri": fleetRedirectUri])
+        
+        switch result {
+        case .success(let result):
+            //                print(String(decoding: result.data, as: UTF8.self))
+            var token: Token?
+            if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
+               let access_token = result.dictionaryBody["access_token"] as? String,
+               let token_type = result.dictionaryBody["token_type"] as? String,
+               let refresh_token = result.dictionaryBody["refresh_token"] as? String {
+                let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
+                
+                token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
+                if let encodedToken = try? JSONEncoder().encode(token) {
+                    KeychainWrapper.global.set(encodedToken, forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
                 }
-                completion(token)
-                return
-            case .failure(let error):
-                if error.statusCode == 400 {
-                    if retries < 3 {
-                        self.oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1, completion)
-                        return
-                    }
-                    KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-                } else if error.statusCode == 401 {
-                    if retries < 3 {
-                        self.oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1, completion)
-                        return
-                    }
-                    KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-                } else if error.statusCode == 848 {
-                    // Mystical SSL error
-                    if retries < 3 {
-                        self.oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1, completion)
-                        return
-                    }
-                } else {
-                    // 19 - network connection was lost
-                    // 23 - request timed out
-                    
-                    if retries < 3 {
-                        self.oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1, completion)
-                        return
-                    }
-                }
-                completion(nil)
             }
+            return token
+        case .failure(let error):
+            if error.statusCode == 400 {
+                if retries < 3 {
+                    return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1)
+                }
+                KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+            } else if error.statusCode == 401 {
+                if retries < 3 {
+                    return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1)
+                }
+                KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+            } else if error.statusCode == 848 {
+                // Mystical SSL error
+                if retries < 3 {
+                    return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1)
+                }
+            } else {
+                // 19 - network connection was lost
+                // 23 - request timed out
+                
+                if retries < 3 {
+                    return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1)
+                }
+            }
+            return nil
         }
     }
     
-    fileprivate func oauthRenewV4(_ refreshToken: String, _ region: TokenRegion, fleetClientId: String, retries: Int = 0, _ completion: @escaping (Token?) -> Void) {
+    fileprivate func oauthRenewV4(_ refreshToken: String, _ region: TokenRegion, fleetClientId: String, retries: Int = 0) async -> Token? {
         let url = getAuthByRegion(region: region)
         
-        NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
-                                        [   "grant_type": "refresh_token",
-                                            "client_id": fleetClientId,
-                                            "refresh_token": "\(refreshToken)"]
-        ) { result in
-            switch result {
-            case .success(let result):
-                if let error = result.dictionaryBody["error"] as? String, error.count > 0 {
-                    if error == "login_required" {
-                        self.logOut(environment: .fleet)
-                        completion(nil)
-                        return
-                    }
+        let result = await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
+                                                    [   "grant_type": "refresh_token",
+                                                        "client_id": fleetClientId,
+                                                        "refresh_token": "\(refreshToken)"])
+        switch result {
+        case .success(let result):
+            if let error = result.dictionaryBody["error"] as? String, error.count > 0 {
+                if error == "login_required" {
+                    self.logOut(environment: .fleet)
+                    return nil
                 }
-                
-                var token: Token?
-                if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
-                   let access_token = result.dictionaryBody["access_token"] as? String,
-                   let token_type = result.dictionaryBody["token_type"] as? String,
-                   let refresh_token = result.dictionaryBody["refresh_token"] as? String {
-                    let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
-                    
-                    token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
-                    if let encodedToken = try? JSONEncoder().encode(token) {
-                        KeychainWrapper.global.set(encodedToken, forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-                    }
-                }
-                completion(token)
-                return
-            case .failure(let error):
-                if error.statusCode == 400 {
-                    if retries < 3 {
-                        self.oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1, completion)
-                        return
-                    }
-                    KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-                } else if error.statusCode == 401 {
-                    if retries < 3 {
-                        self.oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1, completion)
-                        return
-                    }
-                    KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-                } else if error.statusCode == 848 {
-                    // Mystical SSL error
-                    if retries < 3 {
-                        self.oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1, completion)
-                        return
-                    }
-                } else {
-                    // 19 - network connection was lost
-                    // 23 - request timed out
-                    
-                    if retries < 3 {
-                        self.oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1, completion)
-                        return
-                    }
-                }
-                completion(nil)
             }
+            
+            var token: Token?
+            if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
+               let access_token = result.dictionaryBody["access_token"] as? String,
+               let token_type = result.dictionaryBody["token_type"] as? String,
+               let refresh_token = result.dictionaryBody["refresh_token"] as? String {
+                let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
+                
+                token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
+                if let encodedToken = try? JSONEncoder().encode(token) {
+                    KeychainWrapper.global.set(encodedToken, forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+                }
+            }
+            return token
+        case .failure(let error):
+            if error.statusCode == 400 {
+                if retries < 3 {
+                    return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1)
+                }
+                KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+            } else if error.statusCode == 401 {
+                if retries < 3 {
+                    return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1)
+                }
+                KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+            } else if error.statusCode == 848 {
+                // Mystical SSL error
+                if retries < 3 {
+                    return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1)
+                }
+            } else {
+                // 19 - network connection was lost
+                // 23 - request timed out
+                if retries < 3 {
+                    return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1)
+                }
+            }
+            return nil
         }
     }
 
@@ -237,30 +215,19 @@ extension AuthController {
     }
 
     func acquireTokenV4Silent(forceRefresh: Bool = false) async -> Token? {
-        return await withCheckedContinuation { continuation in
-            acquireTokenV4Silent(forceRefresh: forceRefresh) { token in
-                continuation.resume(returning: token)
-            }
-        }
-    }
-    
-    func acquireTokenV4Silent(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> Void) {
         if let token = v4Token {
             if (forceRefresh || token.expires_at ?? Date() <= Date().addingTimeInterval(60)) {
-                oauthRenewV4(token.refresh_token, token.region ?? .global, fleetClientId: fleetClientId) { (refreshedToken) in
-                    if let refreshedToken = refreshedToken, let encodedToken = try? JSONEncoder().encode(refreshedToken) {
-                        KeychainWrapper.global.set(encodedToken, forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-                    } else {
-                        completion(nil)
-                        return
-                    }
-                    completion(refreshedToken)
+                
+                let refreshedToken = await oauthRenewV4(token.refresh_token, token.region ?? .global, fleetClientId: fleetClientId)
+                if let refreshedToken, let encodedToken = try? JSONEncoder().encode(refreshedToken) {
+                    KeychainWrapper.global.set(encodedToken, forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+                } else {
+                    return nil
                 }
-                return
+                return refreshedToken
             }
-            completion(token)
-            return
+            return token
         }
-        completion(nil)
+        return nil
     }
 }

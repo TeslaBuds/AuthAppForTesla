@@ -182,7 +182,8 @@ class AuthController {
                 if let queryItems = urlComponents?.queryItems {
                     for queryItem in queryItems {
                         if queryItem.name == "code", let code = queryItem.value {
-                            self.oauthCode(code, codeRequest.codeVerifier, region) { token in
+                            Task {
+                                let token = await self.oauthCodeV3(code, codeRequest.codeVerifier, region)
                                 if let token {
                                     completion(.success(token))
                                 } else {
@@ -202,63 +203,57 @@ class AuthController {
         return teslaWebLoginViewController
     }
     
-    fileprivate func oauthCode(_ code: String, _ codeVerifier: String, _ region: TokenRegion, retries: Int = 0, _ completion: @escaping (Token?) -> Void) {
+    fileprivate func oauthCodeV3(_ code: String, _ codeVerifier: String, _ region: TokenRegion, retries: Int = 0) async -> Token? {
         let url = getAuthByRegion(region: region)
         
-        NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
+        let result = await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
                                         ["grant_type": "authorization_code",
                                          "client_id": "ownerapi",
                                          "client_secret": kTeslaSecret,
                                          "code": code,
                                          "redirect_uri": "tesla://auth/callback",
                                          "code_verifier": codeVerifier,
-                                         "scope": "openid email offline_access phone"]) { result in
-            switch result {
-            case let .success(result):
-                var token: Token?
-                if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
-                   let access_token = result.dictionaryBody["access_token"] as? String,
-                   let token_type = result.dictionaryBody["token_type"] as? String,
-                   let refresh_token = result.dictionaryBody["refresh_token"] as? String {
-                    let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
-                    
-                    token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
-                    if let encodedToken = try? JSONEncoder().encode(token) {
-                        KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-                    }
+                                         "scope": "openid email offline_access phone"])
+        switch result {
+        case let .success(result):
+            var token: Token?
+            if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
+               let access_token = result.dictionaryBody["access_token"] as? String,
+               let token_type = result.dictionaryBody["token_type"] as? String,
+               let refresh_token = result.dictionaryBody["refresh_token"] as? String {
+                let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
+                
+                token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
+                if let encodedToken = try? JSONEncoder().encode(token) {
+                    KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
                 }
-                completion(token)
-                return
-            case .failure(let error):
-                if error.statusCode == 400 {
-                    if retries < 3 {
-                        self.oauthCode(code, codeVerifier, region, retries: retries + 1, completion)
-                        return
-                    }
-                    KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-                } else if error.statusCode == 401 {
-                    if retries < 3 {
-                        self.oauthCode(code, codeVerifier, region, retries: retries + 1, completion)
-                        return
-                    }
-                    KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-                } else if error.statusCode == 848 {
-                    // Mystical SSL error
-                    if retries < 3 {
-                        self.oauthCode(code, codeVerifier, region, retries: retries + 1, completion)
-                        return
-                    }
-                } else {
-                    // 19 - network connection was lost
-                    // 23 - request timed out
-                    if retries < 3 {
-                        self.oauthCode(code, codeVerifier, region, retries: retries + 1, completion)
-                        return
-                    }
-                    
-                }
-                completion(nil)
             }
+            return token
+        case .failure(let error):
+            if error.statusCode == 400 {
+                if retries < 3 {
+                    return await oauthCodeV3(code, codeVerifier, region, retries: retries + 1)
+                }
+                KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+            } else if error.statusCode == 401 {
+                if retries < 3 {
+                    return await oauthCodeV3(code, codeVerifier, region, retries: retries + 1)
+                }
+                KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+            } else if error.statusCode == 848 {
+                // Mystical SSL error
+                if retries < 3 {
+                    return await oauthCodeV3(code, codeVerifier, region, retries: retries + 1)
+                }
+            } else {
+                // 19 - network connection was lost
+                // 23 - request timed out
+                if retries < 3 {
+                    return await oauthCodeV3(code, codeVerifier, region, retries: retries + 1)
+                }
+                
+            }
+            return nil
         }
     }
     
