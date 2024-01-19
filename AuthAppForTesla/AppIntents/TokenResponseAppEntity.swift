@@ -10,10 +10,10 @@ import AppIntents
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
 struct TokenResponseAppEntity: TransientAppEntity {
-    static var typeDisplayRepresentation = TypeDisplayRepresentation(name: "Token")
+    static var typeDisplayRepresentation = TypeDisplayRepresentation(name: "Tesla Token")
 
     @Property(title: "Token")
-    var token: String?
+    var token: String
 
     @Property(title: "Expires At")
     var expiresAt: DateComponents?
@@ -22,10 +22,9 @@ struct TokenResponseAppEntity: TransientAppEntity {
     var region: String?
 
     var displayRepresentation: DisplayRepresentation {
-        DisplayRepresentation(title: "\(token ?? "Empty")")
+        DisplayRepresentation(title: "\(token)")
     }
     
     init() {
     }
 }
-
