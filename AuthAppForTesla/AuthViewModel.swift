@@ -10,11 +10,15 @@ import Intents
 
 class AuthViewModel: ObservableObject {
     @Published var tokenV3: Token?
+    @Published var tokenV4: Token?
     @Published var externalTokenRequest: ExternalTokenRequest?
     
     init() {
         AuthController.shared().acquireTokenV3Silent { (token) in
             self.tokenV3 = token
+        }
+        AuthController.shared().acquireTokenV4Silent { (token) in
+            self.tokenV4 = token
         }
     }
     
@@ -25,11 +29,17 @@ class AuthViewModel: ObservableObject {
                 self.tokenV3 = token
             }
         }
+        AuthController.shared().acquireTokenV4Silent(forceRefresh: true) { (token) in
+            DispatchQueue.main.async {
+                self.tokenV4 = token
+            }
+        }
     }
 
     public func logOut()
     {
         self.tokenV3 = nil
+        self.tokenV4 = nil
         AuthController.shared().logOut()
     }
     

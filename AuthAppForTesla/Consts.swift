@@ -17,6 +17,10 @@ let kXTeslaUserAgent = "TeslaApp/4.12.0/AuthAppForTesla"
 let kUserAgent = "AuthAppForTesla"
 let kTeslaRedirectUri = "tesla://auth/callback"
 
+let kFleetClientID = "dk.kimhansen.TeslaAuth.FleetClientID"
+let kFleetClientSecret = "dk.kimhansen.TeslaAuth.FleetClientSecret"
+let kFleetRedirectUri = "dk.kimhansen.TeslaAuth.FleetRedirectUri"
+
 let theme = mytheme()
 
 struct mytheme {

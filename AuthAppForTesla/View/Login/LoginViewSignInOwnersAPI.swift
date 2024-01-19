@@ -8,7 +8,7 @@
 import SwiftUI
 import CryptoKit
 
-struct SetupViewSignIn: View {
+struct LoginViewSignInOwnersAPI: View {
     @ObservedObject var model: AuthViewModel
     @State var region: TokenRegion = .global
     
@@ -81,8 +81,8 @@ struct SetupViewSignIn: View {
     }
 }
 
-struct SetupViewSignIn_Previews: PreviewProvider {
+struct LoginViewSignInOwnersAPI_Previews: PreviewProvider {
     static var previews: some View {
-        SetupViewSignIn(model: AuthViewModel())
+        LoginViewSignInOwnersAPI(model: AuthViewModel())
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @ObservedObject var model: AuthViewModel
+    let loginEnvironment: LoginEnvironment
     
     let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
@@ -46,6 +47,7 @@ struct HomeView: View {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(model: AuthViewModel())
+        HomeView(model: AuthViewModel(), loginEnvironment: .owner)
+        HomeView(model: AuthViewModel(), loginEnvironment: .fleet)
     }
 }

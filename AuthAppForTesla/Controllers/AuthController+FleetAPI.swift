@@ -23,6 +23,24 @@ extension AuthController {
         return randomString
     }
 
+    public func storeFleetConnection(clientId: String, clientSecret: String, redirectUri: String) {
+        KeychainWrapper.global.set(clientId, forKey: kFleetClientID, withAccessibility: .afterFirstUnlock)
+        KeychainWrapper.global.set(clientSecret, forKey: kFleetClientSecret, withAccessibility: .afterFirstUnlock)
+        KeychainWrapper.global.set(redirectUri, forKey: kFleetRedirectUri, withAccessibility: .afterFirstUnlock)
+    }
+
+    var fleetClientId: String {
+        return KeychainWrapper.global.string(forKey: kFleetClientID) ?? ""
+    }
+
+    var fleetClientSecret: String {
+        return KeychainWrapper.global.string(forKey: kFleetClientSecret) ?? ""
+    }
+
+    var fleetRedirectUri: String {
+        return KeychainWrapper.global.string(forKey: kFleetRedirectUri) ?? ""
+    }
+
 #if OAUTHAVAILABLE
     public func authenticateWebV4(region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String, completion: @escaping (Result<Token, Error>) -> Void) -> AuthWebViewController? {
         let authenticateUrl = getAuthByRegion(region: region)
@@ -187,4 +205,41 @@ extension AuthController {
         }
     }
 
+    var v4Token: Token? {
+        var token: Token?
+        if let tokenJson = getV4Token() { token = try? JSONDecoder().decode(Token.self, from: tokenJson) }
+        
+        return token
+    }
+
+    func getV4Token() -> Data? {
+        if let tokenJson = KeychainWrapper.global.data(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+        {
+            if (try? JSONDecoder().decode(Token.self, from: tokenJson)) != nil
+            {
+                return tokenJson
+            }
+        }
+        return nil
+    }
+
+    func acquireTokenV4Silent(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> Void) {
+        if let token = v4Token {
+            if (forceRefresh || token.expires_at ?? Date() <= Date().addingTimeInterval(60)) {
+                oauthRenewV4(token.refresh_token, token.region ?? .global, fleetClientId: fleetClientId) { (refreshedToken) in
+                    if let refreshedToken = refreshedToken, let encodedToken = try? JSONEncoder().encode(refreshedToken) {
+                        KeychainWrapper.global.set(encodedToken, forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+                    } else {
+                        completion(nil)
+                        return
+                    }
+                    completion(refreshedToken)
+                }
+                return
+            }
+            completion(token)
+            return
+        }
+        completion(nil)
+    }
 }

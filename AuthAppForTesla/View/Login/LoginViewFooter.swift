@@ -7,8 +7,9 @@
 
 import SwiftUI
 
-struct SetupViewFooter: View {
+struct LoginViewFooter: View {
     @ObservedObject var model: AuthViewModel
+    let loginEnvironment: LoginEnvironment
     
     let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
@@ -23,7 +24,7 @@ struct SetupViewFooter: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 25)
                 .padding(.top, 2)
-            SetupViewSignIn(model: model)
+            LoginViewSignIn(model: model, loginEnvironment: loginEnvironment)
             Text("You will be presented with a web browser where you can enter your Tesla credentials into the Tesla website. If you have MFA configured you will be asked to enter a valid MFA code.")
                 .font(.system(size: 12, weight: .regular, design: .default))
                 .multilineTextAlignment(.center)
@@ -41,8 +42,9 @@ struct SetupViewFooter: View {
     }
 }
 
-struct SetupViewFooter_Previews: PreviewProvider {
+struct LoginViewFooter_Previews: PreviewProvider {
     static var previews: some View {
-        SetupViewFooter(model: AuthViewModel())
+        LoginViewFooter(model: AuthViewModel(), loginEnvironment: .owner)
+        LoginViewFooter(model: AuthViewModel(), loginEnvironment: .fleet)
     }
 }

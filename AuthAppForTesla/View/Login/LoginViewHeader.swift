@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SetupViewHeader: View {
+struct LoginViewHeader: View {
     var body: some View {
         VStack{
             Spacer()
@@ -24,8 +24,8 @@ struct SetupViewHeader: View {
     }
 }
 
-struct SetupViewHeader_Previews: PreviewProvider {
+struct LoginViewHeader_Previews: PreviewProvider {
     static var previews: some View {
-        SetupViewHeader()
+        LoginViewHeader()
     }
 }
