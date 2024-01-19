@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -22,7 +22,6 @@
 		20F8775C25E2DA5300953E51 /* HomeViewRefreshToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775B25E2DA5300953E51 /* HomeViewRefreshToken.swift */; };
 		20F8775F25E2F67800953E51 /* LicenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775E25E2F67800953E51 /* LicenseView.swift */; };
 		20F8776125E2F73800953E51 /* LicenseViewEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8776025E2F73800953E51 /* LicenseViewEntry.swift */; };
-		2CA1BF7335719F000B92F8EF /* Pods_TokenIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A1ACE59C88990538A18785DF /* Pods_TokenIntents.framework */; };
 		EA1A333D272D88A100B66EB0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EA1A3340272D88A100B66EB0 /* InfoPlist.strings */; };
 		EA1A333E272D88A100B66EB0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EA1A3340272D88A100B66EB0 /* InfoPlist.strings */; };
 		EA1A3343272D8DED00B66EB0 /* Intents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = EA1A3346272D8DED00B66EB0 /* Intents.intentdefinition */; };
@@ -32,7 +31,7 @@
 		EA1A336C272D99D200B66EB0 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1A334B272D985B00B66EB0 /* SnapshotHelper.swift */; };
 		EA30D58A26092DB800B21DE1 /* RefreshTokensIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA30D58926092DB800B21DE1 /* RefreshTokensIntentHandler.swift */; };
 		EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */; };
-		EA63697425CAB11D000216BF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697325CAB11D000216BF /* ContentView.swift */; };
+		EA63697425CAB11D000216BF /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697325CAB11D000216BF /* RootView.swift */; };
 		EA63697625CAB11D000216BF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA63697525CAB11D000216BF /* Assets.xcassets */; };
 		EA63697925CAB11D000216BF /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA63697825CAB11D000216BF /* Preview Assets.xcassets */; };
 		EA63698925CAB3EF000216BF /* AuthWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63698825CAB3EF000216BF /* AuthWebViewController.swift */; };
@@ -46,7 +45,7 @@
 		EA8B560727041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8B560627041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift */; };
 		EA9EA83325DA89EF002FE23E /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9EA83225DA89EF002FE23E /* Intents.framework */; };
 		EA9EA83625DA89EF002FE23E /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9EA83525DA89EF002FE23E /* IntentHandler.swift */; };
-		EA9EA83A25DA89EF002FE23E /* TokenIntents.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = EA9EA83125DA89EF002FE23E /* TokenIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		EA9EA83A25DA89EF002FE23E /* TokenIntents.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EA9EA83125DA89EF002FE23E /* TokenIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		EA9EA84B25DA8B1B002FE23E /* GetAccessTokenIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9EA84A25DA8B1B002FE23E /* GetAccessTokenIntentHandler.swift */; };
 		EA9EA85825DA8F8B002FE23E /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6369A625CAD79D000216BF /* AuthViewModel.swift */; };
 		EA9EA86225DA9022002FE23E /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63699125CAB6A8000216BF /* Models.swift */; };
@@ -58,7 +57,13 @@
 		EA9EA87325DAAF25002FE23E /* AuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9EA86D25DAAAA6002FE23E /* AuthController.swift */; };
 		EA9EA87925DAB42A002FE23E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA63697525CAB11D000216BF /* Assets.xcassets */; };
 		EA9EA88825DAB808002FE23E /* GetRefreshTokenIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9EA88725DAB808002FE23E /* GetRefreshTokenIntentHandler.swift */; };
-		FEFDE3CBF424AD0B182E9D6E /* Pods_AuthAppForTesla.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45769FA58A6F7E602DA51A7E /* Pods_AuthAppForTesla.framework */; };
+		EAAB1CFD2B5A645900AC5271 /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = EAAB1CFC2B5A645900AC5271 /* SwiftDate */; };
+		EAAB1CFF2B5A647300AC5271 /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = EAAB1CFE2B5A647300AC5271 /* SwiftDate */; };
+		EAAB1D022B5A650F00AC5271 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EAAB1D012B5A650F00AC5271 /* CryptoSwift */; };
+		EAAB1D042B5A651A00AC5271 /* CryptoSwift in Frameworks */ = {isa = PBXBuildFile; productRef = EAAB1D032B5A651A00AC5271 /* CryptoSwift */; };
+		EAAB1D062B5A66DA00AC5271 /* AuthWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63698825CAB3EF000216BF /* AuthWebViewController.swift */; };
+		EAAB1D082B5A676700AC5271 /* NetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D072B5A676700AC5271 /* NetworkController.swift */; };
+		EAAB1D092B5A676700AC5271 /* NetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D072B5A676700AC5271 /* NetworkController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,21 +84,20 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		EA9EA83B25DA89EF002FE23E /* Embed App Extensions */ = {
+		EA9EA83B25DA89EF002FE23E /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				EA9EA83A25DA89EF002FE23E /* TokenIntents.appex in Embed App Extensions */,
+				EA9EA83A25DA89EF002FE23E /* TokenIntents.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		183181C9830E9DD876915C1B /* Pods-AuthAppForTesla.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AuthAppForTesla.release.xcconfig"; path = "Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla.release.xcconfig"; sourceTree = "<group>"; };
 		20007B9A25E15E6B00958060 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		20CDC54625E1B52500E895C8 /* IconBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconBackgroundView.swift; sourceTree = "<group>"; };
 		20CDC54825E1C1AB00E895C8 /* SetupViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupViewHeader.swift; sourceTree = "<group>"; };
@@ -109,10 +113,6 @@
 		20F8775B25E2DA5300953E51 /* HomeViewRefreshToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewRefreshToken.swift; sourceTree = "<group>"; };
 		20F8775E25E2F67800953E51 /* LicenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseView.swift; sourceTree = "<group>"; };
 		20F8776025E2F73800953E51 /* LicenseViewEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseViewEntry.swift; sourceTree = "<group>"; };
-		45769FA58A6F7E602DA51A7E /* Pods_AuthAppForTesla.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_AuthAppForTesla.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		77149D1A1E06D0C37B8DC9E7 /* Pods-AuthAppForTesla.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-AuthAppForTesla.debug.xcconfig"; path = "Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla.debug.xcconfig"; sourceTree = "<group>"; };
-		A1ACE59C88990538A18785DF /* Pods_TokenIntents.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TokenIntents.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		B6BD1E65FD59B4291829C916 /* Pods-TokenIntents.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokenIntents.release.xcconfig"; path = "Target Support Files/Pods-TokenIntents/Pods-TokenIntents.release.xcconfig"; sourceTree = "<group>"; };
 		EA1A333F272D88A100B66EB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA1A3345272D8DED00B66EB0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; name = Base; path = Base.lproj/Intents.intentdefinition; sourceTree = "<group>"; };
 		EA1A334B272D985B00B66EB0 /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
@@ -123,7 +123,7 @@
 		EA30D58926092DB800B21DE1 /* RefreshTokensIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshTokensIntentHandler.swift; sourceTree = "<group>"; };
 		EA63696E25CAB11D000216BF /* AuthAppForTesla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthAppForTesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAppForTeslaApp.swift; sourceTree = "<group>"; };
-		EA63697325CAB11D000216BF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		EA63697325CAB11D000216BF /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		EA63697525CAB11D000216BF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EA63697825CAB11D000216BF /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EA63697A25CAB11D000216BF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -146,9 +146,9 @@
 		EA9EA86D25DAAAA6002FE23E /* AuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthController.swift; sourceTree = "<group>"; };
 		EA9EA87625DAB3B0002FE23E /* TokenIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TokenIntents.entitlements; sourceTree = "<group>"; };
 		EA9EA88725DAB808002FE23E /* GetRefreshTokenIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRefreshTokenIntentHandler.swift; sourceTree = "<group>"; };
+		EAAB1D072B5A676700AC5271 /* NetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkController.swift; sourceTree = "<group>"; };
 		EAFF01A6273466F200BB0AB4 /* title.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = title.strings; path = Screenshots/title.strings; sourceTree = "<group>"; };
 		EAFF01A72734670800BB0AB4 /* keyword.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = keyword.strings; path = Screenshots/keyword.strings; sourceTree = "<group>"; };
-		F2C93B02C29A2E49A50DBB5A /* Pods-TokenIntents.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokenIntents.debug.xcconfig"; path = "Target Support Files/Pods-TokenIntents/Pods-TokenIntents.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -163,7 +163,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FEFDE3CBF424AD0B182E9D6E /* Pods_AuthAppForTesla.framework in Frameworks */,
+				EAAB1CFD2B5A645900AC5271 /* SwiftDate in Frameworks */,
+				EAAB1D022B5A650F00AC5271 /* CryptoSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -171,8 +172,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAAB1CFF2B5A647300AC5271 /* SwiftDate in Frameworks */,
 				EA9EA83325DA89EF002FE23E /* Intents.framework in Frameworks */,
-				2CA1BF7335719F000B92F8EF /* Pods_TokenIntents.framework in Frameworks */,
+				EAAB1D042B5A651A00AC5271 /* CryptoSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -182,9 +184,7 @@
 		003A0F6CF2DBC27EAD7A2DB1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				45769FA58A6F7E602DA51A7E /* Pods_AuthAppForTesla.framework */,
 				EA9EA83225DA89EF002FE23E /* Intents.framework */,
-				A1ACE59C88990538A18785DF /* Pods_TokenIntents.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -251,17 +251,6 @@
 			path = License;
 			sourceTree = "<group>";
 		};
-		BE65635A7F9DC1BA543408A5 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				77149D1A1E06D0C37B8DC9E7 /* Pods-AuthAppForTesla.debug.xcconfig */,
-				183181C9830E9DD876915C1B /* Pods-AuthAppForTesla.release.xcconfig */,
-				F2C93B02C29A2E49A50DBB5A /* Pods-TokenIntents.debug.xcconfig */,
-				B6BD1E65FD59B4291829C916 /* Pods-TokenIntents.release.xcconfig */,
-			);
-			path = Pods;
-			sourceTree = "<group>";
-		};
 		EA1A3362272D999B00B66EB0 /* AuthAppForTeslaUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -283,7 +272,6 @@
 				EA9EA83425DA89EF002FE23E /* TokenIntents */,
 				EA1A3362272D999B00B66EB0 /* AuthAppForTeslaUITests */,
 				EA63696F25CAB11D000216BF /* Products */,
-				BE65635A7F9DC1BA543408A5 /* Pods */,
 				003A0F6CF2DBC27EAD7A2DB1 /* Frameworks */,
 			);
 			sourceTree = "<group>";
@@ -301,22 +289,21 @@
 		EA63697025CAB11D000216BF /* AuthAppForTesla */ = {
 			isa = PBXGroup;
 			children = (
+				EAAB1D052B5A66B800AC5271 /* Controllers */,
 				20007B9925E15E3800958060 /* View */,
 				EA9EA7F725DA7E13002FE23E /* AuthAppForTesla.entitlements */,
 				EA63699C25CABA68000216BF /* KeychainItemAccessibility.swift */,
 				EA63699D25CABA68000216BF /* KeychainWrapper.swift */,
 				EA63699B25CABA68000216BF /* SwiftKeychainWrapper.h */,
 				EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */,
-				EA63697325CAB11D000216BF /* ContentView.swift */,
+				EA63697325CAB11D000216BF /* RootView.swift */,
 				EA63697525CAB11D000216BF /* Assets.xcassets */,
 				EA63697A25CAB11D000216BF /* Info.plist */,
 				EA63697725CAB11D000216BF /* Preview Content */,
-				EA63698825CAB3EF000216BF /* AuthWebViewController.swift */,
 				EA63698B25CAB620000216BF /* Consts.swift */,
 				EA63698E25CAB660000216BF /* Util.swift */,
 				EA63699125CAB6A8000216BF /* Models.swift */,
 				EA6369A625CAD79D000216BF /* AuthViewModel.swift */,
-				EA9EA86D25DAAAA6002FE23E /* AuthController.swift */,
 				EA6D588525DDA02A007EC2B7 /* ViewControllerBridge.swift */,
 			);
 			path = AuthAppForTesla;
@@ -342,6 +329,16 @@
 				EA9EA84A25DA8B1B002FE23E /* GetAccessTokenIntentHandler.swift */,
 			);
 			path = TokenIntents;
+			sourceTree = "<group>";
+		};
+		EAAB1D052B5A66B800AC5271 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				EA9EA86D25DAAAA6002FE23E /* AuthController.swift */,
+				EA63698825CAB3EF000216BF /* AuthWebViewController.swift */,
+				EAAB1D072B5A676700AC5271 /* NetworkController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		EAFF01A5273466E300BB0AB4 /* Screenshots */ = {
@@ -378,12 +375,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EA63697D25CAB11D000216BF /* Build configuration list for PBXNativeTarget "AuthAppForTesla" */;
 			buildPhases = (
-				0F231276C7E19C598F8EFED8 /* [CP] Check Pods Manifest.lock */,
 				EA63696A25CAB11D000216BF /* Sources */,
 				EA63696B25CAB11D000216BF /* Frameworks */,
 				EA63696C25CAB11D000216BF /* Resources */,
-				0DA79864DC80E2D7C6CC547D /* [CP] Embed Pods Frameworks */,
-				EA9EA83B25DA89EF002FE23E /* Embed App Extensions */,
+				EA9EA83B25DA89EF002FE23E /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -391,6 +386,10 @@
 				EA9EA83925DA89EF002FE23E /* PBXTargetDependency */,
 			);
 			name = AuthAppForTesla;
+			packageProductDependencies = (
+				EAAB1CFC2B5A645900AC5271 /* SwiftDate */,
+				EAAB1D012B5A650F00AC5271 /* CryptoSwift */,
+			);
 			productName = AuthAppForTesla;
 			productReference = EA63696E25CAB11D000216BF /* AuthAppForTesla.app */;
 			productType = "com.apple.product-type.application";
@@ -399,7 +398,6 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EA9EA83E25DA89EF002FE23E /* Build configuration list for PBXNativeTarget "TokenIntents" */;
 			buildPhases = (
-				C421C267E72686515F5B3853 /* [CP] Check Pods Manifest.lock */,
 				EA9EA82D25DA89EF002FE23E /* Sources */,
 				EA9EA82E25DA89EF002FE23E /* Frameworks */,
 				EA9EA82F25DA89EF002FE23E /* Resources */,
@@ -409,6 +407,10 @@
 			dependencies = (
 			);
 			name = TokenIntents;
+			packageProductDependencies = (
+				EAAB1CFE2B5A647300AC5271 /* SwiftDate */,
+				EAAB1D032B5A651A00AC5271 /* CryptoSwift */,
+			);
 			productName = TokenIntents;
 			productReference = EA9EA83125DA89EF002FE23E /* TokenIntents.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -419,8 +421,9 @@
 		EA63696625CAB11D000216BF /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1310;
-				LastUpgradeCheck = 1240;
+				LastUpgradeCheck = 1520;
 				TargetAttributes = {
 					EA1A3360272D999B00B66EB0 = {
 						CreatedOnToolsVersion = 13.1;
@@ -443,6 +446,10 @@
 				Base,
 			);
 			mainGroup = EA63696525CAB11D000216BF;
+			packageReferences = (
+				EAAB1CFB2B5A645900AC5271 /* XCRemoteSwiftPackageReference "SwiftDate" */,
+				EAAB1D002B5A650F00AC5271 /* XCRemoteSwiftPackageReference "CryptoSwift" */,
+			);
 			productRefGroup = EA63696F25CAB11D000216BF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -483,70 +490,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		0DA79864DC80E2D7C6CC547D /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-AuthAppForTesla/Pods-AuthAppForTesla-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		0F231276C7E19C598F8EFED8 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-AuthAppForTesla-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C421C267E72686515F5B3853 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-TokenIntents-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		EA1A335D272D999B00B66EB0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -568,12 +511,13 @@
 				EA6369A725CAD79D000216BF /* AuthViewModel.swift in Sources */,
 				EA9EA87325DAAF25002FE23E /* AuthController.swift in Sources */,
 				EA63699F25CABA68000216BF /* KeychainWrapper.swift in Sources */,
-				EA63697425CAB11D000216BF /* ContentView.swift in Sources */,
+				EA63697425CAB11D000216BF /* RootView.swift in Sources */,
 				EA1A3343272D8DED00B66EB0 /* Intents.intentdefinition in Sources */,
 				20CDC54725E1B52500E895C8 /* IconBackgroundView.swift in Sources */,
 				20F8775F25E2F67800953E51 /* LicenseView.swift in Sources */,
 				20CDC54D25E1C27E00E895C8 /* SetupViewSignIn.swift in Sources */,
 				EA63698C25CAB620000216BF /* Consts.swift in Sources */,
+				EAAB1D082B5A676700AC5271 /* NetworkController.swift in Sources */,
 				20F8775825E2D9DA00953E51 /* HomeViewHeader.swift in Sources */,
 				20CDC54B25E1C21C00E895C8 /* SetupViewFooter.swift in Sources */,
 				EA63698F25CAB660000216BF /* Util.swift in Sources */,
@@ -601,8 +545,10 @@
 				EA9EA88825DAB808002FE23E /* GetRefreshTokenIntentHandler.swift in Sources */,
 				EA9EA86925DA9044002FE23E /* Consts.swift in Sources */,
 				EA1A3344272D8DED00B66EB0 /* Intents.intentdefinition in Sources */,
+				EAAB1D092B5A676700AC5271 /* NetworkController.swift in Sources */,
 				EA30D58A26092DB800B21DE1 /* RefreshTokensIntentHandler.swift in Sources */,
 				EA8B560727041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift in Sources */,
+				EAAB1D062B5A66DA00AC5271 /* AuthWebViewController.swift in Sources */,
 				EA9EA84B25DA8B1B002FE23E /* GetAccessTokenIntentHandler.swift in Sources */,
 				EA9EA86525DA9038002FE23E /* KeychainWrapper.swift in Sources */,
 				EA9EA83625DA89EF002FE23E /* IntentHandler.swift in Sources */,
@@ -699,6 +645,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -732,6 +679,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -760,6 +708,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -793,6 +742,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -813,7 +763,6 @@
 		};
 		EA63697E25CAB11D000216BF /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 77149D1A1E06D0C37B8DC9E7 /* Pods-AuthAppForTesla.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -841,7 +790,6 @@
 		};
 		EA63697F25CAB11D000216BF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 183181C9830E9DD876915C1B /* Pods-AuthAppForTesla.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -869,7 +817,6 @@
 		};
 		EA9EA83C25DA89EF002FE23E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F2C93B02C29A2E49A50DBB5A /* Pods-TokenIntents.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TokenIntents/TokenIntents.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -893,7 +840,6 @@
 		};
 		EA9EA83D25DA89EF002FE23E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B6BD1E65FD59B4291829C916 /* Pods-TokenIntents.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = TokenIntents/TokenIntents.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -955,6 +901,48 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EAAB1CFB2B5A645900AC5271 /* XCRemoteSwiftPackageReference "SwiftDate" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/malcommac/SwiftDate.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
+		EAAB1D002B5A650F00AC5271 /* XCRemoteSwiftPackageReference "CryptoSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/krzyzanowskim/CryptoSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.8.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EAAB1CFC2B5A645900AC5271 /* SwiftDate */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAAB1CFB2B5A645900AC5271 /* XCRemoteSwiftPackageReference "SwiftDate" */;
+			productName = SwiftDate;
+		};
+		EAAB1CFE2B5A647300AC5271 /* SwiftDate */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAAB1CFB2B5A645900AC5271 /* XCRemoteSwiftPackageReference "SwiftDate" */;
+			productName = SwiftDate;
+		};
+		EAAB1D012B5A650F00AC5271 /* CryptoSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAAB1D002B5A650F00AC5271 /* XCRemoteSwiftPackageReference "CryptoSwift" */;
+			productName = CryptoSwift;
+		};
+		EAAB1D032B5A651A00AC5271 /* CryptoSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAAB1D002B5A650F00AC5271 /* XCRemoteSwiftPackageReference "CryptoSwift" */;
+			productName = CryptoSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EA63696625CAB11D000216BF /* Project object */;
 }

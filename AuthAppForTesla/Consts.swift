@@ -13,6 +13,8 @@ let kTeslaSecret = "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb
 let kTokenV2 = "dk.kimhansen.TeslaAuth.TokenV2"
 let kTokenV3 = "dk.kimhansen.TeslaAuth.TokenV3"
 let kRequestEventLog = "dk.kimhansen.TeslaAuth.RequestEventLog"
+let kXTeslaUserAgent = "TeslaApp/4.12.0/AuthAppForTesla"
+let kUserAgent = "AuthAppForTesla"
 
 let theme = mytheme()
 
@@ -27,3 +29,15 @@ struct mytheme {
 }
 
 let externalApplicationListFilenameComponents = ["ExternalApplicationList", "json"]
+
+public enum TeslaError: Error, Equatable {
+    case networkError(error: NSError)
+    case authenticationRequired
+    case authenticationFailed
+    case tokenRevoked
+    case noTokenToRefresh
+    case tokenRefreshFailed
+    case invalidOptionsForCommand
+    case failedToParseData
+    case failedToReloadVehicle
+}

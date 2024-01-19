@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import OAuthSwift
 import CryptoKit
 
 struct SetupViewSignIn: View {
