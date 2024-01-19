@@ -54,19 +54,20 @@ struct LoginViewSignInFleetAPI: View {
         .padding(.horizontal, 35)
         .padding(.vertical, 20)
         .onAppear {
-            clientId = AuthController.shared().fleetClientId
-            clientSecret = AuthController.shared().fleetClientSecret
-            redirectUri = AuthController.shared().fleetRedirectUri
+            clientId = AuthController.shared.fleetClientId
+            clientSecret = AuthController.shared.fleetClientSecret
+            redirectUri = AuthController.shared.fleetRedirectUri
         }
     }
     
     func authenticateV4(region: TokenRegion, clientId: String, clientSecret: String, redirectUri: String) {
-        AuthController.shared().storeFleetConnection(clientId: clientId, clientSecret: clientSecret, redirectUri: redirectUri)
+        AuthController.shared.storeFleetConnection(clientId: clientId, clientSecret: clientSecret, redirectUri: redirectUri)
         DispatchQueue.main.async {
-            if let vc = AuthController.shared().authenticateWebV4(region: region, fleetClientId: clientId, fleetSecret: clientSecret, fleetRedirectUri: redirectUri, completion: { (result) in
+            if let vc = AuthController.shared.authenticateWebV4(region: region, fleetClientId: clientId, fleetSecret: clientSecret, fleetRedirectUri: redirectUri, completion: { (result) in
                 switch result {
-                case .success(let token):
-                    model.acquireTokenSilentV4(forceRefresh: true) { (token) in
+                case .success:
+                    Task {
+                        await model.acquireTokenSilentV4(forceRefresh: true)
                     }
                 case .failure(let error):
                     print("Authenticate V4 error: \(error.localizedDescription)")

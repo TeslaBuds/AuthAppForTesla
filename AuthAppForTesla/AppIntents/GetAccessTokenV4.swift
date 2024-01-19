@@ -18,7 +18,7 @@ struct GetAccessTokenV4: AppIntent {
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<TokenResponseAppEntity> {
-        if let token = await AuthController.shared().acquireTokenV4Silent()
+        if let token = await AuthController.shared.acquireTokenV4Silent()
         {
             let tokenResponse = TokenResponseAppEntity()
             tokenResponse.expiresAt = Calendar.current.dateComponents(

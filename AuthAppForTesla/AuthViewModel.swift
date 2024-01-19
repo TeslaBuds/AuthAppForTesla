@@ -8,30 +8,21 @@
 import Foundation
 import Intents
 
+@MainActor
 class AuthViewModel: ObservableObject {
     @Published var tokenV3: Token?
     @Published var tokenV4: Token?
     
     init() {
-        AuthController.shared().acquireTokenV3Silent { (token) in
-            self.tokenV3 = token
-        }
-        AuthController.shared().acquireTokenV4Silent { (token) in
-            self.tokenV4 = token
-        }
+        tokenV3 = AuthController.shared.v3Token
+        tokenV4 = AuthController.shared.v4Token
     }
     
     public func refreshAll()
     {
-        AuthController.shared().acquireTokenV3Silent(forceRefresh: true) { (token) in
-            DispatchQueue.main.async {
-                self.tokenV3 = token
-            }
-        }
-        AuthController.shared().acquireTokenV4Silent(forceRefresh: true) { (token) in
-            DispatchQueue.main.async {
-                self.tokenV4 = token
-            }
+        Task {
+            tokenV3 = await AuthController.shared.acquireTokenV3Silent(forceRefresh: true)
+            tokenV4 = await AuthController.shared.acquireTokenV4Silent(forceRefresh: true)
         }
     }
 
@@ -43,66 +34,24 @@ class AuthViewModel: ObservableObject {
         case .fleet:
             self.tokenV4 = nil
         }
-        AuthController.shared().logOut(environment: environment)
+        AuthController.shared.logOut(environment: environment)
     }
     
     func setJwtToken(_ token: Token)
     {
-        AuthController.shared().setJwtToken(token)
+        AuthController.shared.setJwtToken(token)
         self.tokenV3 = token
     }
     
-    func acquireTokenSilentV3(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
-        AuthController.shared().acquireTokenV3Silent(forceRefresh: forceRefresh) { token in
-            DispatchQueue.main.async {
-                self.tokenV3 = token
-            }
-            completion(token)
-        }
+    func acquireTokenSilentV3(forceRefresh: Bool = false) async -> Token? {
+        let token = await AuthController.shared.acquireTokenV3Silent(forceRefresh: forceRefresh)
+        tokenV3 = token
+        return token
     }
 
-    func acquireTokenSilentV4(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
-        AuthController.shared().acquireTokenV4Silent(forceRefresh: forceRefresh) { token in
-            DispatchQueue.main.async {
-                self.tokenV4 = token
-            }
-            completion(token)
-        }
+    func acquireTokenSilentV4(forceRefresh: Bool = false) async -> Token? {
+        let token = await AuthController.shared.acquireTokenV4Silent(forceRefresh: forceRefresh)
+        tokenV4 = token
+        return token
     }
-
-//    func donateRefreshTokenInteraction() {
-//        let intent = GetRefreshTokenIntent()
-//        
-//        intent.suggestedInvocationPhrase = "Get refresh token"
-//        
-//        let interaction = INInteraction(intent: intent, response: nil)
-//        
-//        interaction.donate { (error) in
-//            if error != nil {
-//                if let error = error as NSError? {
-//                    print("Interaction donation failed: \(error.description)")
-//                } else {
-//                    print("Successfully donated interaction")
-//                }
-//            }
-//        }
-//    }
-//
-//    func donateAccessTokenInteraction() {
-//        let intent = GetAccessTokenIntent()
-//        
-//        intent.suggestedInvocationPhrase = "Get access token"
-//        
-//        let interaction = INInteraction(intent: intent, response: nil)
-//        
-//        interaction.donate { (error) in
-//            if error != nil {
-//                if let error = error as NSError? {
-//                    print("Interaction donation failed: \(error.description)")
-//                } else {
-//                    print("Successfully donated interaction")
-//                }
-//            }
-//        }
-//    }
 }

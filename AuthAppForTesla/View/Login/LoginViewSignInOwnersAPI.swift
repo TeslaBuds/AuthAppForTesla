@@ -25,20 +25,6 @@ struct LoginViewSignInOwnersAPI: View {
             .pickerStyle(SegmentedPickerStyle())
             .padding(.bottom, 10)
             Button("Sign in with Tesla", action: {
-#if DEBUG
-                if CommandLine.arguments.contains("enable-testing") {
-                    for arg in CommandLine.arguments {
-                        if arg.starts(with: "token:") {
-                            let tokenArg = arg.replacingOccurrences(of: "token:", with: "")
-                            let token = Token(access_token: "", token_type: "bearer", expires_in: 300, refresh_token: tokenArg, expires_at: Date.future(), region: TokenRegion.global)
-                            model.setJwtToken(token)
-                            model.acquireTokenSilentV3(forceRefresh: true) { (token) in
-                            }
-                            return
-                        }
-                    }
-                }
-#endif
                 model.logOut(environment: .owner)
                 self.authenticateV3()
             })
@@ -56,20 +42,12 @@ struct LoginViewSignInOwnersAPI: View {
     
     func authenticateV3() {
         DispatchQueue.main.async {
-            if let vc = AuthController.shared().authenticateWeb(region: self.region, redirectUrl: kTeslaRedirectUri, completion: { (result) in
+            if let vc = AuthController.shared.authenticateWeb(region: self.region, redirectUrl: kTeslaRedirectUri, completion: { (result) in
                 switch result {
-                case .success(let token):
-                    model.acquireTokenSilentV3(forceRefresh: true) { (token) in
+                case .success:
+                    Task {
+                        await model.acquireTokenSilentV3(forceRefresh: true)
                     }
-//                    if let externalTokenRequest = model.externalTokenRequest {
-//                        
-//                        let responseURLString = String(format: externalTokenRequest.appDescription.responseURLTemplate,
-//                                                 token.refresh_token,
-//                                                 externalTokenRequest.appData)
-//                        if let responseURL = URL(string: responseURLString) {
-//                            UIApplication.shared.open(responseURL)
-//                        }
-//                    }
                 case .failure(let error):
                     print("Authenticate V3 error: \(error.localizedDescription)")
                 }

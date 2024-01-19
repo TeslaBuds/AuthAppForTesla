@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 extension AuthController {
     func randomANSICharacter() -> Character {
@@ -80,6 +81,14 @@ extension AuthController {
     }
     
 #endif
+    
+    fileprivate func oauthCodeV4(_ code: String, _ region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String, retries: Int = 0) async -> Token? {
+        return await withCheckedContinuation { continuation in
+            oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries) { result in
+                continuation.resume(returning: result)
+            }
+        }
+    }
     
     fileprivate func oauthCodeV4(_ code: String, _ region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String, retries: Int = 0, _ completion: @escaping (Token?) -> Void) {
         let url = getAuthByRegion(region: region)
@@ -229,7 +238,7 @@ extension AuthController {
 
     func acquireTokenV4Silent(forceRefresh: Bool = false) async -> Token? {
         return await withCheckedContinuation { continuation in
-            acquireTokenV3Silent(forceRefresh: forceRefresh) { token in
+            acquireTokenV4Silent(forceRefresh: forceRefresh) { token in
                 continuation.resume(returning: token)
             }
         }

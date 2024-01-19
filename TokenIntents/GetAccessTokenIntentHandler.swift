@@ -11,7 +11,7 @@ import SwiftUI
 class GetAccessTokenIntentHandler: NSObject, GetAccessTokenIntentHandling {
     
     func confirm(intent: GetAccessTokenIntent, completion: @escaping (GetAccessTokenIntentResponse) -> Void) {
-        AuthController.shared().acquireTokenV3Silent { (token) in
+        AuthController.shared.acquireTokenV3Silent { (token) in
             if token != nil
             {
                 completion(GetAccessTokenIntentResponse(code: .ready, userActivity: nil))
@@ -24,7 +24,7 @@ class GetAccessTokenIntentHandler: NSObject, GetAccessTokenIntentHandling {
     }
     
     func handle(intent: GetAccessTokenIntent, completion: @escaping (GetAccessTokenIntentResponse) -> Void) {
-        AuthController.shared().acquireTokenV3Silent { (token) in
+        AuthController.shared.acquireTokenV3Silent { (token) in
             if let token = token
             {
                 let response = GetAccessTokenIntentResponse(code: .success, userActivity: nil)

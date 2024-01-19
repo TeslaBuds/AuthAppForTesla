@@ -11,7 +11,7 @@ import SwiftUI
 class GetRefreshTokenIntentHandler: NSObject, GetRefreshTokenIntentHandling {
     
     func confirm(intent: GetRefreshTokenIntent, completion: @escaping (GetRefreshTokenIntentResponse) -> Void) {
-        AuthController.shared().acquireTokenV3Silent { (token) in
+        AuthController.shared.acquireTokenV3Silent { (token) in
             if token != nil
             {
                 completion(GetRefreshTokenIntentResponse(code: .ready, userActivity: nil))
@@ -24,7 +24,7 @@ class GetRefreshTokenIntentHandler: NSObject, GetRefreshTokenIntentHandling {
     }
     
     func handle(intent: GetRefreshTokenIntent, completion: @escaping (GetRefreshTokenIntentResponse) -> Void) {
-        AuthController.shared().acquireTokenV3Silent { (token) in
+        AuthController.shared.acquireTokenV3Silent { (token) in
             if let token = token
             {
                 let response = GetRefreshTokenIntentResponse(code: .success, userActivity: nil)
