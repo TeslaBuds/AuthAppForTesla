@@ -42,9 +42,9 @@ struct AuthAppForTeslaApp: App {
             let model = AuthViewModel()
             RootView(model: model)
                 .navigationViewStyle(StackNavigationViewStyle())
-                .onOpenURL() { url in
-                    handleUniversalLink(url, model)
-                }
+//                .onOpenURL() { url in
+//                    handleUniversalLink(url, model)
+//                }
         }
     }
     

@@ -89,26 +89,26 @@ func getUniversalLinkRequestApplicationDescription(for appId: String) -> Externa
     return nil
 }
 
-func handleUniversalLink(_ url: URL, _ model: AuthViewModel) {
-    guard url.pathComponents.count > 1 else {
-        return
-    }
-
-    let command = url.pathComponents[1]
-    switch command {
-    case "request-refresh-token":
-        if let appId = url["app_id"],
-           let appDescription: ExternalTokenRequestApplicationDescription = getUniversalLinkRequestApplicationDescription(for: appId),
-           let appData: String = url["app_data"] {
-            
-            model.externalTokenRequest = ExternalTokenRequest(appDescription: appDescription,
-                                                              appData: appData)
-        }
-        break
-    default:
-        break
-    }
-}
+//func handleUniversalLink(_ url: URL, _ model: AuthViewModel) {
+//    guard url.pathComponents.count > 1 else {
+//        return
+//    }
+//
+//    let command = url.pathComponents[1]
+//    switch command {
+//    case "request-refresh-token":
+//        if let appId = url["app_id"],
+//           let appDescription: ExternalTokenRequestApplicationDescription = getUniversalLinkRequestApplicationDescription(for: appId),
+//           let appData: String = url["app_data"] {
+//            
+//            model.externalTokenRequest = ExternalTokenRequest(appDescription: appDescription,
+//                                                              appData: appData)
+//        }
+//        break
+//    default:
+//        break
+//    }
+//}
 
 func downloadLatestExternalApplicationList() {
     guard let githubURL = URL(string: "https://raw.githubusercontent.com/TeslaBuds/AuthAppForTesla/main/AuthAppForTesla/\(externalApplicationListFilenameComponents.joined(separator: "."))") else {

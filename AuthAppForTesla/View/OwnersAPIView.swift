@@ -11,8 +11,7 @@ struct OwnersAPIView: View {
     @ObservedObject var model: AuthViewModel
     
     var body: some View {
-        if (model.tokenV3?.refresh_token.count ?? 0 == 0) ||
-            (model.externalTokenRequest != nil)
+        if (model.tokenV3?.refresh_token.count ?? 0 == 0)
         {
             LoginView(model: model, loginEnvironment: .owner)
         } else {

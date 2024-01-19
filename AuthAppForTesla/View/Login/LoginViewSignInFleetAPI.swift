@@ -40,7 +40,7 @@ struct LoginViewSignInFleetAPI: View {
             .padding(.bottom, 10)
             
             Button("Sign in with Tesla", action: {
-                model.logOut()
+                model.logOut(environment: .fleet)
                 self.authenticateV4(region: region, clientId: clientId, clientSecret: clientSecret, redirectUri: redirectUri)
             })
             .accessibilityIdentifier("loginButtonv4")
@@ -49,7 +49,7 @@ struct LoginViewSignInFleetAPI: View {
             .foregroundColor(Color.white)
             .background(Color("TeslaRed"))
             .cornerRadius(10.0)
-            .disabled(model.externalTokenRequest != nil)
+//            .disabled(model.externalTokenRequest != nil)
         }
         .padding(.horizontal, 35)
         .padding(.vertical, 20)
@@ -66,9 +66,8 @@ struct LoginViewSignInFleetAPI: View {
             if let vc = AuthController.shared().authenticateWebV4(region: region, fleetClientId: clientId, fleetSecret: clientSecret, fleetRedirectUri: redirectUri, completion: { (result) in
                 switch result {
                 case .success(let token):
-                    print("todo")
-//                    model.acquireTokenSilent(forceRefresh: true) { (token) in
-//                    }
+                    model.acquireTokenSilentV4(forceRefresh: true) { (token) in
+                    }
                 case .failure(let error):
                     print("Authenticate V4 error: \(error.localizedDescription)")
                 }

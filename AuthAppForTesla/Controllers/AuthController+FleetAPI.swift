@@ -118,14 +118,12 @@ extension AuthController {
                         return
                     }
                     KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-                    KeychainWrapper.global.removeObject(forKey: kTokenV4Region, withAccessibility: .afterFirstUnlock)
                 } else if error.statusCode == 401 {
                     if retries < 3 {
                         self.oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1, completion)
                         return
                     }
                     KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-                    KeychainWrapper.global.removeObject(forKey: kTokenV4Region, withAccessibility: .afterFirstUnlock)
                 } else if error.statusCode == 848 {
                     // Mystical SSL error
                     if retries < 3 {
@@ -156,6 +154,14 @@ extension AuthController {
         ) { result in
             switch result {
             case .success(let result):
+                if let error = result.dictionaryBody["error"] as? String, error.count > 0 {
+                    if error == "login_required" {
+                        self.logOut(environment: .fleet)
+                        completion(nil)
+                        return
+                    }
+                }
+                
                 var token: Token?
                 if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
                    let access_token = result.dictionaryBody["access_token"] as? String,
@@ -177,14 +183,12 @@ extension AuthController {
                         return
                     }
                     KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-                    KeychainWrapper.global.removeObject(forKey: kTokenV4Region, withAccessibility: .afterFirstUnlock)
                 } else if error.statusCode == 401 {
                     if retries < 3 {
                         self.oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1, completion)
                         return
                     }
                     KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-                    KeychainWrapper.global.removeObject(forKey: kTokenV4Region, withAccessibility: .afterFirstUnlock)
                 } else if error.statusCode == 848 {
                     // Mystical SSL error
                     if retries < 3 {

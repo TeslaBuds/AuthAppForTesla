@@ -17,26 +17,23 @@ struct HomeView: View {
     var body: some View {
         
         VStack {
-            HomeViewHeader(model: model)
+            HomeViewHeader(model: model, loginEnvironment: loginEnvironment)
             ScrollView {
             VStack {
-                HomeViewToken(title: "Refresh Token (Recommended)", description: "A refresh token allows for continuous interaction with your Tesla Account and is usually what is requested by other apps and third-party services. This is used to generate new access tokens.", token: model.tokenV3?.refresh_token) {
+                let refreshtoken = loginEnvironment == .owner ? model.tokenV3?.refresh_token : model.tokenV4?.refresh_token
+                HomeViewToken(title: "Refresh Token (Recommended)", description: "A refresh token allows for continuous interaction with your Tesla Account and is usually what is requested by other apps and third-party services. This is used to generate new access tokens.", token: refreshtoken) {
                     model.donateRefreshTokenInteraction()
                 }
                 Divider()
-                HomeViewToken(title: "Access Token", description: "An access token allows for temporary access to your Tesla Account and typically expires after several hours.", token: model.tokenV3?.access_token) {
+                let accesstoken = loginEnvironment == .owner ? model.tokenV3?.access_token : model.tokenV4?.access_token
+                HomeViewToken(title: "Access Token", description: "An access token allows for temporary access to your Tesla Account and typically expires after several hours.", token: accesstoken) {
                     model.donateAccessTokenInteraction()
                 }
                 .opacity(0.5)
-//                Divider()
-//                HomeViewToken(title: "Owners Access Token", description: "An owners access token allows for temporary access to your vehicles and solar products and typically expires after fourty five days.", token: model.tokenV2?.access_token) {
-//                    model.donateOwnersAccessTokenInteraction()
-//                }
             }
             .padding(.vertical, 15)
             HomeViewRefreshToken(model: model)
             }
-//            Spacer()
             Text("v. \(version) build \(build)")
                 .font(.system(size: 12, weight: .regular, design: .default))
                 .multilineTextAlignment(.center)

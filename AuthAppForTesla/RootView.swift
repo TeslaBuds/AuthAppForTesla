@@ -65,7 +65,7 @@ struct RootView: View {
                             Text("Fleet API")
                         }
                     }
-                    .tag(0)
+                    .tag(1)
                 AboutView()
                     .font(.title)
                     .tabItem {
@@ -74,7 +74,7 @@ struct RootView: View {
                             Text("About")
                         }
                     }
-                    .tag(1)
+                    .tag(2)
             }
 //        }
         

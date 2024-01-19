@@ -18,15 +18,18 @@ class AuthController {
         return sharedAuthController
     }
     
-    public func logOut()
+    public func logOut(environment: LoginEnvironment)
     {
-        KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-        KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-        KeychainWrapper.global.removeObject(forKey: kTokenV4Region, withAccessibility: .afterFirstUnlock)
-        KeychainWrapper.global.removeObject(forKey: kFleetClientID, withAccessibility: .afterFirstUnlock)
-        KeychainWrapper.global.removeObject(forKey: kFleetClientSecret, withAccessibility: .afterFirstUnlock)
-        KeychainWrapper.global.removeObject(forKey: kFleetRedirectUri, withAccessibility: .afterFirstUnlock)
-        KeychainWrapper.global.removeAllKeys()
+        switch environment {
+        case .owner:
+            KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+        case .fleet:
+            KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+            KeychainWrapper.global.removeObject(forKey: kFleetClientID, withAccessibility: .afterFirstUnlock)
+            KeychainWrapper.global.removeObject(forKey: kFleetClientSecret, withAccessibility: .afterFirstUnlock)
+            KeychainWrapper.global.removeObject(forKey: kFleetRedirectUri, withAccessibility: .afterFirstUnlock)
+        }
+//        KeychainWrapper.global.removeAllKeys()
     }
     
     func setJwtToken(_ token: Token)

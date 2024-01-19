@@ -7,11 +7,6 @@
 
 import SwiftUI
 
-enum LoginEnvironment {
-    case owner
-    case fleet
-}
-
 struct LoginView: View {
     @ObservedObject var model: AuthViewModel
     @Environment(\.colorScheme) var colorScheme

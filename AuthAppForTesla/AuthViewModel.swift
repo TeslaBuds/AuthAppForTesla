@@ -11,7 +11,6 @@ import Intents
 class AuthViewModel: ObservableObject {
     @Published var tokenV3: Token?
     @Published var tokenV4: Token?
-    @Published var externalTokenRequest: ExternalTokenRequest?
     
     init() {
         AuthController.shared().acquireTokenV3Silent { (token) in
@@ -36,11 +35,15 @@ class AuthViewModel: ObservableObject {
         }
     }
 
-    public func logOut()
+    public func logOut(environment: LoginEnvironment)
     {
-        self.tokenV3 = nil
-        self.tokenV4 = nil
-        AuthController.shared().logOut()
+        switch environment {
+        case .owner:
+            self.tokenV3 = nil
+        case .fleet:
+            self.tokenV4 = nil
+        }
+        AuthController.shared().logOut(environment: environment)
     }
     
     func setJwtToken(_ token: Token)
@@ -49,10 +52,19 @@ class AuthViewModel: ObservableObject {
         self.tokenV3 = token
     }
     
-    func acquireTokenSilent(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
+    func acquireTokenSilentV3(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
         AuthController.shared().acquireTokenV3Silent(forceRefresh: forceRefresh) { token in
             DispatchQueue.main.async {
                 self.tokenV3 = token
+            }
+            completion(token)
+        }
+    }
+
+    func acquireTokenSilentV4(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
+        AuthController.shared().acquireTokenV4Silent(forceRefresh: forceRefresh) { token in
+            DispatchQueue.main.async {
+                self.tokenV4 = token
             }
             completion(token)
         }
