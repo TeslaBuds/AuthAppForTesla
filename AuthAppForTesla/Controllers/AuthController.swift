@@ -144,15 +144,7 @@ class AuthController {
         }
     }
 
-    @available(*, deprecated, message: "Use async method instead")
-    fileprivate func oauthRenew(_ refreshToken: String, _ region: TokenRegion, retries: Int = 0, _ completion: @escaping (Token?) -> ()) {
-        Task {
-            let result = await oauthRenew(refreshToken, region, retries: retries)
-            completion(result)
-        }
-    }
-    
-    public func authenticateWeb(region: TokenRegion, redirectUrl: String, completion: @escaping (Result<Token, Error>) -> Void) -> AuthWebViewController? {
+    public func authenticateWebV3(region: TokenRegion, redirectUrl: String, completion: @escaping (Result<Token, Error>) -> Void) -> AuthWebViewController? {
         let authenticateUrl = getAuthByRegion(region: region)
         let codeRequest = AuthCodeRequest()
         

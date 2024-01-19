@@ -42,7 +42,7 @@ struct LoginViewSignInOwnersAPI: View {
     
     func authenticateV3() {
         DispatchQueue.main.async {
-            if let vc = AuthController.shared.authenticateWeb(region: self.region, redirectUrl: kTeslaRedirectUri, completion: { (result) in
+            if let vc = AuthController.shared.authenticateWebV3(region: self.region, redirectUrl: kTeslaRedirectUri, completion: { (result) in
                 switch result {
                 case .success:
                     Task {
