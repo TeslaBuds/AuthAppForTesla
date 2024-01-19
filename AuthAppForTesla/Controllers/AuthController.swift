@@ -248,12 +248,12 @@ class AuthController {
         var responseType: String = "code"
         var clientID = "ownerapi"
         var clientSecret = kTeslaSecret
-        var redirectURI = "tesla://auth/callback"
+        var redirectURI = kTeslaRedirectUri
         var scope = "openid email offline_access phone"
         let codeVerifier: String
         let codeChallenge: String
         var codeChallengeMethod = "S256"
-        var state = "WatchForTesla"
+        var state = "AuthAppForTesla"
         var isInApp = "true"
         var prompt = "login"
 

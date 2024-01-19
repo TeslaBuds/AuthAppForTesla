@@ -10,15 +10,11 @@ import Intents
 
 class AuthViewModel: ObservableObject {
     @Published var tokenV3: Token?
-//    @Published var tokenV2: Token?
     @Published var externalTokenRequest: ExternalTokenRequest?
     
     init() {
         AuthController.shared().acquireTokenV3Silent { (token) in
             self.tokenV3 = token
-//            AuthController.shared().acquireTokenSilent { (token) in
-//                self.tokenV2 = token
-//            }
         }
     }
     
@@ -28,15 +24,11 @@ class AuthViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self.tokenV3 = token
             }
-//            AuthController.shared().acquireTokenSilent(forceRefresh: true) { (token) in
-//                self.tokenV2 = token
-//            }
         }
     }
 
     public func logOut()
     {
-//        self.tokenV2 = nil
         self.tokenV3 = nil
         AuthController.shared().logOut()
     }
@@ -91,23 +83,4 @@ class AuthViewModel: ObservableObject {
             }
         }
     }
-    
-//    func donateOwnersAccessTokenInteraction() {
-//        let intent = GetOwnersAccessTokenIntent()
-//        
-//        intent.suggestedInvocationPhrase = "Get owners access token"
-//        
-//        let interaction = INInteraction(intent: intent, response: nil)
-//        
-//        interaction.donate { (error) in
-//            if error != nil {
-//                if let error = error as NSError? {
-//                    print("Interaction donation failed: \(error.description)")
-//                } else {
-//                    print("Successfully donated interaction")
-//                }
-//            }
-//        }
-//    }
-
 }
