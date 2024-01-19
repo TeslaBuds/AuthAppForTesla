@@ -42,7 +42,6 @@
 		EA63699F25CABA68000216BF /* KeychainWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63699D25CABA68000216BF /* KeychainWrapper.swift */; };
 		EA6369A725CAD79D000216BF /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6369A625CAD79D000216BF /* AuthViewModel.swift */; };
 		EA6D588625DDA02A007EC2B7 /* ViewControllerBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6D588525DDA02A007EC2B7 /* ViewControllerBridge.swift */; };
-		EA8B560727041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8B560627041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift */; };
 		EA9EA83325DA89EF002FE23E /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9EA83225DA89EF002FE23E /* Intents.framework */; };
 		EA9EA83625DA89EF002FE23E /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9EA83525DA89EF002FE23E /* IntentHandler.swift */; };
 		EA9EA83A25DA89EF002FE23E /* TokenIntents.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EA9EA83125DA89EF002FE23E /* TokenIntents.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -142,7 +141,6 @@
 		EA63699D25CABA68000216BF /* KeychainWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainWrapper.swift; sourceTree = "<group>"; };
 		EA6369A625CAD79D000216BF /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		EA6D588525DDA02A007EC2B7 /* ViewControllerBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerBridge.swift; sourceTree = "<group>"; };
-		EA8B560627041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetOwnersAccessTokenIntentHandler.swift; sourceTree = "<group>"; };
 		EA9EA7F725DA7E13002FE23E /* AuthAppForTesla.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AuthAppForTesla.entitlements; sourceTree = "<group>"; };
 		EA9EA83125DA89EF002FE23E /* TokenIntents.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TokenIntents.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA9EA83225DA89EF002FE23E /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
@@ -208,6 +206,7 @@
 				20CDC55525E1CC0F00E895C8 /* Home */,
 				20CDC54525E1B49300E895C8 /* Shared */,
 				20007B9C25E15E6E00958060 /* Login */,
+				EA63697325CAB11D000216BF /* RootView.swift */,
 				20CDC55325E1CC0A00E895C8 /* HomeView.swift */,
 				EAAB1D0F2B5A84D300AC5271 /* OwnersAPIView.swift */,
 				EAAB1D0D2B5A84D000AC5271 /* FleetAPIView.swift */,
@@ -311,7 +310,6 @@
 				EA63699D25CABA68000216BF /* KeychainWrapper.swift */,
 				EA63699B25CABA68000216BF /* SwiftKeychainWrapper.h */,
 				EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */,
-				EA63697325CAB11D000216BF /* RootView.swift */,
 				EA63697525CAB11D000216BF /* Assets.xcassets */,
 				EA63697A25CAB11D000216BF /* Info.plist */,
 				EA63697725CAB11D000216BF /* Preview Content */,
@@ -340,7 +338,6 @@
 				EA9EA83725DA89EF002FE23E /* Info.plist */,
 				EA9EA88725DAB808002FE23E /* GetRefreshTokenIntentHandler.swift */,
 				EA30D58926092DB800B21DE1 /* RefreshTokensIntentHandler.swift */,
-				EA8B560627041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift */,
 				EA9EA84A25DA8B1B002FE23E /* GetAccessTokenIntentHandler.swift */,
 			);
 			path = TokenIntents;
@@ -569,7 +566,6 @@
 				EAAB1D0C2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift in Sources */,
 				EAAB1D092B5A676700AC5271 /* NetworkController.swift in Sources */,
 				EA30D58A26092DB800B21DE1 /* RefreshTokensIntentHandler.swift in Sources */,
-				EA8B560727041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift in Sources */,
 				EAAB1D062B5A66DA00AC5271 /* AuthWebViewController.swift in Sources */,
 				EA9EA84B25DA8B1B002FE23E /* GetAccessTokenIntentHandler.swift in Sources */,
 				EA9EA86525DA9038002FE23E /* KeychainWrapper.swift in Sources */,
