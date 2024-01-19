@@ -20,8 +20,8 @@ struct RefreshTokens: AppIntent, CustomIntentMigratedAppIntent {
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<TokenResponseAppEntity> {
-        let tokenV3 = await AuthController.shared().acquireTokenV3Silent(forceRefresh: true)
-        let tokenV4 = await AuthController.shared().acquireTokenV4Silent(forceRefresh: true)
+        let tokenV3 = await AuthController.shared.acquireTokenV3Silent(forceRefresh: true)
+        let tokenV4 = await AuthController.shared.acquireTokenV4Silent(forceRefresh: true)
         if let token = tokenV3 ?? tokenV4
         {
             let tokenResponse = TokenResponseAppEntity()

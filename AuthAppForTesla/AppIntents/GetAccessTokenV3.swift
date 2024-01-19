@@ -20,7 +20,7 @@ struct GetAccessTokenV3: AppIntent, CustomIntentMigratedAppIntent {
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<TokenResponseAppEntity> {
-        if let token = await AuthController.shared().acquireTokenV3Silent()
+        if let token = await AuthController.shared.acquireTokenV3Silent()
         {
             let tokenResponse = TokenResponseAppEntity()
             tokenResponse.expiresAt = Calendar.current.dateComponents(

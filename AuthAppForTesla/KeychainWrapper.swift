@@ -204,14 +204,19 @@ open class KeychainWrapper {
     /// - parameter forKey: The key to lookup data for.
     /// - parameter withAccessibility: Optional accessibility to use when retrieving the keychain item.
     /// - returns: The decoded object associated with the key if it exists. If no data exists, or the data found cannot be decoded, returns nil.
+//    open func object(forKey key: String, withAccessibility accessibility: KeychainItemAccessibility? = nil) -> NSCoding? {
+//        guard let keychainData = data(forKey: key, withAccessibility: accessibility) else {
+//            return nil
+//        }
+//        //return NSKeyedUnarchiver.unarchiveObject(with: keychainData) as? NSCoding
+//        return try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(keychainData) as? NSCoding
+//    }
     open func object(forKey key: String, withAccessibility accessibility: KeychainItemAccessibility? = nil) -> NSCoding? {
         guard let keychainData = data(forKey: key, withAccessibility: accessibility) else {
             return nil
         }
-        //return NSKeyedUnarchiver.unarchiveObject(with: keychainData) as? NSCoding
-        return try? NSKeyedUnarchiver.unarchiveTopLevelObjectWithData(keychainData) as? NSCoding
+        return try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSNumber.self, from: keychainData)
     }
-
     
     /// Returns a Data object for a specified key.
     ///

@@ -84,22 +84,8 @@ class NetworkController {
         // Private initializer, so no accidental class instantiations outside singleton can happen
     }
 
-    func get(_ url: String, token: String? = nil, apiKey: String? = nil, completion: @escaping (_ result: DataResult) -> Void) {
-        Task {
-            let response = await get(url, token: token, apiKey: apiKey)
-            completion(response)
-        }
-    }
-
     func get(_ url: String, token: String? = nil, apiKey: String? = nil) async -> DataResult {
         return await execute(.get, url, parameters: nil, token: token, apiKey: apiKey)
-    }
-
-    func post(_ url: String, parameters: [String: Any]?, token: String? = nil, apiKey: String? = nil, completion: @escaping (_ result: DataResult) -> Void) {
-        Task {
-            let response = await post(url, parameters: parameters, token: token, apiKey: apiKey)
-            completion(response)
-        }
     }
 
     func post(_ url: String, parameters: [String: Any]?, token: String? = nil, apiKey: String? = nil) async -> DataResult {
