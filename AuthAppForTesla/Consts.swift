@@ -15,6 +15,7 @@ let kTokenV3 = "dk.kimhansen.TeslaAuth.TokenV3"
 let kRequestEventLog = "dk.kimhansen.TeslaAuth.RequestEventLog"
 let kXTeslaUserAgent = "TeslaApp/4.12.0/AuthAppForTesla"
 let kUserAgent = "AuthAppForTesla"
+let kTeslaReplyUrl = "tesla://auth/callback"// "https://auth.tesla.com/void/callback"
 
 let theme = mytheme()
 

@@ -8,6 +8,7 @@
 import Foundation
 import CryptoKit
 import SwiftDate
+import UIKit
 
 extension CGSize {
     var least: CGFloat {
@@ -129,43 +130,41 @@ func downloadLatestExternalApplicationList() {
     }.resume()
 }
 
-func logRequestEvent(message: String) {
-    var eventLog = [RequestEvent]()
-    if let requestEventLogJson = UserDefaults.standard.data(forKey: kRequestEventLog), let requestEventLog = try? JSONDecoder().decode([RequestEvent].self, from: requestEventLogJson)
-    {
-        eventLog = requestEventLog
+#if OAUTHAVAILABLE
+extension UIApplication {
+    @nonobjc static var topViewController: UIViewController? {
+        #if OAUTHAVAILABLE
+            return UIApplication.shared.topViewController
+        #else
+            return nil
+        #endif
     }
-    
-    eventLog.removeAll { (event) -> Bool in
-        event.when < Date.init().addingTimeInterval(TimeInterval(-60*60*12)) //25 hours
-    }
-    
-    let event = RequestEvent(id: Date.init(), when: Date.init(), message: message)
-    eventLog.append(event)
-    
-    if let requestEventLogJson = try? JSONEncoder().encode(eventLog) {
-        UserDefaults.standard.set(requestEventLogJson, forKey: kRequestEventLog)
-    }
-}
 
-func getRequestEventLog() -> [RequestEvent] {
-    var eventLog = [RequestEvent]()
-    if let requestEventLogJson = UserDefaults.standard.data(forKey: kRequestEventLog), let requestEventLog = try? JSONDecoder().decode([RequestEvent].self, from: requestEventLogJson)
-    {
-        eventLog = requestEventLog
-    }
-    
-    return eventLog
-}
-
-func getRequestEventText() -> String {
-    var eventLog = ""
-    if let backgroundEventLogJson = UserDefaults.standard.data(forKey: kRequestEventLog), let backgroundEventLog = try? JSONDecoder().decode([RequestEvent].self, from: backgroundEventLogJson)
-    {
-        for event in backgroundEventLog {
-            eventLog += "\(DateInRegion(event.when, region: Region.local).toString(DateToStringStyles.time(DateFormatter.Style.short))): \(event.message)\n"
+    var topViewController: UIViewController? {
+        guard let rootController = UIApplication.shared.connectedScenes.compactMap({ ($0 as? UIWindowScene)?.keyWindow }).first?.rootViewController else {
+            return nil
         }
+        return UIViewController.topViewController(rootController)
     }
-    
-    return eventLog
 }
+
+extension UIViewController {
+    static func topViewController(_ viewController: UIViewController) -> UIViewController {
+        guard let presentedViewController = viewController.presentedViewController else {
+            return viewController
+        }
+        #if !topVCCastDisabled
+            if let navigationController = presentedViewController as? UINavigationController {
+                if let visibleViewController = navigationController.visibleViewController {
+                    return topViewController(visibleViewController)
+                }
+            } else if let tabBarController = presentedViewController as? UITabBarController {
+                if let selectedViewController = tabBarController.selectedViewController {
+                    return topViewController(selectedViewController)
+                }
+            }
+        #endif
+        return topViewController(presentedViewController)
+    }
+}
+#endif

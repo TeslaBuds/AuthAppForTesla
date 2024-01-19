@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CryptoKit
 
 class AuthController {
     private static var sharedAuthController: AuthController = {
@@ -16,7 +17,7 @@ class AuthController {
     class func shared() -> AuthController {
         return sharedAuthController
     }
-
+    
     public func logOut()
     {
         KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
@@ -27,11 +28,10 @@ class AuthController {
     func setJwtToken(_ token: Token)
     {
         if let encodedToken = try? JSONEncoder().encode(token) {
-            logRequestEvent(message: "Setting V3 token from setJwtToken: \(encodedToken)")
             KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
         }
     }
-
+    
     func getV3Token() -> Data? {
         if let tokenJson = KeychainWrapper.global.data(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
         {
@@ -42,7 +42,7 @@ class AuthController {
         }
         return nil
     }
-
+    
     func acquireTokenV3Silent(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
         var token: Token?
         if let tokenJson = getV3Token()
@@ -55,14 +55,10 @@ class AuthController {
                 oauthRenew(token.refresh_token, token.region ?? .global) { (refreshedToken) in
                     if let refreshedToken = refreshedToken, let encodedToken = try? JSONEncoder().encode(refreshedToken)
                     {
-                        logRequestEvent(message: "Setting V3 token from acquireTokenV3Silent: \(encodedToken)")
                         KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-//                        self.tokenV3 = refreshedToken
                     }
                     else
                     {
-                        //self.logOut()
-                        logRequestEvent(message: "Acquire v3 token silent error: Unable to refresh token")
                         completion(nil)
                         return
                     }
@@ -73,123 +69,250 @@ class AuthController {
             completion(token)
             return
         }
-        logRequestEvent(message: "Acquire v3 token silent error: Token not found")
-//        self.logOut()
         completion(nil)
     }
-
-    func getAuthRegion(region: TokenRegion, completion: @escaping (_ result: String?) -> ()) {
+    
+    func getAuthByRegion(region: TokenRegion) -> String {
         switch region {
         case .global:
-            completion("https://auth.tesla.com/oauth2/v3/token")
-            return
-        case.china:
-            completion("https://auth.tesla.cn/oauth2/v3/token")
-            return
+            "https://auth.tesla.com"
+        case .china:
+            "https://auth.tesla.cn"
         }
     }
-
+    
     fileprivate func oauthRenew(_ refreshToken: String, _ region: TokenRegion, retries: Int = 0, _ completion: @escaping (Token?) -> ()) {
-        getAuthRegion(region: region) { (url) in
-            guard let url = url else { completion(nil); return }
-            
-            self.networkingAuth.headerFields = ["User-Agent": "TeslaWatch"]
-            self.networkingAuth.headerFields = ["X-Tesla-User-Agent": "TeslaWatch"]
-            self.networkingAuth.post(url, parameterType: .formURLEncoded, parameters:
-                [   "grant_type" : "refresh_token",
-                    "scope" : "openid email offline_access",
-                    "client_id" : "ownerapi",
-                    "client_secret" : kTeslaSecret,
-                    "refresh_token" : "\(refreshToken)"]
-            ) { result in
-                switch result {
-                case .success(let result):
-                    var token: Token? = nil
-                    if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
-                    let access_token = result.dictionaryBody["access_token"] as? String,
-                    let token_type = result.dictionaryBody["token_type"] as? String,
-                    let refresh_token = result.dictionaryBody["refresh_token"] as? String
-                    {
-                        let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
-
-                        token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
-                        if let encodedToken = try? JSONEncoder().encode(token) {
-                            logRequestEvent(message: "Setting V3 token from oauthRenew: \(encodedToken)")
-                            KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-//                            self.tokenV3 = token
-                        }
-                        if (refreshToken != refresh_token)
-                        {
-                            logRequestEvent(message: "Refresh token v3: Refresh token value updated during refresh")
-                        }
+        let url = getAuthByRegion(region: region)
+        
+        NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
+                                        ["grant_type": "refresh_token",
+                                         "scope": "openid email offline_access",
+                                         "client_id": "ownerapi",
+                                         "client_secret": kTeslaSecret,
+                                         "refresh_token": "\(refreshToken)"]) { result in
+            switch result {
+            case let .success(result):
+                var token: Token?
+                if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
+                   let access_token = result.dictionaryBody["access_token"] as? String,
+                   let token_type = result.dictionaryBody["token_type"] as? String,
+                   let refresh_token = result.dictionaryBody["refresh_token"] as? String {
+                    let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
+                    
+                    token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
+                    if let encodedToken = try? JSONEncoder().encode(token) {
+                        KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
                     }
-                    logRequestEvent(message: "Refresh token v3 success: \(token == nil ? "Token received but was invalid" : "True")")
-                    completion(token)
-                    return
-                case .failure(let error):
-                    // print("Error refreshing token: \(error)")
-                    if let stringData = String(data: error.data, encoding: .utf8) {
-                        logRequestEvent(message: "Error response body: \(stringData)")
+                    if refreshToken != refresh_token {
                     }
-
-                    if error.statusCode == 400
-                    {
-                        if retries < 3
-                        {
-                            logRequestEvent(message: "Refresh token v3 failure 400: retrying \(retries + 1)")
-                            self.oauthRenew(refreshToken, region, retries: retries + 1, completion)
-                            return
-                        }
-                        logRequestEvent(message: "Refresh token v3 failure 400: giving up")
-                        logRequestEvent(message: "Refresh token v3 error 400, removing token")
-                        logRequestEvent(message: "Removing V3 token from oauthRenew")
-                        KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-                    }
-                    else if error.statusCode == 401
-                    {
-                        if retries < 3
-                        {
-                            logRequestEvent(message: "Refresh token v3 failure 401: retrying \(retries + 1)")
-                            self.oauthRenew(refreshToken, region, retries: retries + 1, completion)
-                            return
-                        }
-                        logRequestEvent(message: "Refresh token v3 failure 401: giving up")
-                        logRequestEvent(message: "Refresh token v3 error 401, removing token")
-                        logRequestEvent(message: "Removing V3 token from oauthRenew")
-                        KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-                    }
-                    else if error.statusCode == 848
-                    {
-                        //Mystical SSL error
-                        logRequestEvent(message: "Refresh token v3 failure: SSL 848")
-                        if retries < 3
-                        {
-                            logRequestEvent(message: "Refresh token v3 failure: retrying \(retries + 1)")
-                            self.oauthRenew(refreshToken, region, retries: retries + 1, completion)
-                            return
-                        }
-                        logRequestEvent(message: "Refresh token v3 failure: giving up")
-                    }
-                    else
-                    {
-                        //19 - network connection was lost
-                        //23 - request timed out
-
-                        logRequestEvent(message: "Refresh token v3 error: \(error.headers["Www-Authenticate"] as? String ?? error.statusCode.description)")
-                        if retries < 3
-                        {
-                            logRequestEvent(message: "Refresh token v3 failure \(error.statusCode.description): retrying \(retries + 1)")
-                            self.oauthRenew(refreshToken, region, retries: retries + 1, completion)
-                            return
-                        }
-                        logRequestEvent(message: "Refresh token v3 failure: giving up")
-                        logRequestEvent(message: "Refresh token v3 failure: \(error.error.debugDescription)")
-                        //set offline - not logged out
-                        
-                    }
-                    completion(nil)
                 }
+                completion(token)
+                return
+            case let .failure(error):
+                if error.statusCode == 400 {
+                    if retries < 3 {
+                        self.oauthRenew(refreshToken, region, retries: retries + 1, completion)
+                        return
+                    }
+                    KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                } else if error.statusCode == 401 {
+                    if retries < 3 {
+                        self.oauthRenew(refreshToken, region, retries: retries + 1, completion)
+                        return
+                    }
+                    KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                } else if error.statusCode == 848 {
+                    // Mystical SSL error
+                    if retries < 3 {
+                        self.oauthRenew(refreshToken, region, retries: retries + 1, completion)
+                        return
+                    }
+                } else {
+                    // 19 - network connection was lost
+                    // 23 - request timed out
+                    
+                    if retries < 3 {
+                        self.oauthRenew(refreshToken, region, retries: retries + 1, completion)
+                        return
+                    }
+                    // set offline - not logged out
+                }
+                completion(nil)
             }
         }
+    }
+    
+    public func authenticateWeb(region: TokenRegion, redirectUrl: String, completion: @escaping (Result<Token, Error>) -> Void) -> AuthWebViewController? {
+        let authenticateUrl = getAuthByRegion(region: region)
+        let codeRequest = AuthCodeRequest()
+        
+        var urlComponents = URLComponents(string: authenticateUrl)
+        urlComponents?.path = "/oauth2/v3/authorize"
+        urlComponents?.queryItems = codeRequest.parameters()
+        
+        guard let safeUrlComponents = urlComponents else {
+            completion(Result.failure(TeslaError.authenticationFailed))
+            return nil
+        }
+        
+        let teslaWebLoginViewController = AuthWebViewController(url: safeUrlComponents.url!, redirectUrl: redirectUrl)
+        
+        teslaWebLoginViewController.result = { result in
+            switch result {
+            case let .success(url):
+                let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+                if let queryItems = urlComponents?.queryItems {
+                    for queryItem in queryItems {
+                        if queryItem.name == "code", let code = queryItem.value {
+                            self.oauthCode(code, codeRequest.codeVerifier, region) { token in
+                                if let token {
+                                    completion(.success(token))
+                                } else {
+                                    completion(.failure(TeslaError.authenticationFailed))
+                                }
+                            }
+                            return
+                        }
+                    }
+                }
+                completion(Result.failure(TeslaError.authenticationFailed))
+            case let .failure(error):
+                completion(Result.failure(error))
+            }
+        }
+        
+        return teslaWebLoginViewController
+    }
+    
+    fileprivate func oauthCode(_ code: String, _ codeVerifier: String, _ region: TokenRegion, retries: Int = 0, _ completion: @escaping (Token?) -> Void) {
+        let url = getAuthByRegion(region: region)
+        
+        NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
+                                        ["grant_type": "authorization_code",
+                                         "client_id": "ownerapi",
+                                         "client_secret": kTeslaSecret,
+                                         "code": code,
+                                         "redirect_uri": "tesla://auth/callback",
+                                         "code_verifier": codeVerifier,
+                                         "scope": "openid email offline_access phone"]) { result in
+            switch result {
+            case let .success(result):
+                var token: Token?
+                if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
+                   let access_token = result.dictionaryBody["access_token"] as? String,
+                   let token_type = result.dictionaryBody["token_type"] as? String,
+                   let refresh_token = result.dictionaryBody["refresh_token"] as? String {
+                    let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
+                    
+                    token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
+                    if let encodedToken = try? JSONEncoder().encode(token) {
+                        KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                    }
+                }
+                completion(token)
+                return
+            case .failure(let error):
+                if error.statusCode == 400 {
+                    if retries < 3 {
+                        self.oauthCode(code, codeVerifier, region, retries: retries + 1, completion)
+                        return
+                    }
+                    KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                } else if error.statusCode == 401 {
+                    if retries < 3 {
+                        self.oauthCode(code, codeVerifier, region, retries: retries + 1, completion)
+                        return
+                    }
+                    KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                } else if error.statusCode == 848 {
+                    // Mystical SSL error
+                    if retries < 3 {
+                        self.oauthCode(code, codeVerifier, region, retries: retries + 1, completion)
+                        return
+                    }
+                } else {
+                    // 19 - network connection was lost
+                    // 23 - request timed out
+                    if retries < 3 {
+                        self.oauthCode(code, codeVerifier, region, retries: retries + 1, completion)
+                        return
+                    }
+                    
+                }
+                completion(nil)
+            }
+        }
+    }
+    
+    class AuthCodeRequest: Encodable {
+        var responseType: String = "code"
+        var clientID = "ownerapi"
+        var clientSecret = kTeslaSecret
+        var redirectURI = "tesla://auth/callback"
+        var scope = "openid email offline_access phone"
+        let codeVerifier: String
+        let codeChallenge: String
+        var codeChallengeMethod = "S256"
+        var state = "WatchForTesla"
+        var isInApp = "true"
+        var prompt = "login"
+
+        init() {
+            codeVerifier = "".codeVerifier
+            codeChallenge = codeVerifier.challenge
+        }
+
+        // MARK: Codable protocol
+
+        enum CodingKeys: String, CodingKey {
+            typealias RawValue = String
+
+            case clientID = "client_id"
+            case redirectURI = "redirect_uri"
+            case responseType = "response_type"
+            case scope
+            case codeChallenge = "code_challenge"
+            case codeChallengeMethod = "code_challenge_method"
+            case state
+            case isInApp = "is_in_app"
+            case prompt
+        }
+
+        func parameters() -> [URLQueryItem] {
+            [
+                URLQueryItem(name: CodingKeys.clientID.rawValue, value: clientID),
+                URLQueryItem(name: CodingKeys.redirectURI.rawValue, value: redirectURI),
+                URLQueryItem(name: CodingKeys.responseType.rawValue, value: responseType),
+                URLQueryItem(name: CodingKeys.scope.rawValue, value: scope),
+                URLQueryItem(name: CodingKeys.codeChallenge.rawValue, value: codeChallenge),
+                URLQueryItem(name: CodingKeys.codeChallengeMethod.rawValue, value: codeChallengeMethod),
+                URLQueryItem(name: CodingKeys.state.rawValue, value: state),
+                URLQueryItem(name: CodingKeys.isInApp.rawValue, value: isInApp),
+                URLQueryItem(name: CodingKeys.prompt.rawValue, value: prompt)
+            ]
+        }
+    }
+}
+
+extension String {
+    var codeVerifier: String {
+        let verifier = "\(Date().toISO())\(Date().toISO())\(Date().toISO())".data(using: .utf8)!.base64EncodedString()
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
+            .trimmingCharacters(in: .whitespaces)
+            .prefix(43)
+        return String(verifier)
+    }
+
+    var challenge: String {
+        let data = Data(utf8)
+        let hash = SHA256.hash(data: data)
+        let base64 = Data(hash).base64EncodedString()
+        let urlSafe = base64
+            .replacingOccurrences(of: "+", with: "-")
+            .replacingOccurrences(of: "/", with: "_")
+            .replacingOccurrences(of: "=", with: "")
+        return urlSafe
     }
 }

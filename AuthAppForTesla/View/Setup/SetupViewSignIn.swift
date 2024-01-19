@@ -13,15 +13,6 @@ struct SetupViewSignIn: View {
     @State var region: TokenRegion = .global
     
     var body: some View {
-        
-        // unfortunately the "onAppear modifier" is not called "properly"
-        // therefore we have this ugly workaround here
-        if model.externalTokenRequest != nil {
-            DispatchQueue.main.async {
-                self.authenticateV3()
-            }
-        }
-        
         return VStack {
             
             
@@ -32,14 +23,6 @@ struct SetupViewSignIn: View {
                 }
             }
             .pickerStyle(SegmentedPickerStyle())
-            
-            //            Picker(selection: $region, label: Text("Region: \(self.region.rawValue.capitalized)").frame(maxWidth: .infinity).foregroundColor(Color("TeslaRed"))) {
-            //                ForEach(TokenRegion.allCases) { region in
-            //                    Text("\(region.rawValue.capitalized)").tag(region)
-            //                }
-            //            }
-            //            .pickerStyle(MenuPickerStyle())
-            //            .frame(maxWidth: .infinity)
             .padding(.bottom, 10)
             Button("Sign in with Tesla", action: {
 #if DEBUG
@@ -71,103 +54,29 @@ struct SetupViewSignIn: View {
         .padding(.vertical, 20)
     }
     
-    var oauthswiftGlobal = OAuth2Swift(
-        consumerKey: "ownerapi",
-        consumerSecret: kTeslaSecret,
-        authorizeUrl: "https://auth.tesla.com/oauth2/v3/authorize",
-        accessTokenUrl: "",
-        responseType: "code"
-    )
-    
-    var oauthswiftChina = OAuth2Swift(
-        consumerKey: "ownerapi",
-        consumerSecret: kTeslaSecret,
-        authorizeUrl: "https://auth.tesla.cn/oauth2/v3/authorize",
-        accessTokenUrl: "",
-        responseType: "code"
-    )
-    
-    private func verifier() -> String {
-        let verifier = "\(Date().toISO())\(Date().toISO())\(Date().toISO())".data(using: .utf8)!.base64EncodedString()
-            .replacingOccurrences(of: "+", with: "-")
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: "=", with: "")
-            .trimmingCharacters(in: .whitespaces)
-            .prefix(43)
-        return String(verifier)
-
-//        let verifier = key.data(using: .utf8)!.base64EncodedString()
-//            .replacingOccurrences(of: "+", with: "-")
-//            .replacingOccurrences(of: "/", with: "_")
-//            .replacingOccurrences(of: "=", with: "")
-//            .trimmingCharacters(in: .whitespaces)
-//        return verifier
-    }
-    
-    private func challenge(forVerifier verifier: String) -> String {
-        let data = Data(verifier.utf8)
-        let hash = SHA256.hash(data: data)
-        let base64 = Data(hash).base64EncodedString()
-        let urlSafe = base64
-            .replacingOccurrences(of: "+", with: "-")
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: "=", with: "")
-        return urlSafe
-    }
-    
-    
-    var credential: OAuthSwiftCredential?
-    
-    var oauthswift: OAuth2Swift {
-        switch self.region {
-        case .global:
-            return oauthswiftGlobal
-        case.china:
-            return oauthswiftChina
-        }
-    }
-    
     func authenticateV3() {
-        
-        AuthController.shared().getAuthRegion(region: self.region) { (url) in
-            guard let url = url else { return }
-            
-            oauthswift.accessTokenUrl = url
-            
-            DispatchQueue.main.async {
-                let codeVerifier = self.verifier()
-                let codeChallenge = self.challenge(forVerifier: codeVerifier)
-                
-                let internalController = AuthWebViewController()
-                oauthswift.authorizeURLHandler = internalController
-                let state = generateState(withLength: 20)
-                
-                oauthswift.authorize(withCallbackURL: "https://auth.tesla.com/void/callback", scope: "openid email offline_access", state: state, codeChallenge: codeChallenge, codeChallengeMethod: "S256", codeVerifier: codeVerifier) { result in
-                    switch result {
-                    case .success(let (credential, _, _)):
-                        print(credential.oauthToken)
-                        
-                        let token = Token(access_token: credential.oauthToken, token_type: "bearer", expires_in: 300, refresh_token: credential.oauthRefreshToken, expires_at: credential.oauthTokenExpiresAt, region: self.region)//  Date().addingTimeInterval(TimeInterval(3888000))) //credential.oauthTokenExpiresAt ??
-                        model.setJwtToken(token)
-                        model.acquireTokenSilent(forceRefresh: true) { (token) in
-                        }
-                        
-                        if let externalTokenRequest = model.externalTokenRequest {
-                            
-                            let responseURLString = String(format: externalTokenRequest.appDescription.responseURLTemplate,
-                                                     token.refresh_token,
-                                                     externalTokenRequest.appData)
-                            if let responseURL = URL(string: responseURLString) {
-                                UIApplication.shared.open(responseURL)
-                            }
-                        }
-                    case .failure(let error):
-                        print(error)
+        DispatchQueue.main.async {
+            if let vc = AuthController.shared().authenticateWeb(region: self.region, redirectUrl: kTeslaReplyUrl, completion: { (result) in
+                switch result {
+                case .success(let token):
+                    model.acquireTokenSilent(forceRefresh: true) { (token) in
                     }
-                    model.externalTokenRequest = nil
+                    
+                    if let externalTokenRequest = model.externalTokenRequest {
+                        
+                        let responseURLString = String(format: externalTokenRequest.appDescription.responseURLTemplate,
+                                                 token.refresh_token,
+                                                 externalTokenRequest.appData)
+                        if let responseURL = URL(string: responseURLString) {
+                            UIApplication.shared.open(responseURL)
+                        }
+                    }
+                case .failure(let error):
+                    print("Authenticate V3 error: \(error.localizedDescription)")
                 }
+            }) {
+                UIApplication.topViewController?.present(vc, animated: true, completion: nil)
             }
-            
         }
     }
 }

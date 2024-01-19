@@ -25,7 +25,9 @@ class AuthViewModel: ObservableObject {
     public func refreshAll()
     {
         AuthController.shared().acquireTokenV3Silent(forceRefresh: true) { (token) in
-            self.tokenV3 = token
+            DispatchQueue.main.async {
+                self.tokenV3 = token
+            }
 //            AuthController.shared().acquireTokenSilent(forceRefresh: true) { (token) in
 //                self.tokenV2 = token
 //            }
@@ -47,7 +49,9 @@ class AuthViewModel: ObservableObject {
     
     func acquireTokenSilent(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
         AuthController.shared().acquireTokenV3Silent(forceRefresh: forceRefresh) { token in
-            self.tokenV3 = token
+            DispatchQueue.main.async {
+                self.tokenV3 = token
+            }
             completion(token)
         }
     }
