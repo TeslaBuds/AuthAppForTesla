@@ -15,12 +15,12 @@ let kTokenV3 = "dk.kimhansen.TeslaAuth.TokenV3"
 let kRequestEventLog = "dk.kimhansen.TeslaAuth.RequestEventLog"
 let kXTeslaUserAgent = "TeslaApp/4.12.0/AuthAppForTesla"
 let kUserAgent = "AuthAppForTesla"
-let kTeslaRedirectUri = "tesla://auth/callback"// "https://auth.tesla.com/void/callback"
+let kTeslaRedirectUri = "tesla://auth/callback"
 
 let theme = mytheme()
 
 struct mytheme {
-    let backgroundColor2 = UIColor(named: "backgroundColor2")!//UIColor(red: 0.1, green: 0.1, blue: 0.1, alpha: 1.00)
+    let backgroundColor2 = UIColor(named: "backgroundColor2")!
     let opacity2 = 0.7
     let shadow: CGFloat = 4
 }
