@@ -227,6 +227,14 @@ extension AuthController {
         return nil
     }
 
+    func acquireTokenV4Silent(forceRefresh: Bool = false) async -> Token? {
+        return await withCheckedContinuation { continuation in
+            acquireTokenV3Silent(forceRefresh: forceRefresh) { token in
+                continuation.resume(returning: token)
+            }
+        }
+    }
+    
     func acquireTokenV4Silent(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> Void) {
         if let token = v4Token {
             if (forceRefresh || token.expires_at ?? Date() <= Date().addingTimeInterval(60)) {

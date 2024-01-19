@@ -50,6 +50,14 @@ class AuthController {
         return nil
     }
     
+    func acquireTokenV3Silent(forceRefresh: Bool = false) async -> Token? {
+        return await withCheckedContinuation { continuation in
+            acquireTokenV3Silent(forceRefresh: forceRefresh) { token in
+                continuation.resume(returning: token)
+            }
+        }
+    }
+    
     func acquireTokenV3Silent(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
         var token: Token?
         if let tokenJson = getV3Token()

@@ -69,6 +69,12 @@
 		EAAB1D102B5A84D300AC5271 /* OwnersAPIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D0F2B5A84D300AC5271 /* OwnersAPIView.swift */; };
 		EAAB1D122B5A893900AC5271 /* LoginViewSignInOwnersAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D112B5A893900AC5271 /* LoginViewSignInOwnersAPI.swift */; };
 		EAAB1D142B5A893B00AC5271 /* LoginViewSignInFleetAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D132B5A893B00AC5271 /* LoginViewSignInFleetAPI.swift */; };
+		EAAB1D1A2B5AA6D200AC5271 /* GetRefreshTokenV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D162B5AA6D200AC5271 /* GetRefreshTokenV3.swift */; };
+		EAAB1D1B2B5AA6D200AC5271 /* GetAccessTokenV3.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D172B5AA6D200AC5271 /* GetAccessTokenV3.swift */; };
+		EAAB1D1C2B5AA6D200AC5271 /* RefreshTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D182B5AA6D200AC5271 /* RefreshTokens.swift */; };
+		EAAB1D1D2B5AA6D200AC5271 /* TokenResponseAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D192B5AA6D200AC5271 /* TokenResponseAppEntity.swift */; };
+		EAAB1D212B5AAC7E00AC5271 /* GetAccessTokenV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D202B5AAC7E00AC5271 /* GetAccessTokenV4.swift */; };
+		EAAB1D222B5AAC7E00AC5271 /* GetRefreshTokenV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D1F2B5AAC7E00AC5271 /* GetRefreshTokenV4.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -156,6 +162,12 @@
 		EAAB1D0F2B5A84D300AC5271 /* OwnersAPIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OwnersAPIView.swift; sourceTree = "<group>"; };
 		EAAB1D112B5A893900AC5271 /* LoginViewSignInOwnersAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewSignInOwnersAPI.swift; sourceTree = "<group>"; };
 		EAAB1D132B5A893B00AC5271 /* LoginViewSignInFleetAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewSignInFleetAPI.swift; sourceTree = "<group>"; };
+		EAAB1D162B5AA6D200AC5271 /* GetRefreshTokenV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRefreshTokenV3.swift; sourceTree = "<group>"; };
+		EAAB1D172B5AA6D200AC5271 /* GetAccessTokenV3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAccessTokenV3.swift; sourceTree = "<group>"; };
+		EAAB1D182B5AA6D200AC5271 /* RefreshTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshTokens.swift; sourceTree = "<group>"; };
+		EAAB1D192B5AA6D200AC5271 /* TokenResponseAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenResponseAppEntity.swift; sourceTree = "<group>"; };
+		EAAB1D1F2B5AAC7E00AC5271 /* GetRefreshTokenV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRefreshTokenV4.swift; sourceTree = "<group>"; };
+		EAAB1D202B5AAC7E00AC5271 /* GetAccessTokenV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetAccessTokenV4.swift; sourceTree = "<group>"; };
 		EAFF01A6273466F200BB0AB4 /* title.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = title.strings; path = Screenshots/title.strings; sourceTree = "<group>"; };
 		EAFF01A72734670800BB0AB4 /* keyword.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = keyword.strings; path = Screenshots/keyword.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -303,6 +315,7 @@
 		EA63697025CAB11D000216BF /* AuthAppForTesla */ = {
 			isa = PBXGroup;
 			children = (
+				EAAB1D1E2B5AA6DA00AC5271 /* AppIntents */,
 				EAAB1D052B5A66B800AC5271 /* Controllers */,
 				20007B9925E15E3800958060 /* View */,
 				EA9EA7F725DA7E13002FE23E /* AuthAppForTesla.entitlements */,
@@ -352,6 +365,19 @@
 				EAAB1D072B5A676700AC5271 /* NetworkController.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		EAAB1D1E2B5AA6DA00AC5271 /* AppIntents */ = {
+			isa = PBXGroup;
+			children = (
+				EAAB1D162B5AA6D200AC5271 /* GetRefreshTokenV3.swift */,
+				EAAB1D172B5AA6D200AC5271 /* GetAccessTokenV3.swift */,
+				EAAB1D1F2B5AAC7E00AC5271 /* GetRefreshTokenV4.swift */,
+				EAAB1D202B5AAC7E00AC5271 /* GetAccessTokenV4.swift */,
+				EAAB1D182B5AA6D200AC5271 /* RefreshTokens.swift */,
+				EAAB1D192B5AA6D200AC5271 /* TokenResponseAppEntity.swift */,
+			);
+			path = AppIntents;
 			sourceTree = "<group>";
 		};
 		EAFF01A5273466E300BB0AB4 /* Screenshots */ = {
@@ -523,6 +549,7 @@
 				20CDC55725E1D11600E895C8 /* AboutView.swift in Sources */,
 				EA6369A725CAD79D000216BF /* AuthViewModel.swift in Sources */,
 				EA9EA87325DAAF25002FE23E /* AuthController.swift in Sources */,
+				EAAB1D212B5AAC7E00AC5271 /* GetAccessTokenV4.swift in Sources */,
 				EA63699F25CABA68000216BF /* KeychainWrapper.swift in Sources */,
 				EA63697425CAB11D000216BF /* RootView.swift in Sources */,
 				EAAB1D102B5A84D300AC5271 /* OwnersAPIView.swift in Sources */,
@@ -531,13 +558,16 @@
 				20F8775F25E2F67800953E51 /* LicenseView.swift in Sources */,
 				20CDC54D25E1C27E00E895C8 /* LoginViewSignIn.swift in Sources */,
 				EAAB1D122B5A893900AC5271 /* LoginViewSignInOwnersAPI.swift in Sources */,
+				EAAB1D1C2B5AA6D200AC5271 /* RefreshTokens.swift in Sources */,
 				EA63698C25CAB620000216BF /* Consts.swift in Sources */,
 				EAAB1D082B5A676700AC5271 /* NetworkController.swift in Sources */,
 				20F8775825E2D9DA00953E51 /* HomeViewHeader.swift in Sources */,
 				20CDC54B25E1C21C00E895C8 /* LoginViewFooter.swift in Sources */,
 				EA63698F25CAB660000216BF /* Util.swift in Sources */,
 				20CDC55A25E1D13600E895C8 /* AboutViewHeader.swift in Sources */,
+				EAAB1D1B2B5AA6D200AC5271 /* GetAccessTokenV3.swift in Sources */,
 				20CDC55E25E1D3B800E895C8 /* AboutViewFriend.swift in Sources */,
+				EAAB1D1A2B5AA6D200AC5271 /* GetRefreshTokenV3.swift in Sources */,
 				20F8776125E2F73800953E51 /* LicenseViewEntry.swift in Sources */,
 				EAAB1D0B2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift in Sources */,
 				20F8775C25E2DA5300953E51 /* HomeViewRefreshToken.swift in Sources */,
@@ -546,9 +576,11 @@
 				EAAB1D142B5A893B00AC5271 /* LoginViewSignInFleetAPI.swift in Sources */,
 				EAAB1D0E2B5A84D000AC5271 /* FleetAPIView.swift in Sources */,
 				EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */,
+				EAAB1D1D2B5AA6D200AC5271 /* TokenResponseAppEntity.swift in Sources */,
 				EA63699E25CABA68000216BF /* KeychainItemAccessibility.swift in Sources */,
 				20007B9B25E15E6B00958060 /* LoginView.swift in Sources */,
 				20CDC54925E1C1AB00E895C8 /* LoginViewHeader.swift in Sources */,
+				EAAB1D222B5AAC7E00AC5271 /* GetRefreshTokenV4.swift in Sources */,
 				EA63698925CAB3EF000216BF /* AuthWebViewController.swift in Sources */,
 				20CDC55C25E1D26700E895C8 /* AboutViewFooter.swift in Sources */,
 			);

@@ -70,39 +70,39 @@ class AuthViewModel: ObservableObject {
         }
     }
 
-    func donateRefreshTokenInteraction() {
-        let intent = GetRefreshTokenIntent()
-        
-        intent.suggestedInvocationPhrase = "Get refresh token"
-        
-        let interaction = INInteraction(intent: intent, response: nil)
-        
-        interaction.donate { (error) in
-            if error != nil {
-                if let error = error as NSError? {
-                    print("Interaction donation failed: \(error.description)")
-                } else {
-                    print("Successfully donated interaction")
-                }
-            }
-        }
-    }
-
-    func donateAccessTokenInteraction() {
-        let intent = GetAccessTokenIntent()
-        
-        intent.suggestedInvocationPhrase = "Get access token"
-        
-        let interaction = INInteraction(intent: intent, response: nil)
-        
-        interaction.donate { (error) in
-            if error != nil {
-                if let error = error as NSError? {
-                    print("Interaction donation failed: \(error.description)")
-                } else {
-                    print("Successfully donated interaction")
-                }
-            }
-        }
-    }
+//    func donateRefreshTokenInteraction() {
+//        let intent = GetRefreshTokenIntent()
+//        
+//        intent.suggestedInvocationPhrase = "Get refresh token"
+//        
+//        let interaction = INInteraction(intent: intent, response: nil)
+//        
+//        interaction.donate { (error) in
+//            if error != nil {
+//                if let error = error as NSError? {
+//                    print("Interaction donation failed: \(error.description)")
+//                } else {
+//                    print("Successfully donated interaction")
+//                }
+//            }
+//        }
+//    }
+//
+//    func donateAccessTokenInteraction() {
+//        let intent = GetAccessTokenIntent()
+//        
+//        intent.suggestedInvocationPhrase = "Get access token"
+//        
+//        let interaction = INInteraction(intent: intent, response: nil)
+//        
+//        interaction.donate { (error) in
+//            if error != nil {
+//                if let error = error as NSError? {
+//                    print("Interaction donation failed: \(error.description)")
+//                } else {
+//                    print("Successfully donated interaction")
+//                }
+//            }
+//        }
+//    }
 }
