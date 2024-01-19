@@ -21,7 +21,6 @@ class AuthController {
     public func logOut()
     {
         KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-        KeychainWrapper.global.removeObject(forKey: kTokenV2, withAccessibility: .afterFirstUnlock)
         KeychainWrapper.global.removeAllKeys()
     }
     

@@ -64,6 +64,8 @@
 		EAAB1D062B5A66DA00AC5271 /* AuthWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63698825CAB3EF000216BF /* AuthWebViewController.swift */; };
 		EAAB1D082B5A676700AC5271 /* NetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D072B5A676700AC5271 /* NetworkController.swift */; };
 		EAAB1D092B5A676700AC5271 /* NetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D072B5A676700AC5271 /* NetworkController.swift */; };
+		EAAB1D0B2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D0A2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift */; };
+		EAAB1D0C2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D0A2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -147,6 +149,7 @@
 		EA9EA87625DAB3B0002FE23E /* TokenIntents.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TokenIntents.entitlements; sourceTree = "<group>"; };
 		EA9EA88725DAB808002FE23E /* GetRefreshTokenIntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetRefreshTokenIntentHandler.swift; sourceTree = "<group>"; };
 		EAAB1D072B5A676700AC5271 /* NetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkController.swift; sourceTree = "<group>"; };
+		EAAB1D0A2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthController+FleetAPI.swift"; sourceTree = "<group>"; };
 		EAFF01A6273466F200BB0AB4 /* title.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = title.strings; path = Screenshots/title.strings; sourceTree = "<group>"; };
 		EAFF01A72734670800BB0AB4 /* keyword.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = keyword.strings; path = Screenshots/keyword.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -335,6 +338,7 @@
 			isa = PBXGroup;
 			children = (
 				EA9EA86D25DAAAA6002FE23E /* AuthController.swift */,
+				EAAB1D0A2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift */,
 				EA63698825CAB3EF000216BF /* AuthWebViewController.swift */,
 				EAAB1D072B5A676700AC5271 /* NetworkController.swift */,
 			);
@@ -524,6 +528,7 @@
 				20CDC55A25E1D13600E895C8 /* AboutViewHeader.swift in Sources */,
 				20CDC55E25E1D3B800E895C8 /* AboutViewFriend.swift in Sources */,
 				20F8776125E2F73800953E51 /* LicenseViewEntry.swift in Sources */,
+				EAAB1D0B2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift in Sources */,
 				20F8775C25E2DA5300953E51 /* HomeViewRefreshToken.swift in Sources */,
 				20CDC55425E1CC0A00E895C8 /* HomeView.swift in Sources */,
 				EA63699225CAB6A8000216BF /* Models.swift in Sources */,
@@ -545,6 +550,7 @@
 				EA9EA88825DAB808002FE23E /* GetRefreshTokenIntentHandler.swift in Sources */,
 				EA9EA86925DA9044002FE23E /* Consts.swift in Sources */,
 				EA1A3344272D8DED00B66EB0 /* Intents.intentdefinition in Sources */,
+				EAAB1D0C2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift in Sources */,
 				EAAB1D092B5A676700AC5271 /* NetworkController.swift in Sources */,
 				EA30D58A26092DB800B21DE1 /* RefreshTokensIntentHandler.swift in Sources */,
 				EA8B560727041EF30000C325 /* GetOwnersAccessTokenIntentHandler.swift in Sources */,
