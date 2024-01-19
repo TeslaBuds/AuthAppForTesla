@@ -11,9 +11,9 @@ struct LicenseView: View {
     var body: some View {
         ScrollView {
         VStack {
-                LicenseViewEntry(author: "Elvis Nuñez", name: "Networking", link: "https://github.com/3lvis/Networking", license: mitLicense)
-                LicenseViewEntry(author: "Dongri Jin", name: "OAuthSwift", link: "https://github.com/OAuthSwift/OAuthSwift", license: mitLicense)
+                LicenseViewEntry(author: "Marcin Krzyżanowski", name: "CryptoSwift", link: "https://github.com/krzyzanowskim/CryptoSwift", license: mitLicense)
                 LicenseViewEntry(author: "Daniele Margutti", name: "SwiftDate", link: "https://github.com/malcommac/SwiftDate", license: mitLicense)
+                LicenseViewEntry(author: "Jason Rendel", name: "SwiftKeychainWrapper", link: "https://github.com/jrendel/SwiftKeychainWrapper", license: mitLicense)
             }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
         }
     }

@@ -40,11 +40,11 @@ struct AuthAppForTeslaApp: App {
         downloadLatestExternalApplicationList()
         return WindowGroup {
             let model = AuthViewModel()
-            ContentView(model: model)
+            RootView(model: model)
                 .navigationViewStyle(StackNavigationViewStyle())
-                .onOpenURL() { url in
-                    handleUniversalLink(url, model)
-                }
+//                .onOpenURL() { url in
+//                    handleUniversalLink(url, model)
+//                }
         }
     }
     

@@ -30,7 +30,7 @@ struct AboutViewHeader: View {
                 .padding(.bottom, 0.5)
             Text("v. \(version) build \(build)")
                 .font(.system(size: 15, weight: .semibold, design: .default))
-            Text("© 2021 Kim Hansen, Michael Teuscher")
+            Text("© 2024 Kim Hansen, Michael Teuscher")
                 .font(.system(size: 15, weight: .semibold, design: .default))
             
 //            VStack {

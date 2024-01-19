@@ -27,3 +27,8 @@ struct RequestEvent : Codable, Identifiable {
     let when: Date
     let message: String
 }
+
+enum LoginEnvironment {
+    case owner
+    case fleet
+}
