@@ -79,15 +79,7 @@ class AuthController {
         }
         return nil
     }
-    
-    @available(*, deprecated, message: "Use async method instead")
-    func acquireTokenV3Silent(forceRefresh: Bool = false, _ completion: @escaping (Token?) -> ()) {
-        Task {
-            let result = await acquireTokenV3Silent(forceRefresh: forceRefresh)
-            completion(result)
-        }
-    }
-    
+   
     func getAuthByRegion(region: TokenRegion) -> String {
         switch region {
         case .global:
