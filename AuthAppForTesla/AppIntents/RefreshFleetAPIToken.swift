@@ -9,9 +9,9 @@ import Foundation
 import AppIntents
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
-struct RefreshTokensV4: AppIntent {
+struct RefreshFleetAPIToken: AppIntent {
     static var title: LocalizedStringResource = "Refresh Fleet API Token"
-    static var description = IntentDescription("Refreshes Fleet API token, returns refreshed access token.", categoryName: "Fleet API")
+    static var description = IntentDescription("Refreshes Fleet API token, returns refreshed token.", categoryName: "Fleet API")
 
     static var parameterSummary: some ParameterSummary {
         Summary("Refresh Tokens")
@@ -22,17 +22,7 @@ struct RefreshTokensV4: AppIntent {
         let tokenV4 = await AuthController.shared.acquireTokenV4Silent(forceRefresh: true)
         if let token = tokenV3 ?? tokenV4
         {
-            let tokenResponse = TokenResponseAppEntity()
-            tokenResponse.expiresAt = Calendar.current.dateComponents(
-                [.calendar, .timeZone,
-                 .era, .quarter,
-                 .year, .month, .day,
-                 .hour, .minute, .second, .nanosecond,
-                 .weekday, .weekdayOrdinal,
-                 .weekOfMonth, .weekOfYear, .yearForWeekOfYear],
-                from: token.expires_at ?? Date.distantPast)
-            tokenResponse.region = token.region?.rawValue
-            tokenResponse.token = token.access_token
+            let tokenResponse = TokenResponseAppEntity(token: token)
             return .result(value: tokenResponse)
         }
         else
