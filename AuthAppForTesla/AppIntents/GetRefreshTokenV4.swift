@@ -11,7 +11,7 @@ import AppIntents
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
 struct GetRefreshTokenV4: AppIntent {
     static var title: LocalizedStringResource = "Get Fleet API Refresh Token"
-    static var description = IntentDescription("Returns the Fleet API refresh token")
+    static var description = IntentDescription("Returns the Fleet API refresh token", categoryName: "Fleet API")
 
     static var parameterSummary: some ParameterSummary {
         Summary("Get Fleet API Refresh Token")

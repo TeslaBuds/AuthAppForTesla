@@ -9,11 +9,9 @@ import Foundation
 import AppIntents
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
-struct RefreshTokens: AppIntent, CustomIntentMigratedAppIntent {
-    static let intentClassName = "RefreshTokensIntent"
-
-    static var title: LocalizedStringResource = "Refresh Tokens"
-    static var description = IntentDescription("Refreshes all tokens, returns refreshed access token with priority given to Owners API if both are available.")
+struct RefreshTokensV4: AppIntent {
+    static var title: LocalizedStringResource = "Refresh Fleet API Token"
+    static var description = IntentDescription("Refreshes Fleet API token, returns refreshed access token.", categoryName: "Fleet API")
 
     static var parameterSummary: some ParameterSummary {
         Summary("Refresh Tokens")

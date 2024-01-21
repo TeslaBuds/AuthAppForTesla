@@ -1,5 +1,5 @@
 //
-//  GetAccessToken.swift
+//  RefreshTokens.swift
 //  AuthAppForTesla
 //
 //  Created by Kim Hansen on 19/01/2024.
@@ -9,16 +9,18 @@ import Foundation
 import AppIntents
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
-struct GetAccessTokenV3: AppIntent {
-    static var title: LocalizedStringResource = "Get Owners API Access Token"
-    static var description = IntentDescription("Returns the Owners API access token", categoryName: "Owners API")
+struct RefreshTokensV3: AppIntent {
+    static var title: LocalizedStringResource = "Refresh Owners API Token"
+    static var description = IntentDescription("Refreshes Owners API token, returns refreshed access token.", categoryName: "Owners API")
 
     static var parameterSummary: some ParameterSummary {
-        Summary("Get Owners API Access Token")
+        Summary("Refresh Tokens")
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<TokenResponseAppEntity> {
-        if let token = await AuthController.shared.acquireTokenV3Silent()
+        let tokenV3 = await AuthController.shared.acquireTokenV3Silent(forceRefresh: true)
+        let tokenV4 = await AuthController.shared.acquireTokenV4Silent(forceRefresh: true)
+        if let token = tokenV3 ?? tokenV4
         {
             let tokenResponse = TokenResponseAppEntity()
             tokenResponse.expiresAt = Calendar.current.dateComponents(
@@ -42,11 +44,11 @@ struct GetAccessTokenV3: AppIntent {
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
 fileprivate extension IntentDialog {
-    static func responseSuccess(token: TokenResponseAppEntity) -> Self {
-        "Got access token"
+    static var responseSuccess: Self {
+        "Refreshed tokens"
     }
     static var responseFailure: Self {
-        "Could not get access token"
+        "Could not refresh tokens"
     }
 }
 

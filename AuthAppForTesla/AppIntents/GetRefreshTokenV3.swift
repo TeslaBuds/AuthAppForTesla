@@ -9,11 +9,9 @@ import Foundation
 import AppIntents
 
 @available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
-struct GetRefreshTokenV3: AppIntent, CustomIntentMigratedAppIntent {
-    static let intentClassName = "GetRefreshTokenIntent"
-
+struct GetRefreshTokenV3: AppIntent {
     static var title: LocalizedStringResource = "Get Owners API Refresh Token"
-    static var description = IntentDescription("Returns the Owners API refresh token")
+    static var description = IntentDescription("Returns the Owners API refresh token", categoryName: "Owners API")
 
     static var parameterSummary: some ParameterSummary {
         Summary("Get Owners API Refresh Token")
