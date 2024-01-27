@@ -73,7 +73,9 @@ struct RootView: View {
                     .tag(2)
             }
         }
-        
+        .onAppear(perform: {
+            model.refreshAll()
+        })
     }
     
 }
