@@ -7,21 +7,28 @@
 
 import SwiftUI
 
+enum TokenType {
+    case accessToken
+    case refreshToken
+}
+
 struct HomeViewToken: View {
-    let action: () -> Void
+//    let action: () -> Void
     let title: String
     let description: String
-    let token: String?
+    let token: Token?
+    let tokenTypeToShow: TokenType
+    let loginEnvironment: LoginEnvironment
     
     @State private var fontSize: CGFloat = 32
     @State private var checkOpacity: Double = 0
     
-    init(title: String, description: String, token: String?, action: @escaping () -> Void) {
-        self.action = action
-        self.title = title
-        self.description = description
-        self.token = token
-    }
+//    init(title: String, description: String, token: String?, action: @escaping () -> Void) {
+//        self.action = action
+//        self.title = title
+//        self.description = description
+//        self.token = token
+//    }
     
     fileprivate func animateCheck() {
         fontSize = 16
@@ -45,11 +52,17 @@ struct HomeViewToken: View {
                     .padding(.all, 1)
                     .multilineTextAlignment(.center)
                     .font(.system(size: 15))
-                Text("\(token ?? "")")
-                    .font(.system(size: 13))
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(Color("TeslaRed"))
-                    .lineLimit(3)
+                if tokenTypeToShow == .accessToken {
+                    HomeViewAccessToken(token: token)
+                        .font(.system(size: 13))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color("TeslaRed"))
+                } else {
+                    HomeViewRefreshToken(token: token, loginEnvironment: loginEnvironment)
+                        .font(.system(size: 13))
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(Color("TeslaRed"))
+                }
                 Text("Tap to copy to clipboard")
                     .padding(.all, 1)
                     .foregroundColor(.gray)
@@ -58,9 +71,9 @@ struct HomeViewToken: View {
             }
             .onTapGesture {
                 let pasteBoard = UIPasteboard.general
-                pasteBoard.string = token
+                pasteBoard.string = tokenTypeToShow == .accessToken ? token?.access_token : token?.refresh_token
                 animateCheck()
-                action()
+//                action()
             }
 
             Group {
@@ -76,6 +89,6 @@ struct HomeViewToken: View {
 
 struct HomeViewToken_Previews: PreviewProvider {
     static var previews: some View {
-        HomeViewToken(title: "Test", description: "Test description", token: "nope", action: {})
+        HomeViewToken(title: "Test", description: "Test description", token: nil, tokenTypeToShow: .accessToken, loginEnvironment: .fleet)
     }
 }

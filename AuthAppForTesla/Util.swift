@@ -168,3 +168,25 @@ extension UIViewController {
     }
 }
 #endif
+
+
+// Function to handle Base64 URL decoding
+func base64UrlDecode(_ value: String) -> Data? {
+    var base64 = value
+        .replacingOccurrences(of: "-", with: "+")
+        .replacingOccurrences(of: "_", with: "/")
+    
+    // Decode the base64 string
+    if let data = Data(base64Encoded: base64) {
+        return data
+    } else {
+        // Try adding padding if necessary and decode again
+        let paddingLength = 4 - base64.count % 4
+        if paddingLength < 4 {
+            base64 += String(repeating: "=", count: paddingLength)
+            return Data(base64Encoded: base64)
+        }
+    }
+    
+    return nil
+}
