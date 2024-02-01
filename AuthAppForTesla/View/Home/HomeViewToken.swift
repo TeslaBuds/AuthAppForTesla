@@ -13,22 +13,23 @@ enum TokenType {
 }
 
 struct HomeViewToken: View {
-//    let action: () -> Void
+    //    let action: () -> Void
     let title: String
     let description: String
     let token: Token?
     let tokenTypeToShow: TokenType
     let loginEnvironment: LoginEnvironment
+    let showDetails: Bool
     
     @State private var fontSize: CGFloat = 32
     @State private var checkOpacity: Double = 0
     
-//    init(title: String, description: String, token: String?, action: @escaping () -> Void) {
-//        self.action = action
-//        self.title = title
-//        self.description = description
-//        self.token = token
-//    }
+    //    init(title: String, description: String, token: String?, action: @escaping () -> Void) {
+    //        self.action = action
+    //        self.title = title
+    //        self.description = description
+    //        self.token = token
+    //    }
     
     fileprivate func animateCheck() {
         fontSize = 16
@@ -52,16 +53,19 @@ struct HomeViewToken: View {
                     .padding(.all, 1)
                     .multilineTextAlignment(.center)
                     .font(.system(size: 15))
-                if tokenTypeToShow == .accessToken {
-                    HomeViewAccessToken(token: token)
-                        .font(.system(size: 13))
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(Color("TeslaRed"))
-                } else {
-                    HomeViewRefreshToken(token: token, loginEnvironment: loginEnvironment)
-                        .font(.system(size: 13))
-                        .multilineTextAlignment(.center)
-                        .foregroundColor(Color("TeslaRed"))
+                if showDetails {
+                    
+                    if tokenTypeToShow == .accessToken {
+                        HomeViewAccessToken(token: token)
+                            .font(.system(size: 13))
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color("TeslaRed"))
+                    } else {
+                        HomeViewRefreshToken(token: token, loginEnvironment: loginEnvironment)
+                            .font(.system(size: 13))
+                            .multilineTextAlignment(.center)
+                            .foregroundColor(Color("TeslaRed"))
+                    }
                 }
                 Text("Tap to copy to clipboard")
                     .padding(.all, 1)
@@ -73,9 +77,9 @@ struct HomeViewToken: View {
                 let pasteBoard = UIPasteboard.general
                 pasteBoard.string = tokenTypeToShow == .accessToken ? token?.access_token : token?.refresh_token
                 animateCheck()
-//                action()
+                //                action()
             }
-
+            
             Group {
                 Image(systemName: "checkmark.seal")
                     .foregroundColor(Color(UIColor(named: "TeslaRed")!))
@@ -89,6 +93,6 @@ struct HomeViewToken: View {
 
 struct HomeViewToken_Previews: PreviewProvider {
     static var previews: some View {
-        HomeViewToken(title: "Test", description: "Test description", token: nil, tokenTypeToShow: .accessToken, loginEnvironment: .fleet)
+        HomeViewToken(title: "Test", description: "Test description", token: nil, tokenTypeToShow: .accessToken, loginEnvironment: .fleet, showDetails: true)
     }
 }

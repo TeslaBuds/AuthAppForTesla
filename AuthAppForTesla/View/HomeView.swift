@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @ObservedObject var model: AuthViewModel
+    @State var showDetails: Bool = false
     let loginEnvironment: LoginEnvironment
     
     let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
@@ -22,10 +23,14 @@ struct HomeView: View {
             ScrollView {
                 VStack {
                     let token = loginEnvironment == .owner ? model.tokenV3 : model.tokenV4
-                    HomeViewToken(title: "Refresh Token (Recommended)", description: "A refresh token allows for continuous interaction with your Tesla Account and is usually what is requested by other apps and third-party services. This is used to generate new access tokens.", token: token, tokenTypeToShow: .refreshToken, loginEnvironment: loginEnvironment)
+                    HomeViewToken(title: "Refresh Token (Recommended)", description: "A refresh token allows for continuous interaction with your Tesla Account and is usually what is requested by other apps and third-party services. This is used to generate new access tokens.", token: token, tokenTypeToShow: .refreshToken, loginEnvironment: loginEnvironment, showDetails: showDetails)
                     Divider()
-                    HomeViewToken(title: "Access Token", description: "An access token allows for temporary access to your Tesla Account and typically expires after several hours.", token: token, tokenTypeToShow: .accessToken, loginEnvironment: loginEnvironment)
+                    HomeViewToken(title: "Access Token", description: "An access token allows for temporary access to your Tesla Account and typically expires after several hours.", token: token, tokenTypeToShow: .accessToken, loginEnvironment: loginEnvironment, showDetails: showDetails)
                         .opacity(0.5)
+                    Divider()
+                    Toggle("Show token details", isOn: $showDetails)
+                        .font(.headline)
+                        .padding(.horizontal)
                 }
                 .padding(.vertical, 15)
                 HomeViewRefreshTokens(model: model)

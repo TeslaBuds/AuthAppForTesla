@@ -72,6 +72,7 @@ struct RootView: View {
                     }
                     .tag(2)
             }
+            .accentColor(Color("TeslaRed"))
         }
         .onAppear(perform: {
             model.refreshAll()
