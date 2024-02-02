@@ -20,7 +20,7 @@ struct Token: Codable {
     let refresh_token: String
     var expires_at: Date?
     var region: TokenRegion?
-//    let loginEnvironment: LoginEnvironment?
+    //    let loginEnvironment: LoginEnvironment?
     
     var accessTokenPayload: AccessToken? {
         let tokenParts = access_token.components(separatedBy: ".")
@@ -47,12 +47,19 @@ struct Token: Codable {
     var fleetRefreshTokenPayload: FleetRefreshToken? {
         let tokenParts = refresh_token.components(separatedBy: ".")
         guard tokenParts.count > 1,
-                let decodedPayload = base64UrlDecode(tokenParts[1]),
-                let accessToken = try? JSONDecoder().decode(FleetRefreshToken.self, from: decodedPayload)
+              let decodedPayload = base64UrlDecode(tokenParts[1]),
+              let accessToken = try? JSONDecoder().decode(FleetRefreshToken.self, from: decodedPayload)
         else {
             return nil
         }
         return accessToken
+    }
+    
+    var fleetRefreshTokenRegion: String? {
+        if refresh_token.count > 3 {
+            return String(refresh_token.prefix(2))
+        }
+        return nil
     }
 }
 

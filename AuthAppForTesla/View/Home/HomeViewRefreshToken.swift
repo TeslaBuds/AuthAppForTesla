@@ -61,6 +61,8 @@ struct HomeViewRefreshToken: View {
                             Text(scope)
                         }
                     }
+                } else if let region = token?.fleetRefreshTokenRegion {
+                    Text("Region: ").foregroundColor(Color.primary)+Text(region)
                 }
             }
         }
