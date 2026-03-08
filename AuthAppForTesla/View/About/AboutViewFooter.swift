@@ -14,9 +14,7 @@ struct AboutViewFooter: View {
     ]
     
     let friends = [
-        Friend(name: "Watch app for Tesla", appId: "1512108917", appUrl: nil, icon: "WatchAppForTesla"),
         Friend(name: "TeSlate", appId: "1532406445", appUrl: nil, icon: "TeSlate"),
-        Friend(name: "Charged — for Tesla", appId: "1444906703", appUrl: nil, icon: "Charged"),
         Friend(name: "Teslascope", appId: nil, appUrl: "https://teslascope.com", icon: "TeslaScope"),
         Friend(name: "Tesla iOS Shortcuts", appId: nil, appUrl: "https://github.com/dburkland/tesla_ios_shortcuts/blob/master/README.md", icon: "tesla_ios_shortcuts"),
         Friend(name: "Autarkie Manager", appId: "1518598578", appUrl: nil, icon: "AutarkieManager"),
