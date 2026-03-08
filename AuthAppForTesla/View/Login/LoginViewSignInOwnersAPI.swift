@@ -65,8 +65,10 @@ struct LoginViewSignInOwnersAPI: View {
                 return
             }
             Task {
-                _ = await AuthController.shared.exchangeCodeV3(code, codeVerifier: verifier, region: region)
-                _ = await model.acquireTokenSilentV3(forceRefresh: true)
+                let token = await AuthController.shared.exchangeCodeV3(code, codeVerifier: verifier, region: region)
+                if token != nil {
+                    await model.loadTokens()
+                }
             }
         case .failure(let error):
             print("Authenticate V3 error: \(error.localizedDescription)")

@@ -50,6 +50,8 @@ struct HomeView: View {
 
                 HomeViewRefreshTokens(model: model)
 
+                TipJarView()
+
                 AppVersionLabel()
                     .padding()
             }

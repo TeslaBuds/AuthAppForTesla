@@ -1,0 +1,111 @@
+{
+  "identifier" : "9CA9F4D7",
+  "nonRenewableSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "0.99",
+      "familyShareable" : false,
+      "internalID" : "6760261431",
+      "localizations" : [
+        {
+          "description" : "Buy the developer a coffee",
+          "displayName" : "Coffee Tip",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "dk.kimhansen.AuthAppForTesla.SmallTip",
+      "referenceName" : "Coffee Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "6760261432",
+      "localizations" : [
+        {
+          "description" : "Buy the developer dinner",
+          "displayName" : "Dinner Tip",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "dk.kimhansen.AuthAppForTesla.MediumTip",
+      "referenceName" : "Dinner Tip",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "14.99",
+      "familyShareable" : false,
+      "internalID" : "6760261406",
+      "localizations" : [
+        {
+          "description" : "Treat the developer to an awesome night out",
+          "displayName" : "Night Out Tip",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "dk.kimhansen.AuthAppForTesla.LargeTip",
+      "referenceName" : "Night Out Tip",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Message"
+      }
+    ],
+    "_timeRate" : 0
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

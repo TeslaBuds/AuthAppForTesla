@@ -18,6 +18,8 @@ struct LoginView: View {
                 Spacer()
                 LoginViewFooter(model: model, loginEnvironment: loginEnvironment)
                     .fixedSize(horizontal: false, vertical: true)
+                TipJarView()
+                    .padding(.bottom)
             }
         }
     }

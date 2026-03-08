@@ -9,11 +9,28 @@ import SwiftUI
 
 struct LicenseView: View {
     var body: some View {
-        ScrollView {
-        VStack {
-                LicenseViewEntry(author: "Marcin Krzyżanowski", name: "CryptoSwift", link: "https://github.com/krzyzanowskim/CryptoSwift", license: mitLicense)
-                LicenseViewEntry(author: "Jason Rendel", name: "SwiftKeychainWrapper", link: "https://github.com/jrendel/SwiftKeychainWrapper", license: mitLicense)
-            }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        IconBackgroundView {
+            ScrollView {
+                VStack(spacing: 0) {
+                    LicenseViewEntry(
+                        author: "Marcin Krzyżanowski",
+                        name: "CryptoSwift",
+                        link: "https://github.com/krzyzanowskim/CryptoSwift",
+                        license: mitLicense
+                    )
+                    Divider()
+                    LicenseViewEntry(
+                        author: "Jason Rendel",
+                        name: "SwiftKeychainWrapper",
+                        link: "https://github.com/jrendel/SwiftKeychainWrapper",
+                        license: mitLicense
+                    )
+                }
+                .glassEffect(.clear, in: .rect(cornerRadius: 24))
+                .padding()
+            }
+            .navigationTitle("Open Source Licenses")
+            .navigationBarTitleDisplayMode(.inline)
         }
     }
     

@@ -14,6 +14,8 @@ struct AboutView: View {
                 AboutViewHeader()
                 Spacer()
                 AboutViewFooter()
+                TipJarView()
+                    .padding(.bottom)
             }
         }
     }

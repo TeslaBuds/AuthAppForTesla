@@ -28,6 +28,9 @@
 		EA1A336C272D99D200B66EB0 /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1A334B272D985B00B66EB0 /* SnapshotHelper.swift */; };
 		EA563F692F5D8C0500A50586 /* AuthWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA563F682F5D8C0500A50586 /* AuthWebView.swift */; };
 		EA5641EE2F5DD84200A50586 /* AppVersionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5641ED2F5DD84200A50586 /* AppVersionLabel.swift */; };
+		EA5641FA2F5DDF8F00A50586 /* TipJarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5641F92F5DDF8F00A50586 /* TipJarManager.swift */; };
+		EA5641FC2F5DDFA200A50586 /* TipJarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5641FB2F5DDFA200A50586 /* TipJarView.swift */; };
+		EA5641FE2F5DDFCF00A50586 /* TipJarProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = EA5641FD2F5DDFCF00A50586 /* TipJarProducts.storekit */; };
 		EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */; };
 		EA63697425CAB11D000216BF /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697325CAB11D000216BF /* RootView.swift */; };
 		EA63697625CAB11D000216BF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA63697525CAB11D000216BF /* Assets.xcassets */; };
@@ -104,6 +107,9 @@
 		EA5640852F5D996D00A50586 /* Auth for Tesla Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Auth for Tesla Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA5640922F5D998300A50586 /* Auth for Tesla UI Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Auth for Tesla UI Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA5641ED2F5DD84200A50586 /* AppVersionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersionLabel.swift; sourceTree = "<group>"; };
+		EA5641F92F5DDF8F00A50586 /* TipJarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarManager.swift; sourceTree = "<group>"; };
+		EA5641FB2F5DDFA200A50586 /* TipJarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarView.swift; sourceTree = "<group>"; };
+		EA5641FD2F5DDFCF00A50586 /* TipJarProducts.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = TipJarProducts.storekit; sourceTree = "<group>"; };
 		EA63696E25CAB11D000216BF /* AuthAppForTesla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthAppForTesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAppForTeslaApp.swift; sourceTree = "<group>"; };
 		EA63697325CAB11D000216BF /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -216,6 +222,7 @@
 			children = (
 				20CDC54625E1B52500E895C8 /* IconBackgroundView.swift */,
 				EA5641ED2F5DD84200A50586 /* AppVersionLabel.swift */,
+				EA5641FB2F5DDFA200A50586 /* TipJarView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -304,6 +311,7 @@
 				EA63698B25CAB620000216BF /* Consts.swift */,
 				EA63698E25CAB660000216BF /* Util.swift */,
 				EA6369A625CAD79D000216BF /* AuthViewModel.swift */,
+				EA5641FD2F5DDFCF00A50586 /* TipJarProducts.storekit */,
 			);
 			path = AuthAppForTesla;
 			sourceTree = "<group>";
@@ -331,6 +339,7 @@
 				EAAB1D0A2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift */,
 				EAAB1D072B5A676700AC5271 /* NetworkController.swift */,
 				EA563F682F5D8C0500A50586 /* AuthWebView.swift */,
+				EA5641F92F5DDF8F00A50586 /* TipJarManager.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -514,6 +523,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA5641FE2F5DDFCF00A50586 /* TipJarProducts.storekit in Resources */,
 				EA63697925CAB11D000216BF /* Preview Assets.xcassets in Resources */,
 				EA1A333D272D88A100B66EB0 /* InfoPlist.strings in Resources */,
 				EA63697625CAB11D000216BF /* Assets.xcassets in Resources */,
@@ -556,6 +566,7 @@
 				EA6369A725CAD79D000216BF /* AuthViewModel.swift in Sources */,
 				EA9EA87325DAAF25002FE23E /* AuthController.swift in Sources */,
 				EA63699F25CABA68000216BF /* KeychainWrapper.swift in Sources */,
+				EA5641FC2F5DDFA200A50586 /* TipJarView.swift in Sources */,
 				EA63697425CAB11D000216BF /* RootView.swift in Sources */,
 				EAAB1D102B5A84D300AC5271 /* OwnersAPIView.swift in Sources */,
 				20CDC54725E1B52500E895C8 /* IconBackgroundView.swift in Sources */,
@@ -570,6 +581,7 @@
 				EA5641EE2F5DD84200A50586 /* AppVersionLabel.swift in Sources */,
 				20F8775825E2D9DA00953E51 /* HomeViewHeader.swift in Sources */,
 				20CDC54B25E1C21C00E895C8 /* LoginViewFooter.swift in Sources */,
+				EA5641FA2F5DDF8F00A50586 /* TipJarManager.swift in Sources */,
 				EA7881502B6593D300E14E3C /* HomeViewRefreshToken.swift in Sources */,
 				EA63698F25CAB660000216BF /* Util.swift in Sources */,
 				20CDC55A25E1D13600E895C8 /* AboutViewHeader.swift in Sources */,

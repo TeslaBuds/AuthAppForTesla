@@ -91,14 +91,16 @@ struct LoginViewSignInFleetAPI: View {
                 return
             }
             Task {
-                _ = await AuthController.shared.exchangeCodeV4(
+                let token = await AuthController.shared.exchangeCodeV4(
                     code,
                     region: region,
                     fleetClientId: clientId,
                     fleetSecret: clientSecret,
                     fleetRedirectUri: redirectUri
                 )
-                _ = await model.acquireTokenSilentV4(forceRefresh: true)
+                if token != nil {
+                    await model.loadTokens()
+                }
             }
         case .failure(let error):
             print("Authenticate V4 error: \(error.localizedDescription)")

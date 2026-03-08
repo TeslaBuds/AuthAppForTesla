@@ -25,7 +25,7 @@ struct AboutViewHeader: View {
                 .padding(.bottom, 0.5)
             AppVersionLabel()
                 .font(.subheadline)
-            Text("\u{00A9} 2024 Kim Hansen, Michael Teuscher")
+            Text("\u{00A9} 2026 Kim Hansen, Michael Teuscher")
                 .font(.subheadline)
             Button("Open Source Licenses") {
                 isLicenseViewPresented = true
