@@ -9,20 +9,18 @@ import SwiftUI
 
 struct AboutView: View {
     var body: some View {
-        NavigationStack {
-            IconBackgroundView {
-                ScrollView {
-                    AboutViewHeader()
-                        .padding(.top, 50)
-                    Spacer()
-                    AboutViewFooter()
-                }
+        IconBackgroundView {
+            ScrollView {
+                AboutViewHeader()
+                Spacer()
+                AboutViewFooter()
             }
-            .toolbar(.hidden, for: .navigationBar)
         }
     }
 }
 
 #Preview {
-    AboutView()
+    NavigationStack {
+        AboutView()
+    }
 }

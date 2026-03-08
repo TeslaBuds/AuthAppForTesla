@@ -18,8 +18,16 @@ struct AnimatableCustomFontModifier: ViewModifier {
     }
 }
 
-#Preview {
-    RootView(model: AuthViewModel())
+#Preview("Owners API") {
+    RootView(model: AuthViewModel(), initialTab: .owners)
+}
+
+#Preview("Fleet API") {
+    RootView(model: AuthViewModel(), initialTab: .fleet)
+}
+
+#Preview("About") {
+    RootView(model: AuthViewModel(), initialTab: .about)
 }
 
 extension View {
@@ -37,7 +45,12 @@ enum AppTab: Hashable {
 
 struct RootView: View {
     @Bindable var model: AuthViewModel
-    @State private var selection: AppTab = .owners
+    @State private var selection: AppTab
+
+    init(model: AuthViewModel, initialTab: AppTab = .owners) {
+        self.model = model
+        _selection = State(initialValue: initialTab)
+    }
 
     var body: some View {
         NavigationStack {
