@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SafariServices
+import StoreKit
 
 struct AboutViewFriend: View {
     let name: String
@@ -14,15 +15,12 @@ struct AboutViewFriend: View {
     let appUrl: String?
     let icon: String
 
-    @Environment(\.openURL) private var openURL
     @State private var showSafari = false
 
     var body: some View {
         Button {
             if let appId {
-                if let url = URL(string: "https://apps.apple.com/app/id\(appId)") {
-                    openURL(url)
-                }
+                presentStoreProduct(appID: appId)
             } else if appUrl != nil {
                 showSafari = true
             }
@@ -47,6 +45,24 @@ struct AboutViewFriend: View {
                     .ignoresSafeArea()
             }
         }
+    }
+
+    /// Presents an `SKStoreProductViewController` modally from UIKit,
+    /// bypassing SwiftUI's sheet presentation which is incompatible with this controller.
+    private func presentStoreProduct(appID: String) {
+        guard let windowScene = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene }).first,
+              let rootVC = windowScene.keyWindow?.rootViewController else {
+            return
+        }
+        // Walk to the topmost presented controller so we present on top of everything.
+        var topVC = rootVC
+        while let presented = topVC.presentedViewController {
+            topVC = presented
+        }
+        let storeVC = SKStoreProductViewController()
+        storeVC.loadProduct(withParameters: [SKStoreProductParameterITunesItemIdentifier: appID]) { _, _ in }
+        topVC.present(storeVC, animated: true)
     }
 }
 
