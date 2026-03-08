@@ -14,23 +14,41 @@ struct TipJarView: View {
     @State private var tipManager = TipJarManager()
     @State private var isExpanded = false
 
+    /// The parent scroll view's position, used to scroll the tip buttons
+    /// into view when expanded.
+    var scrollPosition: Binding<ScrollPosition>?
+
     var body: some View {
         VStack(spacing: 12) {
             tipHeader
             if isExpanded {
                 tipButtons
-                    .transition(.opacity.combined(with: .move(edge: .top)))
+                    .transition(.blurReplace)
             }
         }
         .padding()
         .glassEffect(.clear, in: .rect(cornerRadius: 24))
         .padding(.horizontal)
         .animation(.snappy, value: isExpanded)
+        .id(TipJarView.scrollID)
+        .onChange(of: isExpanded) {
+            if isExpanded {
+                withAnimation(.snappy) {
+                    scrollPosition?.wrappedValue.scrollTo(
+                        id: TipJarView.scrollID,
+                        anchor: .bottom
+                    )
+                }
+            }
+        }
         .task {
             await tipManager.loadProducts()
         }
         .sensoryFeedback(.success, trigger: tipManager.recentlyTipped)
     }
+
+    /// Stable identity for scroll targeting.
+    static let scrollID = "tipJar"
 
     private var tipHeader: some View {
         Button {
@@ -108,18 +126,11 @@ private struct TipButton: View {
                 isPurchasing = false
             }
         } label: {
-            VStack(spacing: 6) {
-                Image(systemName: label.icon)
-                    .font(.title2)
-                Text(label.title)
-                    .font(.caption)
-                    .bold()
-                Text(product.displayPrice)
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 12)
+            TipButtonLabel(
+                title: label.title,
+                icon: label.icon,
+                displayPrice: product.displayPrice
+            )
         }
         .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
         .foregroundStyle(.white)
@@ -132,8 +143,51 @@ private struct TipButton: View {
     }
 }
 
+/// The visual content of a tip button, showing an icon, title, and price.
+/// Extracted so the layout can be previewed without a StoreKit `Product`.
+struct TipButtonLabel: View {
+    let title: String
+    let icon: String
+    let displayPrice: String
+
+    var body: some View {
+        VStack(spacing: 2) {
+            Image(systemName: icon)
+                .font(.title3)
+            Text(title)
+                .font(.caption)
+                .bold()
+            Text(displayPrice)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 4)
+    }
+}
+
 #Preview {
     IconBackgroundView {
         TipJarView()
+    }
+}
+
+#Preview("Tip Buttons") {
+    IconBackgroundView {
+        HStack(spacing: 12) {
+            ForEach(Array(TipJarManager.tipLabels), id: \.key) { id, label in
+                Button {
+                } label: {
+                    TipButtonLabel(
+                        title: label.title,
+                        icon: label.icon,
+                        displayPrice: "$\(id.hasSuffix("SmallTip") ? "2.99" : id.hasSuffix("MediumTip") ? "9.99" : "24.99")"
+                    )
+                }
+                .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
+                .foregroundStyle(.white)
+            }
+        }
+        .padding(.horizontal)
     }
 }

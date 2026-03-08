@@ -10,6 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @Bindable var model: AuthViewModel
     @State private var showDetails = false
+    @State private var scrollPosition = ScrollPosition()
     let loginEnvironment: LoginEnvironment
 
     var body: some View {
@@ -50,11 +51,12 @@ struct HomeView: View {
 
                 HomeViewRefreshTokens(model: model)
 
-                TipJarView()
+                TipJarView(scrollPosition: $scrollPosition)
 
                 AppVersionLabel()
                     .padding()
             }
+            .scrollPosition($scrollPosition)
         }
     }
 }

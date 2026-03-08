@@ -9,6 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     @Bindable var model: AuthViewModel
+    @State private var scrollPosition = ScrollPosition()
     let loginEnvironment: LoginEnvironment
     
     var body: some View {
@@ -18,9 +19,10 @@ struct LoginView: View {
                 Spacer()
                 LoginViewFooter(model: model, loginEnvironment: loginEnvironment)
                     .fixedSize(horizontal: false, vertical: true)
-                TipJarView()
+                TipJarView(scrollPosition: $scrollPosition)
                     .padding(.bottom)
             }
+            .scrollPosition($scrollPosition)
         }
     }
 }
