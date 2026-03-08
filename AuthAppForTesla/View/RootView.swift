@@ -68,6 +68,9 @@ struct RootView: View {
             .tint(Color("TeslaRed"))
         }
         .task {
+            #if DEBUG
+            guard !CommandLine.arguments.contains("enable-testing") else { return }
+            #endif
             model.refreshAll()
         }
     }

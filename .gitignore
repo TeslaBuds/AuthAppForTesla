@@ -83,4 +83,8 @@ playground.xcworkspace
 ### Xcode Patch ###
 **/xcshareddata/WorkspaceSettings.xcsettings
 
+# Screenshots – captured output and xcresult bundles
+Screenshots/output/
+Screenshots/.xcresult*
+
 # End of https://www.gitignore.io/api/xcode,macos,swift

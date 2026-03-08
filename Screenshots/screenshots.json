@@ -1,0 +1,61 @@
+{
+  "bundleID": "dk.kimhansen.AuthAppForTesla",
+  "screenshots": [
+    {
+      "key": "01_owners_home",
+      "headline": "Quick Token Access",
+      "subtitle": "Just tap to copy - it's that simple",
+      "platform": "iPhone",
+      "sortOrder": 0
+    },
+    {
+      "key": "02_owners_login",
+      "headline": "Secure Authentication",
+      "subtitle": "Login using modern OAuth for Tesla's API",
+      "platform": "iPhone",
+      "sortOrder": 1
+    },
+    {
+      "key": "03_fleet_login",
+      "headline": "Fleet API Support",
+      "subtitle": "Ready for Tesla's modern Fleet API",
+      "platform": "iPhone",
+      "sortOrder": 2
+    },
+    {
+      "key": "04_about",
+      "headline": "Works Everywhere",
+      "subtitle": "Use generated tokens in a multitude of projects",
+      "platform": "iPhone",
+      "sortOrder": 3
+    },
+    {
+      "key": "01_owners_home",
+      "headline": "Quick Token Access",
+      "subtitle": "Just tap to copy - it's that simple",
+      "platform": "iPad",
+      "sortOrder": 0
+    },
+    {
+      "key": "02_owners_login",
+      "headline": "Secure Authentication",
+      "subtitle": "Login using modern OAuth for Tesla's API",
+      "platform": "iPad",
+      "sortOrder": 1
+    },
+    {
+      "key": "03_fleet_login",
+      "headline": "Fleet API Support",
+      "subtitle": "Ready for Tesla's modern Fleet API",
+      "platform": "iPad",
+      "sortOrder": 2
+    },
+    {
+      "key": "04_about",
+      "headline": "Works Everywhere",
+      "subtitle": "Use generated tokens in a multitude of projects",
+      "platform": "iPad",
+      "sortOrder": 3
+    }
+  ]
+}
