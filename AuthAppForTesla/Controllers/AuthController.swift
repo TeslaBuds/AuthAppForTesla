@@ -97,7 +97,6 @@ actor AuthController {
                                                             ["grant_type": "refresh_token",
                                                              "scope": "openid email offline_access",
                                                              "client_id": "ownerapi",
-                                                             "client_secret": kTeslaSecret,
                                                              "refresh_token": "\(refreshToken)"])
         switch result {
         case let .success(result):
@@ -168,23 +167,15 @@ actor AuthController {
     
     fileprivate func oauthCodeV3(_ code: String, _ codeVerifier: String, _ region: TokenRegion, retries: Int = 0) async -> Token? {
         let url = getAuthByRegion(region: region)
-        print("[AuthController] oauthCodeV3 - POST \(url)/oauth2/v3/token | retry: \(retries) | code: \(code.prefix(10))... | verifier: \(codeVerifier.prefix(10))...")
-        
         let result = await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
                                         ["grant_type": "authorization_code",
                                          "client_id": "ownerapi",
-                                         "client_secret": kTeslaSecret,
                                          "code": code,
                                          "redirect_uri": "tesla://auth/callback",
                                          "code_verifier": codeVerifier,
                                          "scope": "openid email offline_access phone"])
         switch result {
         case let .success(result):
-            let bodyString = String(data: result.data, encoding: .utf8) ?? "nil"
-            print("[AuthController] oauthCodeV3 - HTTP \(result.statusCode) | body keys: \(result.dictionaryBody.keys.sorted()) | body: \(bodyString.prefix(500))")
-            if let errorMsg = result.dictionaryBody["error"] as? String {
-                print("[AuthController] oauthCodeV3 SERVER ERROR: \(errorMsg) | description: \(result.dictionaryBody["error_description"] ?? "none")")
-            }
             var token: Token?
             if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
                let access_token = result.dictionaryBody["access_token"] as? String,
@@ -199,7 +190,6 @@ actor AuthController {
             }
             return token
         case .failure(let error):
-            print("[AuthController] oauthCodeV3 FAILURE - HTTP \(error.statusCode) | error: \(error.error.localizedDescription) | body: \(String(data: error.data, encoding: .utf8) ?? "nil")")
             if error.statusCode == 400 {
                 if retries < 3 {
                     return await oauthCodeV3(code, codeVerifier, region, retries: retries + 1)

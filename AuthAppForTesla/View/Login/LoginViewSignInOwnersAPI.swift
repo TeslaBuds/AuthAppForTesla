@@ -46,12 +46,9 @@ struct LoginViewSignInOwnersAPI: View {
                 region: region,
                 redirectUrl: kTeslaRedirectUri
             ) else {
-                print("[OwnersLogin] buildOAuthURLV3 returned nil")
                 return
             }
 
-            print("[OwnersLogin] OAuth URL built: \(oauthInfo.url.absoluteString.prefix(80))...")
-            print("[OwnersLogin] Code verifier: \(oauthInfo.codeVerifier.prefix(10))...")
             codeVerifier = oauthInfo.codeVerifier
             authURL = oauthInfo.url
         }
@@ -60,36 +57,24 @@ struct LoginViewSignInOwnersAPI: View {
     private func handleAuthResult(_ result: Result<URL, Error>) {
         switch result {
         case .success(let url):
-            print("[OwnersLogin] handleAuthResult SUCCESS - callback URL: \(url.absoluteString.prefix(100))...")
             let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-            let allParams = urlComponents?.queryItems?.map { "\($0.name)=\($0.value?.prefix(10) ?? "nil")..." } ?? []
-            print("[OwnersLogin] Query params: \(allParams)")
             guard let code = urlComponents?.queryItems?.first(where: { $0.name == "code" })?.value else {
-                print("[OwnersLogin] ERROR: No 'code' param found in callback URL")
                 authURL = nil
                 return
             }
             guard let verifier = codeVerifier else {
-                print("[OwnersLogin] ERROR: codeVerifier is nil")
                 authURL = nil
                 return
             }
-            print("[OwnersLogin] Code extracted: \(code.prefix(10))... | Verifier: \(verifier.prefix(10))...")
-            // Capture values before clearing sheet state
             let capturedRegion = region
-            print("[OwnersLogin] Starting token exchange for region: \(capturedRegion)")
             Task {
                 let token = await AuthController.shared.exchangeCodeV3(code, codeVerifier: verifier, region: capturedRegion)
-                print("[OwnersLogin] Token exchange result: \(token != nil ? "SUCCESS" : "FAILED (nil)")")
-                if let token {
-                    print("[OwnersLogin] Token type: \(token.token_type) | expires_in: \(token.expires_in) | refresh_token length: \(token.refresh_token.count)")
+                if token != nil {
                     await model.loadTokens()
-                    print("[OwnersLogin] model.loadTokens() complete | tokenV3 is nil: \(model.tokenV3 == nil)")
                 }
                 authURL = nil
             }
-        case .failure(let error):
-            print("[OwnersLogin] handleAuthResult FAILURE: \(error.localizedDescription)")
+        case .failure:
             authURL = nil
         }
     }

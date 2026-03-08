@@ -65,7 +65,6 @@ private struct OAuthWebViewRepresentable: UIViewRepresentable {
         configuration.websiteDataStore = .nonPersistent()
         let webView = WKWebView(frame: .zero, configuration: configuration)
         webView.navigationDelegate = context.coordinator
-        print("[AuthWebView] makeUIView - loading URL: \(url.absoluteString)")
         webView.load(URLRequest(url: url))
         return webView
     }
@@ -87,30 +86,13 @@ private struct OAuthWebViewRepresentable: UIViewRepresentable {
             decidePolicyFor navigationAction: WKNavigationAction
         ) async -> WKNavigationActionPolicy {
             let url = navigationAction.request.url
-            print("[AuthWebView] decidePolicyFor: \(url?.absoluteString ?? "nil") | type: \(navigationAction.navigationType.rawValue)")
             if let url, url.absoluteString.hasPrefix(redirectUrl) {
-                print("[AuthWebView] REDIRECT DETECTED - calling onRedirect")
                 onRedirect(url)
                 return .cancel
             }
             return .allow
         }
 
-        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            print("[AuthWebView] didStartProvisionalNavigation: \(webView.url?.absoluteString ?? "nil")")
-        }
 
-        func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-            print("[AuthWebView] didFinish: \(webView.url?.absoluteString ?? "nil")")
-        }
-
-        func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-            print("[AuthWebView] didFail: \(error.localizedDescription) | url: \(webView.url?.absoluteString ?? "nil")")
-        }
-
-        func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-            let nsError = error as NSError
-            print("[AuthWebView] didFailProvisionalNavigation: domain=\(nsError.domain) code=\(nsError.code) | desc=\(nsError.localizedDescription) | failingURL=\(nsError.userInfo["NSErrorFailingURLStringKey"] ?? "unknown")")
-        }
     }
 }
