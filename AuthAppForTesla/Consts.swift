@@ -5,8 +5,7 @@
 //  Created by Kim Hansen on 03/02/2021.
 //
 
-import Foundation
-import UIKit
+import SwiftUI
 
 let kTeslaClientID = "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384"
 let kTeslaSecret = "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3"
@@ -20,12 +19,9 @@ let kFleetClientID = "dk.kimhansen.TeslaAuth.FleetClientID"
 let kFleetClientSecret = "dk.kimhansen.TeslaAuth.FleetClientSecret"
 let kFleetRedirectUri = "dk.kimhansen.TeslaAuth.FleetRedirectUri"
 
-let theme = mytheme()
-
-struct mytheme {
-    let backgroundColor2 = UIColor(named: "backgroundColor2")!
-    let opacity2 = 0.7
-    let shadow: CGFloat = 4
+/// Shared design constants for consistent styling across the app.
+enum AppTheme {
+    static let shadowRadius: Double = 4
 }
 
 let externalApplicationListFilenameComponents = ["ExternalApplicationList", "json"]

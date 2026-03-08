@@ -8,16 +8,15 @@
 import SwiftUI
 
 struct HomeView: View {
-    @ObservedObject var model: AuthViewModel
-    @State var showDetails: Bool = false
+    @Bindable var model: AuthViewModel
+    @State private var showDetails = false
     let loginEnvironment: LoginEnvironment
     
     let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
     
     var body: some View {
-        
-        VStack() {
+        VStack {
             HomeViewHeader(model: model, loginEnvironment: loginEnvironment)
                 .padding(.horizontal)
             ScrollView {
@@ -32,23 +31,24 @@ struct HomeView: View {
                         .font(.headline)
                         .padding(.horizontal)
                 }
-                .padding(.vertical, 15)
+                .padding(.vertical)
                 HomeViewRefreshTokens(model: model)
                     .padding(.horizontal)
                 Text("v. \(version) build \(build)")
-                    .font(.system(size: 12, weight: .regular, design: .default))
+                    .font(.caption)
                     .multilineTextAlignment(.center)
-                    .foregroundColor(.gray)
+                    .foregroundStyle(.secondary)
                     .padding()
             }
         }
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView(model: AuthViewModel(), loginEnvironment: .owner)
-        HomeView(model: AuthViewModel(), loginEnvironment: .fleet)
-    }
+#Preview("Owners API") {
+    HomeView(model: AuthViewModel(), loginEnvironment: .owner)
+}
+
+#Preview("Fleet API") {
+    HomeView(model: AuthViewModel(), loginEnvironment: .fleet)
 }

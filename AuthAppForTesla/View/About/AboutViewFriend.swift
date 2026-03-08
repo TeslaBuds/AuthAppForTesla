@@ -15,78 +15,72 @@ struct AboutViewFriend: View {
     let appUrl: String?
     let icon: String
 
-    @State var showSafari = false
-    @State var showProduct = false
-    @State var overlayAppID = ""
-    @State var safariUrl = ""
+    @State private var showSafari = false
+    @State private var showProduct = false
 
     var body: some View {
-        VStack{
-            Image(icon)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .cornerRadius(12)
-                .frame(width: 60)
-            Text(name)
-                .font(.system(size: 15, weight: .semibold, design: .default))
-            
-        }
-        .padding()
-        .cornerRadius(8)
-        .shadow(radius: theme.shadow)
-
-        .onTapGesture {
-            if let appId = appId
-            {
-                overlayAppID = appId
+        Button {
+            if appId != nil {
                 showProduct = true
-            }
-            else if let appUrl = appUrl
-            {
-                safariUrl = appUrl
+            } else if appUrl != nil {
                 showSafari = true
             }
-        }
-        .background(
-            Group {
-                ViewControllerBridge(isActive: $showSafari, parameter: $safariUrl) { vc, active, parameter in
-                    if active {
-                        let safariVC = SFSafariViewController(url: URL(string: parameter)!)
-                        vc.present(safariVC, animated: true) {
-                            // Set the variable to false when the user dismisses the safari VC
-                            self.showSafari = false
-                        }
-                    }
-                }
-                .frame(width: 0, height: 0)
-                
-                ViewControllerBridge(isActive: $showProduct, parameter: $overlayAppID) { vc, active, parameter in
-                    if active {
-                        let product = SKStoreProductViewController()
-                        //product.delegate = context.coordinator
-                        
-                        let parameters = [ SKStoreProductParameterITunesItemIdentifier : parameter]
-                        //isLoaded = false
-                        product.loadProduct(withParameters: parameters) { (loaded, error) in
-                            if loaded {
-                                //      isLoaded = true
-                            }
-                        }
-                        
-                        vc.present(product, animated: true) {
-                            // Set the variable to false when the user dismisses the VC
-                            self.showProduct = false
-                        }
-                    }
-                }
-                .frame(width: 0, height: 0)
+        } label: {
+            VStack {
+                Image(icon)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .clipShape(.rect(cornerRadius: 12))
+                    .frame(width: 60)
+                Text(name)
+                    .font(.subheadline)
             }
-        )
+        }
+        .buttonStyle(.plain)
+        .padding()
+        .clipShape(.rect(cornerRadius: 8))
+        .shadow(radius: AppTheme.shadowRadius)
+        .sheet(isPresented: $showSafari) {
+            if let appUrl, let url = URL(string: appUrl) {
+                SafariView(url: url)
+                    .ignoresSafeArea()
+            }
+        }
+        .sheet(isPresented: $showProduct) {
+            if let appId {
+                StoreProductView(appID: appId)
+                    .ignoresSafeArea()
+            }
+        }
     }
 }
 
-struct AboutViewFriend_Previews: PreviewProvider {
-    static var previews: some View {
-        AboutViewFriend(name: "TeSlate", appId: nil, appUrl: "infinytum.co", icon: "TeSlate")
+/// Wraps `SFSafariViewController` for presenting in-app Safari browsing.
+private struct SafariView: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        SFSafariViewController(url: url)
     }
+
+    func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {
+    }
+}
+
+/// Wraps `SKStoreProductViewController` for presenting App Store product pages.
+private struct StoreProductView: UIViewControllerRepresentable {
+    let appID: String
+
+    func makeUIViewController(context: Context) -> SKStoreProductViewController {
+        let controller = SKStoreProductViewController()
+        controller.loadProduct(withParameters: [SKStoreProductParameterITunesItemIdentifier: appID]) { _, _ in }
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: SKStoreProductViewController, context: Context) {
+    }
+}
+
+#Preview {
+    AboutViewFriend(name: "TeSlate", appId: nil, appUrl: "infinytum.co", icon: "TeSlate")
 }

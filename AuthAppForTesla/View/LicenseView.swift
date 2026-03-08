@@ -12,9 +12,8 @@ struct LicenseView: View {
         ScrollView {
         VStack {
                 LicenseViewEntry(author: "Marcin Krzyżanowski", name: "CryptoSwift", link: "https://github.com/krzyzanowskim/CryptoSwift", license: mitLicense)
-                LicenseViewEntry(author: "Daniele Margutti", name: "SwiftDate", link: "https://github.com/malcommac/SwiftDate", license: mitLicense)
                 LicenseViewEntry(author: "Jason Rendel", name: "SwiftKeychainWrapper", link: "https://github.com/jrendel/SwiftKeychainWrapper", license: mitLicense)
-            }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .center)
+            }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         }
     }
     
@@ -222,8 +221,6 @@ struct LicenseView: View {
     """
 }
 
-struct LicenseView_Previews: PreviewProvider {
-    static var previews: some View {
-        LicenseView()
-    }
+#Preview {
+    LicenseView()
 }

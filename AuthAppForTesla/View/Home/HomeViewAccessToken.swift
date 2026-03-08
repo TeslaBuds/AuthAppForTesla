@@ -1,44 +1,56 @@
 //
-//  HomeViewToken.swift
+//  HomeViewAccessToken.swift
 //  AuthAppForTesla
 //
 //  Created by Nila on 21.02.21.
 //
 
 import SwiftUI
-import SwiftDate
 
 struct HomeViewAccessToken: View {
     let token: Token?
+    
     var body: some View {
-        VStack{
+        VStack {
             if let payload = token?.accessTokenPayload {
                 if let ouCode = payload.ouCode {
-                    Text("Region: ").foregroundColor(Color.primary)+Text(ouCode)
+                    let label = Text("Region: ").foregroundStyle(.primary)
+                    let value = Text(ouCode)
+                    Text("\(label)\(value)")
                 }
                 if let locale = payload.locale {
-                    Text("Locale: ").foregroundColor(Color.primary)+Text(locale)
+                    let label = Text("Locale: ").foregroundStyle(.primary)
+                    let value = Text(locale)
+                    Text("\(label)\(value)")
                 }
                 if let issuedAt = payload.issuedAtDate {
-                    Text("Issued: ").foregroundColor(Color.primary)+Text(DateInRegion(issuedAt, region: Region.local).toString(DateToStringStyles.dateTimeMixed(dateStyle: .short, timeStyle: .short)))
+                    let label = Text("Issued: ").foregroundStyle(.primary)
+                    let value = Text(issuedAt.formatted(date: .abbreviated, time: .shortened))
+                    Text("\(label)\(value)")
                 }
                 if let expiresAt = payload.expiresAtDate {
-                    Text("Expires: ").foregroundColor(Color.primary)+Text(DateInRegion(expiresAt, region: Region.local).toString(DateToStringStyles.dateTimeMixed(dateStyle: .short, timeStyle: .short)))
+                    let label = Text("Expires: ").foregroundStyle(.primary)
+                    let value = Text(expiresAt.formatted(date: .abbreviated, time: .shortened))
+                    Text("\(label)\(value)")
                 }
                 if let issuer = payload.issuer {
-                    Text("Issuer: ").foregroundColor(Color.primary)+Text(issuer)
+                    let label = Text("Issuer: ").foregroundStyle(.primary)
+                    let value = Text(issuer)
+                    Text("\(label)\(value)")
                 }
                 if let authorizedParty = payload.authorizedParty {
-                    Text("Client ID: ").foregroundColor(Color.primary)+Text(authorizedParty)
+                    let label = Text("Client ID: ").foregroundStyle(.primary)
+                    let value = Text(authorizedParty)
+                    Text("\(label)\(value)")
                 }
                 if let audiences = payload.audiences {
-                    Text("Audiences:").foregroundColor(Color.primary)
+                    Text("Audiences:").foregroundStyle(.primary)
                     ForEach(audiences, id: \.self) { audience in
                         Text(audience)
                     }
                 }
                 if let scopes = payload.scopes {
-                    Text("Scopes:").foregroundColor(Color.primary)
+                    Text("Scopes:").foregroundStyle(.primary)
                     ForEach(scopes, id: \.self) { scope in
                         Text(scope)
                     }
@@ -46,4 +58,19 @@ struct HomeViewAccessToken: View {
             }
         }
     }
+}
+
+#Preview("No Token") {
+    HomeViewAccessToken(token: nil)
+}
+
+#Preview("With Token") {
+    HomeViewAccessToken(token: Token(
+        access_token: "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIn0",
+        token_type: "bearer",
+        expires_in: 3600,
+        refresh_token: "refresh",
+        expires_at: Date().addingTimeInterval(3600),
+        region: .global
+    ))
 }

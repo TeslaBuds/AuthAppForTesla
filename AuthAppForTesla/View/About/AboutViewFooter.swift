@@ -16,16 +16,17 @@ struct AboutViewFooter: View {
     let friends = [
         Friend(name: "Watch app for Tesla", appId: "1512108917", appUrl: nil, icon: "WatchAppForTesla"),
         Friend(name: "TeSlate", appId: "1532406445", appUrl: nil, icon: "TeSlate"),
-        Friend(name: "Charged — for Tesl‪a", appId: "1444906703", appUrl: nil, icon: "Charged"),
+        Friend(name: "Charged — for Tesla", appId: "1444906703", appUrl: nil, icon: "Charged"),
         Friend(name: "Teslascope", appId: nil, appUrl: "https://teslascope.com", icon: "TeslaScope"),
         Friend(name: "Tesla iOS Shortcuts", appId: nil, appUrl: "https://github.com/dburkland/tesla_ios_shortcuts/blob/master/README.md", icon: "tesla_ios_shortcuts"),
         Friend(name: "Autarkie Manager", appId: "1518598578", appUrl: nil, icon: "AutarkieManager"),
     ]
+    
     var body: some View {
 #if !targetEnvironment(macCatalyst)
-        VStack{
+        VStack {
             Text("Friends of the App")
-                .font(.system(size: 30, weight: .regular, design: .default))
+                .font(.title)
                 .padding(.bottom, -5)
             LazyVGrid(
                 columns: columns,
@@ -39,9 +40,8 @@ struct AboutViewFooter: View {
                 }
             }
         }
-        //        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
-        .padding(.top, 15)
-        .background(Color("SheetColor").shadow(radius: 6))
+        .padding()
+        .glassEffect(.clear, in: .rect(cornerRadius: 24))
 #else
         EmptyView()
 #endif
@@ -55,8 +55,6 @@ struct Friend {
     let icon: String
 }
 
-struct AboutViewFooter_Previews: PreviewProvider {
-    static var previews: some View {
-        AboutViewFooter()
-    }
+#Preview {
+    AboutViewFooter()
 }

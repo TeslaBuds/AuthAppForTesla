@@ -5,78 +5,57 @@
 //  Created by Kim Hansen on 03/02/2021.
 //
 
-import Foundation
 import SwiftUI
-import Combine
-import SwiftDate
 
-// A modifier that animates a font through various sizes.
-struct AnimatableCustomFontModifier: AnimatableModifier {
-    var size: CGFloat
-    
-    var animatableData: CGFloat {
-        get { size }
-        set { size = newValue }
-    }
-    
+/// Animatable font size modifier using the modern @Animatable macro.
+@Animatable
+struct AnimatableCustomFontModifier: ViewModifier {
+    var size: Double
+
     func body(content: Content) -> some View {
         content
             .font(.system(size: size))
     }
 }
 
-// To make that easier to use, I recommend wrapping
-// it in a `View` extension, like this:
+#Preview {
+    RootView(model: AuthViewModel())
+}
+
 extension View {
-    func animatableFont(size: CGFloat) -> some View {
-        self.modifier(AnimatableCustomFontModifier(size: size))
+    func animatableFont(size: Double) -> some View {
+        modifier(AnimatableCustomFontModifier(size: size))
     }
 }
 
+/// Tab selection backed by an enum for type safety.
+enum AppTab: Hashable {
+    case owners
+    case fleet
+    case about
+}
 
 struct RootView: View {
-    @ObservedObject var model: AuthViewModel
-    @State private var selection = 0
-    
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-    let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
-    
+    @Bindable var model: AuthViewModel
+    @State private var selection: AppTab = .owners
+
     var body: some View {
         NavigationStack {
             TabView(selection: $selection) {
-                OwnersAPIView(model: model)
-                    .font(.title)
-                    .tabItem {
-                        VStack {
-                            Image(systemName: "steeringwheel")
-                            Text("Owners API")
-                        }
-                    }
-                    .tag(0)
-                FleetAPIView(model: model)
-                    .font(.title)
-                    .tabItem {
-                        VStack {
-                            Image(systemName: "car.2.fill")
-                            Text("Fleet API")
-                        }
-                    }
-                    .tag(1)
-                AboutView()
-                    .font(.title)
-                    .tabItem {
-                        VStack {
-                            Image(systemName: "info.circle")
-                            Text("About")
-                        }
-                    }
-                    .tag(2)
+                Tab("Owners API", systemImage: "steeringwheel", value: .owners) {
+                    OwnersAPIView(model: model)
+                }
+                Tab("Fleet API", systemImage: "car.2.fill", value: .fleet) {
+                    FleetAPIView(model: model)
+                }
+                Tab("About", systemImage: "info.circle", value: .about) {
+                    AboutView()
+                }
             }
-            .accentColor(Color("TeslaRed"))
+            .tint(Color("TeslaRed"))
         }
-        .onAppear(perform: {
+        .task {
             model.refreshAll()
-        })
+        }
     }
-    
 }

@@ -6,43 +6,51 @@
 //
 
 import Foundation
-import Intents
 
+/// Shared observable model that holds the current authentication state
+/// for both Owners API (v3) and Fleet API (v4) tokens.
 @MainActor
-class AuthViewModel: ObservableObject {
-    @Published var tokenV3: Token?
-    @Published var tokenV4: Token?
-    
+@Observable
+class AuthViewModel {
+    var tokenV3: Token?
+    var tokenV4: Token?
+
     init() {
-        tokenV3 = AuthController.shared.v3Token
-        tokenV4 = AuthController.shared.v4Token
+        // Tokens are loaded asynchronously after init via loadTokens()
     }
-    
-    public func refreshAll()
-    {
+
+    /// Loads the initial token state from the AuthController actor.
+    func loadTokens() async {
+        tokenV3 = await AuthController.shared.v3Token
+        tokenV4 = await AuthController.shared.v4Token
+    }
+
+    func refreshAll() {
         Task {
             tokenV3 = await AuthController.shared.acquireTokenV3Silent(forceRefresh: true)
             tokenV4 = await AuthController.shared.acquireTokenV4Silent(forceRefresh: true)
         }
     }
 
-    public func logOut(environment: LoginEnvironment)
-    {
+    func logOut(environment: LoginEnvironment) {
         switch environment {
         case .owner:
-            self.tokenV3 = nil
+            tokenV3 = nil
         case .fleet:
-            self.tokenV4 = nil
+            tokenV4 = nil
         }
-        AuthController.shared.logOut(environment: environment)
+        Task {
+            await AuthController.shared.logOut(environment: environment)
+        }
     }
-    
-    func setJwtToken(_ token: Token)
-    {
-        AuthController.shared.setJwtToken(token)
-        self.tokenV3 = token
+
+    func setJwtToken(_ token: Token) {
+        Task {
+            await AuthController.shared.setJwtToken(token)
+        }
+        tokenV3 = token
     }
-    
+
     func acquireTokenSilentV3(forceRefresh: Bool = false) async -> Token? {
         let token = await AuthController.shared.acquireTokenV3Silent(forceRefresh: forceRefresh)
         tokenV3 = token

@@ -8,7 +8,7 @@
 import Foundation
 import CryptoKit
 
-class AuthController {
+actor AuthController {
     public static let shared = AuthController()
 
     private init() {
@@ -144,47 +144,26 @@ class AuthController {
         }
     }
 
-    public func authenticateWebV3(region: TokenRegion, redirectUrl: String, completion: @escaping (Result<Token, Error>) -> Void) -> AuthWebViewController? {
+    /// Builds the OAuth authorization URL for V3 (Owners API) login.
+    /// Returns the URL and code verifier needed to complete the exchange.
+    func buildOAuthURLV3(region: TokenRegion, redirectUrl: String) -> (url: URL, codeVerifier: String)? {
         let authenticateUrl = getAuthByRegion(region: region)
         let codeRequest = AuthCodeRequest()
-        
+
         var urlComponents = URLComponents(string: authenticateUrl)
         urlComponents?.path = "/oauth2/v3/authorize"
         urlComponents?.queryItems = codeRequest.parameters()
-        
-        guard let safeUrlComponents = urlComponents else {
-            completion(Result.failure(TeslaError.authenticationFailed))
+
+        guard let safeUrlComponents = urlComponents, let url = safeUrlComponents.url else {
             return nil
         }
-        
-        let teslaWebLoginViewController = AuthWebViewController(url: safeUrlComponents.url!, redirectUrl: redirectUrl)
-        
-        teslaWebLoginViewController.result = { result in
-            switch result {
-            case let .success(url):
-                let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-                if let queryItems = urlComponents?.queryItems {
-                    for queryItem in queryItems {
-                        if queryItem.name == "code", let code = queryItem.value {
-                            Task {
-                                let token = await self.oauthCodeV3(code, codeRequest.codeVerifier, region)
-                                if let token {
-                                    completion(.success(token))
-                                } else {
-                                    completion(.failure(TeslaError.authenticationFailed))
-                                }
-                            }
-                            return
-                        }
-                    }
-                }
-                completion(Result.failure(TeslaError.authenticationFailed))
-            case let .failure(error):
-                completion(Result.failure(error))
-            }
-        }
-        
-        return teslaWebLoginViewController
+
+        return (url, codeRequest.codeVerifier)
+    }
+
+    /// Exchanges an OAuth authorization code for a V3 token.
+    func exchangeCodeV3(_ code: String, codeVerifier: String, region: TokenRegion) async -> Token? {
+        await oauthCodeV3(code, codeVerifier, region)
     }
     
     fileprivate func oauthCodeV3(_ code: String, _ codeVerifier: String, _ region: TokenRegion, retries: Int = 0) async -> Token? {
@@ -293,10 +272,11 @@ class AuthController {
 
 extension String {
     var codeVerifier: String {
-        let verifier = "\(Date().toISO())\(Date().toISO())\(Date().toISO())".data(using: .utf8)!.base64EncodedString()
-            .replacingOccurrences(of: "+", with: "-")
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: "=", with: "")
+        let verifier = "\(Date.now.ISO8601Format())\(Date.now.ISO8601Format())\(Date.now.ISO8601Format())"
+            .data(using: .utf8)!.base64EncodedString()
+            .replacing("+", with: "-")
+            .replacing("/", with: "_")
+            .replacing("=", with: "")
             .trimmingCharacters(in: .whitespaces)
             .prefix(43)
         return String(verifier)
@@ -306,10 +286,9 @@ extension String {
         let data = Data(utf8)
         let hash = SHA256.hash(data: data)
         let base64 = Data(hash).base64EncodedString()
-        let urlSafe = base64
-            .replacingOccurrences(of: "+", with: "-")
-            .replacingOccurrences(of: "/", with: "_")
-            .replacingOccurrences(of: "=", with: "")
-        return urlSafe
+        return base64
+            .replacing("+", with: "-")
+            .replacing("/", with: "_")
+            .replacing("=", with: "")
     }
 }

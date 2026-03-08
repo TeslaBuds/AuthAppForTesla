@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 extension AuthController {
     func randomANSICharacter() -> Character {
@@ -31,57 +30,31 @@ extension AuthController {
     }
 
     var fleetClientId: String {
-        return KeychainWrapper.global.string(forKey: kFleetClientID) ?? ""
+        KeychainWrapper.global.string(forKey: kFleetClientID) ?? ""
     }
 
     var fleetClientSecret: String {
-        return KeychainWrapper.global.string(forKey: kFleetClientSecret) ?? ""
+        KeychainWrapper.global.string(forKey: kFleetClientSecret) ?? ""
     }
 
     var fleetRedirectUri: String {
-        return KeychainWrapper.global.string(forKey: kFleetRedirectUri) ?? ""
+        KeychainWrapper.global.string(forKey: kFleetRedirectUri) ?? ""
     }
 
-#if OAUTHAVAILABLE
-    public func authenticateWebV4(region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String, completion: @escaping (Result<Token, Error>) -> Void) -> AuthWebViewController? {
+    /// Builds the OAuth authorization URL for V4 (Fleet API) login.
+    /// Returns the URL needed to present to the user.
+    func buildOAuthURLV4(region: TokenRegion, fleetClientId: String, fleetRedirectUri: String) -> URL? {
         let authenticateUrl = getAuthByRegion(region: region)
-        
         let stateString = createStateString(length: 40)
-        
+
         let authRequest = "\(authenticateUrl)/oauth2/v3/authorize?response_type=code&client_id=\(fleetClientId)&redirect_uri=\(fleetRedirectUri)&prompt=login&scope=openid%20vehicle_device_data%20vehicle_cmds%20vehicle_charging_cmds%20offline_access&state=\(stateString)"
-        let authRequestUrl = URL(string: authRequest)!
-        
-        let teslaWebLoginViewController = AuthWebViewController(url: authRequestUrl, redirectUrl: fleetRedirectUri)
-        
-        teslaWebLoginViewController.result = { result in
-            switch result {
-            case let .success(url):
-                let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-                if let queryItems = urlComponents?.queryItems {
-                    for queryItem in queryItems {
-                        if queryItem.name == "code", let code = queryItem.value {
-                            Task {
-                                let token = await self.oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri)
-                                if let token = token {
-                                    completion(.success(token))
-                                } else {
-                                    completion(.failure(TeslaError.authenticationFailed))
-                                }
-                            }
-                            return
-                        }
-                    }
-                }
-                completion(Result.failure(TeslaError.authenticationFailed))
-            case let .failure(error):
-                completion(Result.failure(error))
-            }
-        }
-        
-        return teslaWebLoginViewController
+        return URL(string: authRequest)
     }
-    
-#endif
+
+    /// Exchanges an OAuth authorization code for a V4 (Fleet API) token.
+    func exchangeCodeV4(_ code: String, region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String) async -> Token? {
+        await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri)
+    }
     
     fileprivate func oauthCodeV4(_ code: String, _ region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String, retries: Int = 0) async -> Token? {
         let url = getAuthByRegion(region: region)

@@ -7,48 +7,42 @@
 
 import Foundation
 import CryptoKit
-import SwiftDate
-import UIKit
+import SwiftUI
 
 extension CGSize {
-    var least: CGFloat {
-        return self.width < self.height ? self.width : self.height
+    var least: Double {
+        min(width, height)
     }
-    var most: CGFloat {
-        return self.width < self.height ? self.height : self.width
+    var most: Double {
+        max(width, height)
     }
 }
 
 extension String {
-    var sha256:String {
-           get {
-            let inputData = Data(self.utf8)
-            let hashed = SHA256.hash(data: inputData)
-            let hashString = hashed.compactMap { String(format: "%02x", $0) }.joined()
-            return hashString
-           }
-       }
+    var sha256: String {
+        let inputData = Data(utf8)
+        let hashed = SHA256.hash(data: inputData)
+        return hashed.compactMap { String(format: "%02x", $0) }.joined()
+    }
     
     func base64EncodedString() -> String {
-        let inputData = Data(self.utf8)
-        return inputData.base64EncodedString()
+        Data(utf8).base64EncodedString()
     }
 }
 
 extension KeychainWrapper {
-    public static let global = KeychainWrapper.init(serviceName: "AuthForTesla", accessGroup: "group.global", iCloudSync: true)
+    public static let global = KeychainWrapper(serviceName: "AuthForTesla", accessGroup: "group.global", iCloudSync: true)
 }
 
 extension UserDefaults {
-    public static let standard = UserDefaults.init(suiteName: "group.global")!
+    public static let standard = UserDefaults(suiteName: "group.global")!
 }
 
 extension URL {
     subscript(key: String) -> String? {
-        if let components = URLComponents(string: self.absoluteString),
+        if let components = URLComponents(string: absoluteString),
            let items = components.queryItems,
            let item = items.first(where: { $0.name == key }) {
-            
             return item.value
         }
         return nil
@@ -66,13 +60,14 @@ struct ExternalTokenRequest {
 }
 
 func getUniversalLinkRequestApplicationDescription(for appId: String) -> ExternalTokenRequestApplicationDescription? {
+    let filename = externalApplicationListFilenameComponents.joined(separator: ".")
     var inputFileURL: URL?
-    if var documentURL = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
-        documentURL.appendPathComponent(externalApplicationListFilenameComponents.joined(separator: "."))
-        if FileManager.default.fileExists(atPath: documentURL.path) {
-            inputFileURL = documentURL
-        }
+    
+    let documentURL = URL.documentsDirectory.appending(path: filename)
+    if FileManager.default.fileExists(atPath: documentURL.path) {
+        inputFileURL = documentURL
     }
+    
     if inputFileURL == nil {
         guard let defaultURL = Bundle.main.url(forResource: externalApplicationListFilenameComponents[0],
                                                withExtension: externalApplicationListFilenameComponents[1]) else {
@@ -80,107 +75,48 @@ func getUniversalLinkRequestApplicationDescription(for appId: String) -> Externa
         }
         inputFileURL = defaultURL
     }
-    if let jsonData = try? Data(contentsOf: inputFileURL!),
-       let externalTokenRequestApplicationDescriptions = try? JSONDecoder().decode([ExternalTokenRequestApplicationDescription].self, from: jsonData),
-       let externalTokenRequestApplicationDescription = externalTokenRequestApplicationDescriptions.filter({ $0.id == appId }).first {
-        
-        return externalTokenRequestApplicationDescription
+    
+    if let inputFileURL,
+       let jsonData = try? Data(contentsOf: inputFileURL),
+       let descriptions = try? JSONDecoder().decode([ExternalTokenRequestApplicationDescription].self, from: jsonData),
+       let match = descriptions.first(where: { $0.id == appId }) {
+        return match
     }
     return nil
 }
 
-//func handleUniversalLink(_ url: URL, _ model: AuthViewModel) {
-//    guard url.pathComponents.count > 1 else {
-//        return
-//    }
-//
-//    let command = url.pathComponents[1]
-//    switch command {
-//    case "request-refresh-token":
-//        if let appId = url["app_id"],
-//           let appDescription: ExternalTokenRequestApplicationDescription = getUniversalLinkRequestApplicationDescription(for: appId),
-//           let appData: String = url["app_data"] {
-//            
-//            model.externalTokenRequest = ExternalTokenRequest(appDescription: appDescription,
-//                                                              appData: appData)
-//        }
-//        break
-//    default:
-//        break
-//    }
-//}
-
-func downloadLatestExternalApplicationList() {
-    guard let githubURL = URL(string: "https://raw.githubusercontent.com/TeslaBuds/AuthAppForTesla/main/AuthAppForTesla/\(externalApplicationListFilenameComponents.joined(separator: "."))") else {
+/// Downloads the latest external application list from GitHub.
+func downloadLatestExternalApplicationList() async {
+    let filename = externalApplicationListFilenameComponents.joined(separator: ".")
+    guard let githubURL = URL(string: "https://raw.githubusercontent.com/TeslaBuds/AuthAppForTesla/main/AuthAppForTesla/\(filename)") else {
         return
     }
-    URLSession.shared.dataTask(with: githubURL) { data, response, error in
-        if error != nil || data == nil {
+    
+    do {
+        let (data, response) = try await URLSession.shared.data(from: githubURL)
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode) else {
             return
         }
-        if let httpResponse = response as? HTTPURLResponse,
-           !((200...299).contains(httpResponse.statusCode)) {
-            return
-        }
-        if var documentURL = try? FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false) {
-            documentURL.appendPathComponent(externalApplicationListFilenameComponents.joined(separator: "."))
-            
-            try? data!.write(to: documentURL)
-        }
-    }.resume()
-}
-
-#if OAUTHAVAILABLE
-extension UIApplication {
-    @nonobjc static var topViewController: UIViewController? {
-        #if OAUTHAVAILABLE
-            return UIApplication.shared.topViewController
-        #else
-            return nil
-        #endif
-    }
-
-    var topViewController: UIViewController? {
-        guard let rootController = UIApplication.shared.connectedScenes.compactMap({ ($0 as? UIWindowScene)?.keyWindow }).first?.rootViewController else {
-            return nil
-        }
-        return UIViewController.topViewController(rootController)
+        let documentURL = URL.documentsDirectory.appending(path: filename)
+        try data.write(to: documentURL)
+    } catch {
+        // Download failed silently - the bundled list will be used as fallback
     }
 }
 
-extension UIViewController {
-    static func topViewController(_ viewController: UIViewController) -> UIViewController {
-        guard let presentedViewController = viewController.presentedViewController else {
-            return viewController
-        }
-        #if !topVCCastDisabled
-            if let navigationController = presentedViewController as? UINavigationController {
-                if let visibleViewController = navigationController.visibleViewController {
-                    return topViewController(visibleViewController)
-                }
-            } else if let tabBarController = presentedViewController as? UITabBarController {
-                if let selectedViewController = tabBarController.selectedViewController {
-                    return topViewController(selectedViewController)
-                }
-            }
-        #endif
-        return topViewController(presentedViewController)
-    }
-}
-#endif
 
 
-// Function to handle Base64 URL decoding
+
+/// Decodes a Base64-URL encoded string to Data.
 func base64UrlDecode(_ value: String) -> Data? {
     var base64 = value
-        .replacingOccurrences(of: "-", with: "+")
-        .replacingOccurrences(of: "_", with: "/")
+        .replacing("-", with: "+")
+        .replacing("_", with: "/")
     
-    // Decode the base64 string
     if let data = Data(base64Encoded: base64) {
         return data
     } else {
-        // Try adding padding if necessary and decode again
         let paddingLength = 4 - base64.count % 4
         if paddingLength < 4 {
             base64 += String(repeating: "=", count: paddingLength)

@@ -8,35 +8,29 @@
 import Foundation
 import AppIntents
 
-@available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
 struct GetFleetAPIToken: AppIntent {
     static var title: LocalizedStringResource = "Get Fleet API Token"
     static var description = IntentDescription("Returns the Fleet API token", categoryName: "Fleet API")
 
     static var parameterSummary: some ParameterSummary {
-        Summary("Get Fleet API Refresh Token")
+        Summary("Get Fleet API Token")
     }
 
     func perform() async throws -> some IntentResult & ReturnsValue<TokenResponseAppEntity> {
-        if let token = await AuthController.shared.acquireTokenV4Silent()
-        {
-            let tokenResponse = TokenResponseAppEntity(token: token)
-            return .result(value: tokenResponse)
-        }
-        else
-        {
+        if let token = await AuthController.shared.acquireTokenV4Silent() {
+            return .result(value: TokenResponseAppEntity(token: token))
+        } else {
             return .result(value: TokenResponseAppEntity())
         }
     }
 }
 
-@available(iOS 16.0, macOS 13.0, watchOS 9.0, tvOS 16.0, *)
-fileprivate extension IntentDialog {
+private extension IntentDialog {
     static func responseSuccess(token: TokenResponseAppEntity) -> Self {
-        "Got refresh token"
+        "Got Fleet API token"
     }
     static var responseFailure: Self {
-        "Could not get refresh token"
+        "Could not get Fleet API token"
     }
 }
 

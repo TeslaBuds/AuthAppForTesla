@@ -1,65 +1,79 @@
 //
-//  SetupViewSignIn.swift
+//  LoginViewSignInOwnersAPI.swift
 //  AuthAppForTesla
 //
 //  Created by Nila on 20.02.21.
 //
 
 import SwiftUI
-import CryptoKit
 
 struct LoginViewSignInOwnersAPI: View {
-    @ObservedObject var model: AuthViewModel
-    @State var region: TokenRegion = .global
-    
+    @Bindable var model: AuthViewModel
+    @State private var region: TokenRegion = .global
+    @State private var authURL: URL?
+    @State private var codeVerifier: String?
+    @State private var showingAuth = false
+
     var body: some View {
-        return VStack {
-            
-            
+        VStack {
             Text("Choose login region")
-            Picker("", selection: $region) {
+            Picker("Region", selection: $region) {
                 ForEach(TokenRegion.allCases) { region in
-                    Text("\(NSLocalizedString(region.rawValue.capitalized, comment: ""))").tag(region)
+                    Text(region.rawValue.capitalized).tag(region)
                 }
             }
-            .pickerStyle(SegmentedPickerStyle())
+            .pickerStyle(.segmented)
             .padding(.bottom, 10)
-            Button("Sign in with Tesla", action: {
+            Button("Sign in with Tesla") {
                 model.logOut(environment: .owner)
-                self.authenticateV3()
-            })
-                .accessibilityIdentifier("loginButton")
-                .frame(minWidth: 0, maxWidth: .infinity, alignment: .bottom)
-                .padding(.vertical, 15)
-                .foregroundColor(Color.white)
-                .background(Color("TeslaRed"))
-                .cornerRadius(10.0)
-//                .disabled(model.externalTokenRequest != nil)
+                authenticateV3()
+            }
+            .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
+            .foregroundStyle(.white)
+            .accessibilityIdentifier("loginButton")
         }
         .padding(.horizontal, 35)
         .padding(.vertical, 20)
-    }
-    
-    func authenticateV3() {
-        DispatchQueue.main.async {
-            if let vc = AuthController.shared.authenticateWebV3(region: self.region, redirectUrl: kTeslaRedirectUri, completion: { (result) in
-                switch result {
-                case .success:
-                    Task {
-                        await model.acquireTokenSilentV3(forceRefresh: true)
-                    }
-                case .failure(let error):
-                    print("Authenticate V3 error: \(error.localizedDescription)")
+        .sheet(isPresented: $showingAuth) {
+            if let authURL {
+                AuthWebView(url: authURL, redirectUrl: kTeslaRedirectUri) { result in
+                    handleAuthResult(result)
                 }
-            }) {
-                UIApplication.topViewController?.present(vc, animated: true, completion: nil)
             }
+        }
+    }
+
+    private func authenticateV3() {
+        Task {
+            guard let oauthInfo = await AuthController.shared.buildOAuthURLV3(
+                region: region,
+                redirectUrl: kTeslaRedirectUri
+            ) else { return }
+
+            authURL = oauthInfo.url
+            codeVerifier = oauthInfo.codeVerifier
+            showingAuth = true
+        }
+    }
+
+    private func handleAuthResult(_ result: Result<URL, Error>) {
+        switch result {
+        case .success(let url):
+            let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+            guard let code = urlComponents?.queryItems?.first(where: { $0.name == "code" })?.value,
+                  let verifier = codeVerifier else {
+                return
+            }
+            Task {
+                _ = await AuthController.shared.exchangeCodeV3(code, codeVerifier: verifier, region: region)
+                _ = await model.acquireTokenSilentV3(forceRefresh: true)
+            }
+        case .failure(let error):
+            print("Authenticate V3 error: \(error.localizedDescription)")
         }
     }
 }
 
-struct LoginViewSignInOwnersAPI_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginViewSignInOwnersAPI(model: AuthViewModel())
-    }
+#Preview {
+    LoginViewSignInOwnersAPI(model: AuthViewModel())
 }

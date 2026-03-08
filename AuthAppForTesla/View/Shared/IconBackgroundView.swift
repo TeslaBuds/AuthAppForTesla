@@ -7,37 +7,31 @@
 
 import SwiftUI
 
+/// A container that places a decorative key/shield pattern behind its content.
+/// The pattern fills the entire background so glass effects have content to distort.
 struct IconBackgroundView<Content: View>: View {
-    @Environment(\.colorScheme) var colorScheme
-    var content: () -> Content
-    
-    init(@ViewBuilder content: @escaping () -> Content) {
-        self.content = content
-    }
-    
+    @ViewBuilder let content: Content
+
     var body: some View {
-        GeometryReader { geometry in
-            VStack {
-                ZStack(alignment: .topLeading){
-                    VStack {
-                        //Image(colorScheme == .dark ? "IconPatternDark" : "IconPattern")
-                        Image("IconPatternSVG")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .foregroundColor(Color("IconPatternAccentColor"))
-                            .background(Color("IconPatternBackgroundColor"))
-                    }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
-                    VStack(content: content)
+        ZStack {
+            Color("IconPatternBackgroundColor")
+                .ignoresSafeArea()
+                .overlay {
+                    Image("IconPatternSVG")
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .foregroundStyle(Color("IconPatternAccentColor"))
+                        .ignoresSafeArea()
                 }
-            }.frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
-        }//.edgesIgnoringSafeArea(.top)//.edgesIgnoringSafeArea(.bottom)
+
+            content
+        }
     }
 }
 
-struct IconBackgroundView_Previews: PreviewProvider {
-    static var previews: some View {
-        IconBackgroundView() {
-            Text("Hello Love")
-        }
+#Preview {
+    IconBackgroundView {
+        Text("Hello Love")
+            .font(.largeTitle)
     }
 }

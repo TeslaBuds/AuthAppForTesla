@@ -1,5 +1,5 @@
 //
-//  SetupViewFooter.swift
+//  LoginViewFooter.swift
 //  AuthAppForTesla
 //
 //  Created by Nila on 20.02.21.
@@ -8,43 +8,48 @@
 import SwiftUI
 
 struct LoginViewFooter: View {
-    @ObservedObject var model: AuthViewModel
+    @Bindable var model: AuthViewModel
     let loginEnvironment: LoginEnvironment
     
     let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
     let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
     
     var body: some View {
-        VStack{
+        VStack {
             Spacer()
             Text("Login to Tesla to generate Tokens")
-                .font(.system(size: 25, weight: .regular, design: .default))
+                .font(.title2)
             Text("In order to generate tokens, you have to login with your Tesla account.")
-                .font(.system(size: 18, weight: .regular, design: .default))
+                .font(.body)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 25)
                 .padding(.top, 2)
             LoginViewSignIn(model: model, loginEnvironment: loginEnvironment)
             Text("You will be presented with a web browser where you can enter your Tesla credentials into the Tesla website. If you have MFA configured you will be asked to enter a valid MFA code.")
-                .font(.system(size: 12, weight: .regular, design: .default))
+                .font(.caption)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 35)
-                .foregroundColor(.gray)
+                .foregroundStyle(.secondary)
             Spacer()
             Text("v. \(version) build \(build)")
-                .font(.system(size: 12, weight: .regular, design: .default))
+                .font(.caption)
                 .multilineTextAlignment(.center)
-                .padding(.bottom, 15)
-                .foregroundColor(.gray)
+                .padding(.bottom)
+                .foregroundStyle(.secondary)
         }
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .bottom)
-        .background(Color("SheetColor").shadow(radius: 6))
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+        .padding()
+        .glassEffect(.clear, in: .rect(cornerRadius: 24))
     }
 }
 
-struct LoginViewFooter_Previews: PreviewProvider {
-    static var previews: some View {
+#Preview("Owner") {
+    IconBackgroundView {
         LoginViewFooter(model: AuthViewModel(), loginEnvironment: .owner)
-        LoginViewFooter(model: AuthViewModel(), loginEnvironment: .fleet)
+            .fixedSize(horizontal: false, vertical: true)
     }
+}
+
+#Preview("Fleet") {
+    LoginViewFooter(model: AuthViewModel(), loginEnvironment: .fleet)
 }

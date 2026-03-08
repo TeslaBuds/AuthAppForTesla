@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  OwnersAPIView.swift
 //  AuthAppForTesla
 //
 //  Created by Nila on 21.02.21.
@@ -8,11 +8,10 @@
 import SwiftUI
 
 struct OwnersAPIView: View {
-    @ObservedObject var model: AuthViewModel
+    @Bindable var model: AuthViewModel
     
     var body: some View {
-        if (model.tokenV3?.refresh_token.count ?? 0 == 0)
-        {
+        if model.tokenV3?.refresh_token.count ?? 0 == 0 {
             LoginView(model: model, loginEnvironment: .owner)
         } else {
             HomeView(model: model, loginEnvironment: .owner)
@@ -20,8 +19,6 @@ struct OwnersAPIView: View {
     }
 }
 
-struct OwnersAPIView_Previews: PreviewProvider {
-    static var previews: some View {
-        OwnersAPIView(model: AuthViewModel())
-    }
+#Preview {
+    OwnersAPIView(model: AuthViewModel())
 }

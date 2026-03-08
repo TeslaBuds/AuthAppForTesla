@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1520"
+   LastUpgradeVersion = "2640"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -29,12 +29,34 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "EA5640842F5D996D00A50586"
+               BuildableName = "Auth for Tesla Tests.xctest"
+               BlueprintName = "Auth for Tesla Tests"
+               ReferencedContainer = "container:AuthAppForTesla.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "EA1A3360272D999B00B66EB0"
                BuildableName = "AuthAppForTeslaUITests.xctest"
                BlueprintName = "AuthAppForTeslaUITests"
+               ReferencedContainer = "container:AuthAppForTesla.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "EA5640912F5D998300A50586"
+               BuildableName = "Auth for Tesla UI Tests.xctest"
+               BlueprintName = "Auth for Tesla UI Tests"
                ReferencedContainer = "container:AuthAppForTesla.xcodeproj">
             </BuildableReference>
          </TestableReference>

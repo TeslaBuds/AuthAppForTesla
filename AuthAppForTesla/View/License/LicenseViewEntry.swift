@@ -26,8 +26,6 @@ struct LicenseViewEntry: View {
     }
 }
 
-struct LicenseViewEntry_Previews: PreviewProvider {
-    static var previews: some View {
-        LicenseViewEntry(author: "Me", name: "Great Library", link: "https://github/superduper/library")
-    }
+#Preview {
+    LicenseViewEntry(author: "Me", name: "Great Library", link: "https://github/superduper/library")
 }

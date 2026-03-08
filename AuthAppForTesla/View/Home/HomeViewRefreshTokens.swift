@@ -1,5 +1,5 @@
 //
-//  HomeViewRefreshToken.swift
+//  HomeViewRefreshTokens.swift
 //  AuthAppForTesla
 //
 //  Created by Nila on 21.02.21.
@@ -8,26 +8,18 @@
 import SwiftUI
 
 struct HomeViewRefreshTokens: View {
-    @ObservedObject var model: AuthViewModel
+    var model: AuthViewModel
     
     var body: some View {
-        Button(action: {
+        Button("Refresh Tokens") {
             model.refreshAll()
-        }, label: {
-            Text("Refresh Tokens")
-                .font(.system(size: 18))
-                .frame(minWidth: 0, maxWidth: .infinity, alignment: .bottom)
-                .accessibilityIdentifier("refreshTokensButton")
-        })
-        .padding(.vertical, 15)
-        .foregroundColor(Color.white)
-        .background(Color("TeslaRed"))
-        .cornerRadius(10.0)
+        }
+        .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
+        .foregroundStyle(.white)
+        .accessibilityIdentifier("refreshTokensButton")
     }
 }
 
-struct HomeViewRefreshToken_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeViewRefreshTokens(model: AuthViewModel())
-    }
+#Preview {
+    HomeViewRefreshTokens(model: AuthViewModel())
 }

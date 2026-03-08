@@ -1,20 +1,21 @@
 //
-//  SetupViewSignIn.swift
+//  LoginViewSignInFleetAPI.swift
 //  AuthAppForTesla
 //
 //  Created by Nila on 20.02.21.
 //
 
 import SwiftUI
-import CryptoKit
 
 struct LoginViewSignInFleetAPI: View {
-    @ObservedObject var model: AuthViewModel
-    @State var region: TokenRegion = .global
-    @State var clientId = ""
-    @State var clientSecret = ""
-    @State var redirectUri = ""
-    
+    @Bindable var model: AuthViewModel
+    @State private var region: TokenRegion = .global
+    @State private var clientId = ""
+    @State private var clientSecret = ""
+    @State private var redirectUri = ""
+    @State private var authURL: URL?
+    @State private var showingAuth = false
+
     var body: some View {
         VStack {
             VStack {
@@ -31,56 +32,80 @@ struct LoginViewSignInFleetAPI: View {
             .font(.footnote)
 
             Text("Choose login region")
-            Picker("", selection: $region) {
+            Picker("Region", selection: $region) {
                 ForEach(TokenRegion.allCases) { region in
-                    Text("\(NSLocalizedString(region.rawValue.capitalized, comment: ""))").tag(region)
+                    Text(region.rawValue.capitalized).tag(region)
                 }
             }
-            .pickerStyle(SegmentedPickerStyle())
+            .pickerStyle(.segmented)
             .padding(.bottom, 10)
-            
-            Button("Sign in with Tesla", action: {
+
+            Button("Sign in with Tesla") {
                 model.logOut(environment: .fleet)
-                self.authenticateV4(region: region, clientId: clientId, clientSecret: clientSecret, redirectUri: redirectUri)
-            })
+                authenticateV4(region: region, clientId: clientId, clientSecret: clientSecret, redirectUri: redirectUri)
+            }
+            .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
+            .foregroundStyle(.white)
             .accessibilityIdentifier("loginButtonv4")
-            .frame(minWidth: 0, maxWidth: .infinity, alignment: .bottom)
-            .padding(.vertical, 15)
-            .foregroundColor(Color.white)
-            .background(Color("TeslaRed"))
-            .cornerRadius(10.0)
-//            .disabled(model.externalTokenRequest != nil)
         }
         .padding(.horizontal, 35)
         .padding(.vertical, 20)
-        .onAppear {
-            clientId = AuthController.shared.fleetClientId
-            clientSecret = AuthController.shared.fleetClientSecret
-            redirectUri = AuthController.shared.fleetRedirectUri
+        .task {
+            clientId = await AuthController.shared.fleetClientId
+            clientSecret = await AuthController.shared.fleetClientSecret
+            redirectUri = await AuthController.shared.fleetRedirectUri
+        }
+        .sheet(isPresented: $showingAuth) {
+            if let authURL {
+                AuthWebView(url: authURL, redirectUrl: redirectUri) { result in
+                    handleAuthResult(result)
+                }
+            }
         }
     }
-    
-    func authenticateV4(region: TokenRegion, clientId: String, clientSecret: String, redirectUri: String) {
-        AuthController.shared.storeFleetConnection(clientId: clientId, clientSecret: clientSecret, redirectUri: redirectUri)
-        DispatchQueue.main.async {
-            if let vc = AuthController.shared.authenticateWebV4(region: region, fleetClientId: clientId, fleetSecret: clientSecret, fleetRedirectUri: redirectUri, completion: { (result) in
-                switch result {
-                case .success:
-                    Task {
-                        await model.acquireTokenSilentV4(forceRefresh: true)
-                    }
-                case .failure(let error):
-                    print("Authenticate V4 error: \(error.localizedDescription)")
-                }
-            }) {
-                UIApplication.topViewController?.present(vc, animated: true, completion: nil)
+
+    private func authenticateV4(region: TokenRegion, clientId: String, clientSecret: String, redirectUri: String) {
+        Task {
+            await AuthController.shared.storeFleetConnection(
+                clientId: clientId,
+                clientSecret: clientSecret,
+                redirectUri: redirectUri
+            )
+
+            guard let url = await AuthController.shared.buildOAuthURLV4(
+                region: region,
+                fleetClientId: clientId,
+                fleetRedirectUri: redirectUri
+            ) else { return }
+
+            authURL = url
+            showingAuth = true
+        }
+    }
+
+    private func handleAuthResult(_ result: Result<URL, Error>) {
+        switch result {
+        case .success(let url):
+            let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+            guard let code = urlComponents?.queryItems?.first(where: { $0.name == "code" })?.value else {
+                return
             }
+            Task {
+                _ = await AuthController.shared.exchangeCodeV4(
+                    code,
+                    region: region,
+                    fleetClientId: clientId,
+                    fleetSecret: clientSecret,
+                    fleetRedirectUri: redirectUri
+                )
+                _ = await model.acquireTokenSilentV4(forceRefresh: true)
+            }
+        case .failure(let error):
+            print("Authenticate V4 error: \(error.localizedDescription)")
         }
     }
 }
 
-struct LoginViewSignInFleetAPI_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginViewSignInFleetAPI(model: AuthViewModel())
-    }
+#Preview {
+    LoginViewSignInFleetAPI(model: AuthViewModel())
 }

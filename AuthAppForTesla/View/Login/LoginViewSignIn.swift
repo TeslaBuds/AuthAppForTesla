@@ -1,15 +1,14 @@
 //
-//  SetupViewSignIn.swift
+//  LoginViewSignIn.swift
 //  AuthAppForTesla
 //
 //  Created by Nila on 20.02.21.
 //
 
 import SwiftUI
-import CryptoKit
 
 struct LoginViewSignIn: View {
-    @ObservedObject var model: AuthViewModel
+    @Bindable var model: AuthViewModel
     let loginEnvironment: LoginEnvironment
     
     var body: some View {
@@ -21,9 +20,10 @@ struct LoginViewSignIn: View {
     }
 }
 
-struct LoginViewSignIn_Previews: PreviewProvider {
-    static var previews: some View {
-        LoginViewSignIn(model: AuthViewModel(), loginEnvironment: .owner)
-        LoginViewSignIn(model: AuthViewModel(), loginEnvironment: .fleet)
-    }
+#Preview("Owner") {
+    LoginViewSignIn(model: AuthViewModel(), loginEnvironment: .owner)
+}
+
+#Preview("Fleet") {
+    LoginViewSignIn(model: AuthViewModel(), loginEnvironment: .fleet)
 }

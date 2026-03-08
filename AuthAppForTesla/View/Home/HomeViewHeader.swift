@@ -8,38 +8,39 @@
 import SwiftUI
 
 struct HomeViewHeader: View {
-    @ObservedObject var model: AuthViewModel
+    var model: AuthViewModel
     let loginEnvironment: LoginEnvironment
     
     var body: some View {
         HStack {
-            VStack(alignment:. leading) {
+            VStack(alignment: .leading) {
                 Text(loginEnvironment == .owner ? "Owners API" : "Fleet API")
                     .font(.title)
-                    .fontWeight(.bold)
+                    .bold()
                 let token = loginEnvironment == .owner ? model.tokenV3 : model.tokenV4
-                Text("Access Token valid for ").font(.subheadline) + Text(token?.expires_at ?? Date.distantPast, style: .relative)
-                    .font(.subheadline)
+                let expiresLabel = Text("Access Token valid for ").font(.subheadline)
+                let expiresDate = Text(token?.expires_at ?? Date.distantPast, style: .relative).font(.subheadline)
+                Text("\(expiresLabel)\(expiresDate)")
             }
             Spacer()
-            Menu {
-                Button("Logout", action: {
+            Menu("Account", systemImage: "person.crop.circle") {
+                Button("Logout") {
                     model.logOut(environment: loginEnvironment)
-                })
-                    .accessibilityIdentifier("logoutButton")
-            } label: {
-                Image(systemName: "person.crop.circle")
-                    .foregroundColor(Color("TeslaRed"))
-                    .font(.system(size: 30))
-                    .accessibilityIdentifier("homeMenu")
+                }
+                .accessibilityIdentifier("logoutButton")
             }
+            .labelStyle(.iconOnly)
+            .foregroundStyle(Color("TeslaRed"))
+            .font(.title)
+            .accessibilityIdentifier("homeMenu")
         }
     }
 }
 
-struct HomeViewHeader_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeViewHeader(model: AuthViewModel(), loginEnvironment: .owner)
-        HomeViewHeader(model: AuthViewModel(), loginEnvironment: .fleet)
-    }
+#Preview("Owners") {
+    HomeViewHeader(model: AuthViewModel(), loginEnvironment: .owner)
+}
+
+#Preview("Fleet") {
+    HomeViewHeader(model: AuthViewModel(), loginEnvironment: .fleet)
 }
