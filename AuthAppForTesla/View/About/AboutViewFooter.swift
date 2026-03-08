@@ -42,6 +42,7 @@ struct AboutViewFooter: View {
         }
         .padding()
         .glassEffect(.clear, in: .rect(cornerRadius: 24))
+        .padding()
 #else
         EmptyView()
 #endif

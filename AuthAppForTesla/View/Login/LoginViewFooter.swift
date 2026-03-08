@@ -40,6 +40,7 @@ struct LoginViewFooter: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         .padding()
         .glassEffect(.clear, in: .rect(cornerRadius: 24))
+        .padding()
     }
 }
 
