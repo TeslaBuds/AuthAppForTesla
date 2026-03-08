@@ -11,9 +11,6 @@ struct LoginViewFooter: View {
     @Bindable var model: AuthViewModel
     let loginEnvironment: LoginEnvironment
     
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-    let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
-    
     var body: some View {
         VStack {
             Spacer()
@@ -31,11 +28,8 @@ struct LoginViewFooter: View {
                 .padding(.horizontal, 35)
                 .foregroundStyle(.secondary)
             Spacer()
-            Text("v. \(version) build \(build)")
-                .font(.caption)
-                .multilineTextAlignment(.center)
+            AppVersionLabel()
                 .padding(.bottom)
-                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         .padding()

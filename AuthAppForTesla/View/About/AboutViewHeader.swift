@@ -8,9 +8,6 @@
 import SwiftUI
 
 struct AboutViewHeader: View {
-    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-    let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
-
     @State private var isLicenseViewPresented = false
 
     var body: some View {
@@ -26,7 +23,7 @@ struct AboutViewHeader: View {
                 .font(.largeTitle)
                 .bold()
                 .padding(.bottom, 0.5)
-            Text("v. \(version) build \(build)")
+            AppVersionLabel()
                 .font(.subheadline)
             Text("\u{00A9} 2024 Kim Hansen, Michael Teuscher")
                 .font(.subheadline)
