@@ -12,7 +12,6 @@ struct LoginViewSignInOwnersAPI: View {
     @State private var region: TokenRegion = .global
     @State private var authURL: URL?
     @State private var codeVerifier: String?
-    @State private var showingAuth = false
 
     var body: some View {
         VStack {
@@ -34,11 +33,9 @@ struct LoginViewSignInOwnersAPI: View {
         }
         .padding(.horizontal, 35)
         .padding(.vertical, 20)
-        .sheet(isPresented: $showingAuth) {
-            if let authURL {
-                AuthWebView(url: authURL, redirectUrl: kTeslaRedirectUri) { result in
-                    handleAuthResult(result)
-                }
+        .sheet(item: $authURL) { url in
+            AuthWebView(url: url, redirectUrl: kTeslaRedirectUri) { result in
+                handleAuthResult(result)
             }
         }
     }
@@ -50,9 +47,8 @@ struct LoginViewSignInOwnersAPI: View {
                 redirectUrl: kTeslaRedirectUri
             ) else { return }
 
-            authURL = oauthInfo.url
             codeVerifier = oauthInfo.codeVerifier
-            showingAuth = true
+            authURL = oauthInfo.url
         }
     }
 

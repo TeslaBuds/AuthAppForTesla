@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct AboutViewHeader: View {
-    @State private var isLicenseViewPresented = false
+    @Binding var isLicenseViewPresented: Bool
 
     var body: some View {
         VStack {
@@ -37,14 +37,11 @@ struct AboutViewHeader: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-        .navigationDestination(isPresented: $isLicenseViewPresented) {
-            LicenseView()
-        }
     }
 }
 
 #Preview {
     NavigationStack {
-        AboutViewHeader()
+        AboutViewHeader(isLicenseViewPresented: .constant(false))
     }
 }

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SafariServices
-import StoreKit
 
 struct AboutViewFriend: View {
     let name: String
@@ -15,13 +14,15 @@ struct AboutViewFriend: View {
     let appUrl: String?
     let icon: String
 
+    @Environment(\.openURL) private var openURL
     @State private var showSafari = false
-    @State private var showProduct = false
 
     var body: some View {
         Button {
-            if appId != nil {
-                showProduct = true
+            if let appId {
+                if let url = URL(string: "https://apps.apple.com/app/id\(appId)") {
+                    openURL(url)
+                }
             } else if appUrl != nil {
                 showSafari = true
             }
@@ -46,12 +47,6 @@ struct AboutViewFriend: View {
                     .ignoresSafeArea()
             }
         }
-        .sheet(isPresented: $showProduct) {
-            if let appId {
-                StoreProductView(appID: appId)
-                    .ignoresSafeArea()
-            }
-        }
     }
 }
 
@@ -64,40 +59,6 @@ private struct SafariView: UIViewControllerRepresentable {
     }
 
     func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {
-    }
-}
-
-/// Wraps `SKStoreProductViewController` for presenting App Store product pages.
-/// Uses a coordinator to handle the delegate callback and dismiss properly.
-private struct StoreProductView: UIViewControllerRepresentable {
-    let appID: String
-    @Environment(\.dismiss) private var dismiss
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(dismiss: dismiss)
-    }
-
-    func makeUIViewController(context: Context) -> SKStoreProductViewController {
-        let controller = SKStoreProductViewController()
-        controller.delegate = context.coordinator
-        controller.loadProduct(withParameters: [SKStoreProductParameterITunesItemIdentifier: appID]) { _, _ in }
-        return controller
-    }
-
-    func updateUIViewController(_ uiViewController: SKStoreProductViewController, context: Context) {
-        context.coordinator.dismiss = dismiss
-    }
-
-    final class Coordinator: NSObject, SKStoreProductViewControllerDelegate {
-        var dismiss: DismissAction
-
-        init(dismiss: DismissAction) {
-            self.dismiss = dismiss
-        }
-
-        func productViewControllerDidFinish(_ viewController: SKStoreProductViewController) {
-            dismiss()
-        }
     }
 }
 

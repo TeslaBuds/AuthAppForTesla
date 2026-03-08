@@ -14,7 +14,6 @@ struct LoginViewSignInFleetAPI: View {
     @State private var clientSecret = ""
     @State private var redirectUri = ""
     @State private var authURL: URL?
-    @State private var showingAuth = false
 
     var body: some View {
         VStack {
@@ -55,11 +54,9 @@ struct LoginViewSignInFleetAPI: View {
             clientSecret = await AuthController.shared.fleetClientSecret
             redirectUri = await AuthController.shared.fleetRedirectUri
         }
-        .sheet(isPresented: $showingAuth) {
-            if let authURL {
-                AuthWebView(url: authURL, redirectUrl: redirectUri) { result in
-                    handleAuthResult(result)
-                }
+        .sheet(item: $authURL) { url in
+            AuthWebView(url: url, redirectUrl: redirectUri) { result in
+                handleAuthResult(result)
             }
         }
     }
@@ -79,7 +76,6 @@ struct LoginViewSignInFleetAPI: View {
             ) else { return }
 
             authURL = url
-            showingAuth = true
         }
     }
 

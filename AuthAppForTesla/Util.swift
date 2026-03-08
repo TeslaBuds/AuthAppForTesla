@@ -38,6 +38,10 @@ extension UserDefaults {
     public static let standard = UserDefaults(suiteName: "group.global")!
 }
 
+extension URL: @retroactive Identifiable {
+    public var id: String { absoluteString }
+}
+
 extension URL {
     subscript(key: String) -> String? {
         if let components = URLComponents(string: absoluteString),
