@@ -180,7 +180,11 @@ actor AuthController {
                                          "scope": "openid email offline_access phone"])
         switch result {
         case let .success(result):
-            print("[AuthController] oauthCodeV3 - HTTP \(result.statusCode) | body keys: \(result.dictionaryBody.keys.sorted())")
+            let bodyString = String(data: result.data, encoding: .utf8) ?? "nil"
+            print("[AuthController] oauthCodeV3 - HTTP \(result.statusCode) | body keys: \(result.dictionaryBody.keys.sorted()) | body: \(bodyString.prefix(500))")
+            if let errorMsg = result.dictionaryBody["error"] as? String {
+                print("[AuthController] oauthCodeV3 SERVER ERROR: \(errorMsg) | description: \(result.dictionaryBody["error_description"] ?? "none")")
+            }
             var token: Token?
             if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
                let access_token = result.dictionaryBody["access_token"] as? String,
