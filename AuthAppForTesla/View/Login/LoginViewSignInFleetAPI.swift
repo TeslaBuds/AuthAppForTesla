@@ -84,22 +84,30 @@ struct LoginViewSignInFleetAPI: View {
         case .success(let url):
             let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
             guard let code = urlComponents?.queryItems?.first(where: { $0.name == "code" })?.value else {
+                authURL = nil
                 return
             }
+            // Capture values before clearing sheet state
+            let capturedRegion = region
+            let capturedClientId = clientId
+            let capturedSecret = clientSecret
+            let capturedRedirectUri = redirectUri
             Task {
                 let token = await AuthController.shared.exchangeCodeV4(
                     code,
-                    region: region,
-                    fleetClientId: clientId,
-                    fleetSecret: clientSecret,
-                    fleetRedirectUri: redirectUri
+                    region: capturedRegion,
+                    fleetClientId: capturedClientId,
+                    fleetSecret: capturedSecret,
+                    fleetRedirectUri: capturedRedirectUri
                 )
                 if token != nil {
                     await model.loadTokens()
                 }
+                authURL = nil
             }
         case .failure(let error):
             print("Authenticate V4 error: \(error.localizedDescription)")
+            authURL = nil
         }
     }
 }

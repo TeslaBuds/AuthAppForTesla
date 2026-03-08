@@ -10,6 +10,10 @@ import WebKit
 
 /// A SwiftUI view that presents Tesla's OAuth login page using a WKWebView
 /// and intercepts the redirect URL to extract the authorization code.
+///
+/// The `onResult` closure is called when the redirect is detected.
+/// The caller is responsible for dismissing the sheet (e.g. by nil-ing the
+/// `sheet(item:)` binding) after processing the result.
 struct AuthWebView: View {
     let url: URL
     let redirectUrl: String
@@ -27,7 +31,6 @@ struct AuthWebView: View {
                     guard !hasHandledRedirect else { return }
                     hasHandledRedirect = true
                     onResult(.success(callbackURL))
-                    dismiss()
                 }
             )
             .ignoresSafeArea(edges: .bottom)

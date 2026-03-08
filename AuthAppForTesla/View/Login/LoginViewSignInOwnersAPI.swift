@@ -58,16 +58,21 @@ struct LoginViewSignInOwnersAPI: View {
             let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
             guard let code = urlComponents?.queryItems?.first(where: { $0.name == "code" })?.value,
                   let verifier = codeVerifier else {
+                authURL = nil
                 return
             }
+            // Capture values before clearing sheet state
+            let capturedRegion = region
             Task {
-                let token = await AuthController.shared.exchangeCodeV3(code, codeVerifier: verifier, region: region)
+                let token = await AuthController.shared.exchangeCodeV3(code, codeVerifier: verifier, region: capturedRegion)
                 if token != nil {
                     await model.loadTokens()
                 }
+                authURL = nil
             }
         case .failure(let error):
             print("Authenticate V3 error: \(error.localizedDescription)")
+            authURL = nil
         }
     }
 }
