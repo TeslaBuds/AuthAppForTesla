@@ -82,6 +82,7 @@ struct TipJarView: View {
                     .foregroundStyle(.tertiary)
                     .rotationEffect(.degrees(isExpanded ? 180 : 0))
             }
+            .contentShape(.rect)
         }
         .buttonStyle(.plain)
     }
