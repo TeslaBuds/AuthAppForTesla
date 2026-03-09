@@ -46,6 +46,8 @@ enum AppTab: Hashable {
 struct RootView: View {
     @Bindable var model: AuthViewModel
     @State private var selection: AppTab
+    @State private var showOnboarding = false
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     init(model: AuthViewModel, initialTab: AppTab = .owners) {
         self.model = model
@@ -67,10 +69,20 @@ struct RootView: View {
             }
             .tint(Color("TeslaRed"))
         }
+        .toast($model.toast)
+        .sheet(isPresented: $showOnboarding) {
+            OnboardingView(isPresented: $showOnboarding)
+                .onDisappear {
+                    hasSeenOnboarding = true
+                }
+        }
         .task {
             #if DEBUG
             guard !CommandLine.arguments.contains("enable-testing") else { return }
             #endif
+            if !hasSeenOnboarding {
+                showOnboarding = true
+            }
             model.refreshAll()
         }
     }

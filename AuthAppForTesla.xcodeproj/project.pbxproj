@@ -28,6 +28,12 @@
 		EA5641FA2F5DDF8F00A50586 /* TipJarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5641F92F5DDF8F00A50586 /* TipJarManager.swift */; };
 		EA5641FC2F5DDFA200A50586 /* TipJarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5641FB2F5DDFA200A50586 /* TipJarView.swift */; };
 		EA5641FE2F5DDFCF00A50586 /* TipJarProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = EA5641FD2F5DDFCF00A50586 /* TipJarProducts.storekit */; };
+		EA5643502F5F2F1500A50586 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA56434F2F5F2F1500A50586 /* Toast.swift */; };
+		EA5643522F5F2F2000A50586 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5643512F5F2F2000A50586 /* ToastView.swift */; };
+		EA5643582F5F2F6F00A50586 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5643572F5F2F6F00A50586 /* OnboardingPageView.swift */; };
+		EA56435A2F5F2F7D00A50586 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5643592F5F2F7D00A50586 /* OnboardingView.swift */; };
+		EA56435F2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA56435E2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift */; };
+		EA5643642F5F2FDA00A50586 /* AboutViewShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5643632F5F2FDA00A50586 /* AboutViewShortcuts.swift */; };
 		EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */; };
 		EA63697425CAB11D000216BF /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697325CAB11D000216BF /* RootView.swift */; };
 		EA63697625CAB11D000216BF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA63697525CAB11D000216BF /* Assets.xcassets */; };
@@ -95,6 +101,12 @@
 		EA5641F92F5DDF8F00A50586 /* TipJarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarManager.swift; sourceTree = "<group>"; };
 		EA5641FB2F5DDFA200A50586 /* TipJarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarView.swift; sourceTree = "<group>"; };
 		EA5641FD2F5DDFCF00A50586 /* TipJarProducts.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = TipJarProducts.storekit; sourceTree = "<group>"; };
+		EA56434F2F5F2F1500A50586 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		EA5643512F5F2F2000A50586 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		EA5643572F5F2F6F00A50586 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
+		EA5643592F5F2F7D00A50586 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		EA56435E2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeslaAppShortcutsProvider.swift; sourceTree = "<group>"; };
+		EA5643632F5F2FDA00A50586 /* AboutViewShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewShortcuts.swift; sourceTree = "<group>"; };
 		EA63696E25CAB11D000216BF /* AuthAppForTesla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthAppForTesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAppForTeslaApp.swift; sourceTree = "<group>"; };
 		EA63697325CAB11D000216BF /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -177,6 +189,7 @@
 				20007B9A25E15E6B00958060 /* LoginView.swift */,
 				20CDC55625E1D11600E895C8 /* AboutView.swift */,
 				20F8775E25E2F67800953E51 /* LicenseView.swift */,
+				EA5643562F5F2F6A00A50586 /* Onboarding */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -199,6 +212,7 @@
 				20CDC54625E1B52500E895C8 /* IconBackgroundView.swift */,
 				EA5641ED2F5DD84200A50586 /* AppVersionLabel.swift */,
 				EA5641FB2F5DDFA200A50586 /* TipJarView.swift */,
+				EA5643512F5F2F2000A50586 /* ToastView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -221,6 +235,7 @@
 				20CDC55925E1D13600E895C8 /* AboutViewHeader.swift */,
 				20CDC55B25E1D26700E895C8 /* AboutViewFooter.swift */,
 				20CDC55D25E1D3B800E895C8 /* AboutViewFriend.swift */,
+				EA5643632F5F2FDA00A50586 /* AboutViewShortcuts.swift */,
 			);
 			path = About;
 			sourceTree = "<group>";
@@ -231,6 +246,15 @@
 				20F8776025E2F73800953E51 /* LicenseViewEntry.swift */,
 			);
 			path = License;
+			sourceTree = "<group>";
+		};
+		EA5643562F5F2F6A00A50586 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				EA5643572F5F2F6F00A50586 /* OnboardingPageView.swift */,
+				EA5643592F5F2F7D00A50586 /* OnboardingView.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		EA63696525CAB11D000216BF = {
@@ -290,6 +314,7 @@
 			isa = PBXGroup;
 			children = (
 				EA78814A2B656FC800E14E3C /* TokenModels.swift */,
+				EA56434F2F5F2F1500A50586 /* Toast.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -314,6 +339,7 @@
 				EAAB1D1F2B5AAC7E00AC5271 /* GetFleetAPIToken.swift */,
 				EAE6FCA42B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift */,
 				EAAB1D192B5AA6D200AC5271 /* TokenResponseAppEntity.swift */,
+				EA56435E2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -477,6 +503,7 @@
 				20F8775A25E2DA4300953E51 /* HomeViewToken.swift in Sources */,
 				20CDC55725E1D11600E895C8 /* AboutView.swift in Sources */,
 				EA6369A725CAD79D000216BF /* AuthViewModel.swift in Sources */,
+				EA56435A2F5F2F7D00A50586 /* OnboardingView.swift in Sources */,
 				EA9EA87325DAAF25002FE23E /* AuthController.swift in Sources */,
 				EA63699F25CABA68000216BF /* KeychainWrapper.swift in Sources */,
 				EA5641FC2F5DDFA200A50586 /* TipJarView.swift in Sources */,
@@ -487,11 +514,13 @@
 				EAE6FCA52B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift in Sources */,
 				20CDC54D25E1C27E00E895C8 /* LoginViewSignIn.swift in Sources */,
 				EAAB1D122B5A893900AC5271 /* LoginViewSignInOwnersAPI.swift in Sources */,
+				EA5643502F5F2F1500A50586 /* Toast.swift in Sources */,
 				EAAB1D1C2B5AA6D200AC5271 /* RefreshOwnersAPIToken.swift in Sources */,
 				EA63698C25CAB620000216BF /* Consts.swift in Sources */,
 				EAAB1D082B5A676700AC5271 /* NetworkController.swift in Sources */,
 				EA563F692F5D8C0500A50586 /* AuthWebView.swift in Sources */,
 				EA5641EE2F5DD84200A50586 /* AppVersionLabel.swift in Sources */,
+				EA56435F2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift in Sources */,
 				20F8775825E2D9DA00953E51 /* HomeViewHeader.swift in Sources */,
 				20CDC54B25E1C21C00E895C8 /* LoginViewFooter.swift in Sources */,
 				EA5641FA2F5DDF8F00A50586 /* TipJarManager.swift in Sources */,
@@ -501,8 +530,10 @@
 				20CDC55E25E1D3B800E895C8 /* AboutViewFriend.swift in Sources */,
 				EAAB1D1A2B5AA6D200AC5271 /* GetOwnersAPIToken.swift in Sources */,
 				20F8776125E2F73800953E51 /* LicenseViewEntry.swift in Sources */,
+				EA5643522F5F2F2000A50586 /* ToastView.swift in Sources */,
 				EAAB1D0B2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift in Sources */,
 				20F8775C25E2DA5300953E51 /* HomeViewRefreshTokens.swift in Sources */,
+				EA5643642F5F2FDA00A50586 /* AboutViewShortcuts.swift in Sources */,
 				20CDC55425E1CC0A00E895C8 /* HomeView.swift in Sources */,
 				EAAB1D142B5A893B00AC5271 /* LoginViewSignInFleetAPI.swift in Sources */,
 				EAAB1D0E2B5A84D000AC5271 /* FleetAPIView.swift in Sources */,
@@ -510,6 +541,7 @@
 				EAAB1D1D2B5AA6D200AC5271 /* TokenResponseAppEntity.swift in Sources */,
 				EA78814E2B6592DF00E14E3C /* HomeViewAccessToken.swift in Sources */,
 				EA63699E25CABA68000216BF /* KeychainItemAccessibility.swift in Sources */,
+				EA5643582F5F2F6F00A50586 /* OnboardingPageView.swift in Sources */,
 				20007B9B25E15E6B00958060 /* LoginView.swift in Sources */,
 				20CDC54925E1C1AB00E895C8 /* LoginViewHeader.swift in Sources */,
 				EAAB1D222B5AAC7E00AC5271 /* GetFleetAPIToken.swift in Sources */,

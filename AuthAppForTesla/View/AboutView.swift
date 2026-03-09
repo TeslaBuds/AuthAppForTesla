@@ -16,6 +16,8 @@ struct AboutView: View {
             ScrollView {
                 AboutViewHeader(isLicenseViewPresented: $isLicenseViewPresented)
                 Spacer()
+                AboutViewShortcuts()
+                    .padding(.vertical)
                 AboutViewFooter()
                 TipJarView(scrollPosition: $scrollPosition)
                     .padding(.bottom)

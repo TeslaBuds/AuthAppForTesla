@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 enum TokenType {
     case accessToken
@@ -19,20 +20,29 @@ struct HomeViewToken: View {
     let tokenTypeToShow: TokenType
     let loginEnvironment: LoginEnvironment
     let showDetails: Bool
-    
+
     @State private var fontSize: Double = 32
     @State private var checkOpacity: Double = 0
-    
+
+    private var tokenString: String? {
+        tokenTypeToShow == .accessToken ? token?.access_token : token?.refresh_token
+    }
+
+    /// Copies the token string to the system clipboard with a 60-minute expiry
+    /// so it is automatically cleared, reducing clipboard privacy exposure.
     private func copyTokenToClipboard() {
-        let pasteBoard = UIPasteboard.general
-        pasteBoard.string = tokenTypeToShow == .accessToken ? token?.access_token : token?.refresh_token
+        guard let tokenString else { return }
+        UIPasteboard.general.setItems(
+            [[UTType.utf8PlainText.identifier: tokenString]],
+            options: [.expirationDate: Date(timeIntervalSinceNow: 3600)]
+        )
         animateCheck()
     }
-    
+
     private func animateCheck() {
         fontSize = 16
         checkOpacity = 1
-        
+
         withAnimation(.spring(response: 0.5, dampingFraction: 0.5, blendDuration: 0.3)) {
             fontSize = 60
         } completion: {
