@@ -28,6 +28,8 @@
 		EA5641FA2F5DDF8F00A50586 /* TipJarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5641F92F5DDF8F00A50586 /* TipJarManager.swift */; };
 		EA5641FC2F5DDFA200A50586 /* TipJarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5641FB2F5DDFA200A50586 /* TipJarView.swift */; };
 		EA5641FE2F5DDFCF00A50586 /* TipJarProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = EA5641FD2F5DDFCF00A50586 /* TipJarProducts.storekit */; };
+		EA5643502F5F2F1500A50586 /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA56434F2F5F2F1500A50586 /* Toast.swift */; };
+		EA5643522F5F2F2000A50586 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5643512F5F2F2000A50586 /* ToastView.swift */; };
 		EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */; };
 		EA63697425CAB11D000216BF /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697325CAB11D000216BF /* RootView.swift */; };
 		EA63697625CAB11D000216BF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA63697525CAB11D000216BF /* Assets.xcassets */; };
@@ -95,6 +97,8 @@
 		EA5641F92F5DDF8F00A50586 /* TipJarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarManager.swift; sourceTree = "<group>"; };
 		EA5641FB2F5DDFA200A50586 /* TipJarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarView.swift; sourceTree = "<group>"; };
 		EA5641FD2F5DDFCF00A50586 /* TipJarProducts.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = TipJarProducts.storekit; sourceTree = "<group>"; };
+		EA56434F2F5F2F1500A50586 /* Toast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		EA5643512F5F2F2000A50586 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		EA63696E25CAB11D000216BF /* AuthAppForTesla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthAppForTesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAppForTeslaApp.swift; sourceTree = "<group>"; };
 		EA63697325CAB11D000216BF /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -199,6 +203,7 @@
 				20CDC54625E1B52500E895C8 /* IconBackgroundView.swift */,
 				EA5641ED2F5DD84200A50586 /* AppVersionLabel.swift */,
 				EA5641FB2F5DDFA200A50586 /* TipJarView.swift */,
+				EA5643512F5F2F2000A50586 /* ToastView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -290,6 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				EA78814A2B656FC800E14E3C /* TokenModels.swift */,
+				EA56434F2F5F2F1500A50586 /* Toast.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -487,6 +493,7 @@
 				EAE6FCA52B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift in Sources */,
 				20CDC54D25E1C27E00E895C8 /* LoginViewSignIn.swift in Sources */,
 				EAAB1D122B5A893900AC5271 /* LoginViewSignInOwnersAPI.swift in Sources */,
+				EA5643502F5F2F1500A50586 /* Toast.swift in Sources */,
 				EAAB1D1C2B5AA6D200AC5271 /* RefreshOwnersAPIToken.swift in Sources */,
 				EA63698C25CAB620000216BF /* Consts.swift in Sources */,
 				EAAB1D082B5A676700AC5271 /* NetworkController.swift in Sources */,
@@ -501,6 +508,7 @@
 				20CDC55E25E1D3B800E895C8 /* AboutViewFriend.swift in Sources */,
 				EAAB1D1A2B5AA6D200AC5271 /* GetOwnersAPIToken.swift in Sources */,
 				20F8776125E2F73800953E51 /* LicenseViewEntry.swift in Sources */,
+				EA5643522F5F2F2000A50586 /* ToastView.swift in Sources */,
 				EAAB1D0B2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift in Sources */,
 				20F8775C25E2DA5300953E51 /* HomeViewRefreshTokens.swift in Sources */,
 				20CDC55425E1CC0A00E895C8 /* HomeView.swift in Sources */,

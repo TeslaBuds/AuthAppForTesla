@@ -15,8 +15,16 @@ class AuthViewModel {
     var tokenV3: Token?
     var tokenV4: Token?
 
+    /// The currently visible toast notification, if any.
+    var toast: Toast?
+
     init() {
         // Tokens are loaded asynchronously after init via loadTokens()
+    }
+
+    /// Presents a toast message.
+    func showToast(_ toast: Toast) {
+        self.toast = toast
     }
 
     /// Loads the initial token state from the AuthController actor.
@@ -27,8 +35,15 @@ class AuthViewModel {
 
     func refreshAll() {
         Task {
-            tokenV3 = await AuthController.shared.acquireTokenV3Silent(forceRefresh: true)
-            tokenV4 = await AuthController.shared.acquireTokenV4Silent(forceRefresh: true)
+            let v3 = await AuthController.shared.acquireTokenV3Silent(forceRefresh: true)
+            let v4 = await AuthController.shared.acquireTokenV4Silent(forceRefresh: true)
+            tokenV3 = v3
+            tokenV4 = v4
+            if v3 == nil && v4 == nil {
+                showToast(.error("Could not refresh tokens. Please sign in again."))
+            } else {
+                showToast(.success("Tokens refreshed successfully."))
+            }
         }
     }
 

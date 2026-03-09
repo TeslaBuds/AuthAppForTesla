@@ -67,6 +67,7 @@ struct RootView: View {
             }
             .tint(Color("TeslaRed"))
         }
+        .toast($model.toast)
         .task {
             #if DEBUG
             guard !CommandLine.arguments.contains("enable-testing") else { return }

@@ -73,7 +73,10 @@ struct LoginViewSignInFleetAPI: View {
                 region: region,
                 fleetClientId: clientId,
                 fleetRedirectUri: redirectUri
-            ) else { return }
+            ) else {
+                model.showToast(.error("Could not build authorization URL. Check your credentials."))
+                return
+            }
 
             authURL = url
         }
@@ -85,6 +88,7 @@ struct LoginViewSignInFleetAPI: View {
             let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
             guard let code = urlComponents?.queryItems?.first(where: { $0.name == "code" })?.value else {
                 authURL = nil
+                model.showToast(.error("Sign-in failed: no authorization code received."))
                 return
             }
             // Capture values before clearing sheet state
@@ -102,11 +106,13 @@ struct LoginViewSignInFleetAPI: View {
                 )
                 if token != nil {
                     await model.loadTokens()
+                } else {
+                    model.showToast(.error("Sign-in failed: could not exchange authorization code."))
                 }
                 authURL = nil
             }
         case .failure(let error):
-            print("Authenticate V4 error: \(error.localizedDescription)")
+            model.showToast(.error("Sign-in failed: \(error.localizedDescription)"))
             authURL = nil
         }
     }

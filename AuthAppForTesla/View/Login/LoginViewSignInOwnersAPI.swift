@@ -60,10 +60,12 @@ struct LoginViewSignInOwnersAPI: View {
             let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
             guard let code = urlComponents?.queryItems?.first(where: { $0.name == "code" })?.value else {
                 authURL = nil
+                model.showToast(.error("Sign-in failed: no authorization code received."))
                 return
             }
             guard let verifier = codeVerifier else {
                 authURL = nil
+                model.showToast(.error("Sign-in failed: missing code verifier."))
                 return
             }
             let capturedRegion = region
@@ -71,10 +73,13 @@ struct LoginViewSignInOwnersAPI: View {
                 let token = await AuthController.shared.exchangeCodeV3(code, codeVerifier: verifier, region: capturedRegion)
                 if token != nil {
                     await model.loadTokens()
+                } else {
+                    model.showToast(.error("Sign-in failed: could not exchange authorization code."))
                 }
                 authURL = nil
             }
-        case .failure:
+        case .failure(let error):
+            model.showToast(.error("Sign-in failed: \(error.localizedDescription)"))
             authURL = nil
         }
     }
