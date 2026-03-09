@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+        Privacy Manifest for Auth for Tesla
+        https://developer.apple.com/documentation/bundleresources/privacy_manifest_files
+    -->
+
+    <!-- ================================================================
+         NSPrivacyTracking
+         The app does not track users across apps or websites owned by
+         other companies for advertising or measurement purposes.
+    ================================================================ -->
+    <key>NSPrivacyTracking</key>
+    <false/>
+
+    <!-- ================================================================
+         NSPrivacyTrackingDomains
+         No tracking domains — left empty.
+    ================================================================ -->
+    <key>NSPrivacyTrackingDomains</key>
+    <array/>
+
+    <!-- ================================================================
+         NSPrivacyCollectedDataTypes
+         The app collects no data about the user that is transmitted to
+         the developer or any third party.
+    ================================================================ -->
+    <key>NSPrivacyCollectedDataTypes</key>
+    <array/>
+
+    <!-- ================================================================
+         NSPrivacyAccessedAPITypes
+         Required-reason APIs used by the app.
+    ================================================================ -->
+    <key>NSPrivacyAccessedAPITypes</key>
+    <array>
+
+        <!-- UserDefaults — used to persist the onboarding-seen flag and
+             to share token expiry timestamps with the widget extension
+             via the shared App Group suite (group.global).
+             Reason: CA92.1 — App functionality.  -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>CA92.1</string>
+            </array>
+        </dict>
+
+        <!-- File timestamp APIs — used by FileManager when reading/writing
+             the cached ExternalApplicationList.json in the documents directory.
+             Reason: C617.1 — App functionality.  -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>C617.1</string>
+            </array>
+        </dict>
+
+        <!-- Disk space APIs — used implicitly by URLSession when caching
+             network responses and writing downloaded data to disk.
+             Reason: E174.1 — App functionality.  -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategoryDiskSpace</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>E174.1</string>
+            </array>
+        </dict>
+
+        <!-- System boot time — used implicitly by URLSession for
+             connection timing. Not used directly by app code.
+             Reason: 35F9.1 — App functionality.  -->
+        <dict>
+            <key>NSPrivacyAccessedAPIType</key>
+            <string>NSPrivacyAccessedAPICategorySystemBootTime</string>
+            <key>NSPrivacyAccessedAPITypeReasons</key>
+            <array>
+                <string>35F9.1</string>
+            </array>
+        </dict>
+
+    </array>
+
+</dict>
+</plist>
