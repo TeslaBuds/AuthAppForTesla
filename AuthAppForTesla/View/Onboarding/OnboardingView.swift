@@ -20,13 +20,13 @@ struct OnboardingView: View {
         ),
         (
             systemImage: "lock.shield.fill",
-            color: .blue,
+            color: Color("TeslaRed"),
             title: "Your Credentials Stay on Device",
             description: "Sign-in happens in a secure browser — your Tesla password never passes through this app. Tokens are stored in your iCloud Keychain and sync across your devices."
         ),
         (
             systemImage: "puzzlepiece.extension.fill",
-            color: .green,
+            color: Color("TeslaRed"),
             title: "Works With the Apps You Love",
             description: "Tap a token to copy it to the clipboard, or use the built-in Shortcuts and Siri integration to automate token delivery to any app."
         )
