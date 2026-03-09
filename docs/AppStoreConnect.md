@@ -49,6 +49,15 @@ Version 3.0 is a complete overhaul — a brand new design built for iOS 26 with 
 
 ---
 
+## Keywords (100 chars max)
+
+Tesla, Token, Auth, Authentication, Shortcuts, Scripting, Login, Sign-in, Signin, OAuth, API, Automation
+
+(93 chars — no spaces after commas, that's how App Store Connect counts them)
+
+
+---
+
 ## Privacy Manifest Notes
 
 See `PrivacyInfo.xcprivacy` in the app bundle for the full machine-readable manifest.
