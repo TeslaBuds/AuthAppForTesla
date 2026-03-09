@@ -6,14 +6,20 @@
 //
 
 import Foundation
+import WidgetKit
 
 /// Shared observable model that holds the current authentication state
 /// for both Owners API (v3) and Fleet API (v4) tokens.
 @MainActor
 @Observable
 class AuthViewModel {
-    var tokenV3: Token?
-    var tokenV4: Token?
+    var tokenV3: Token? {
+        didSet { persistTokenSummary() }
+    }
+
+    var tokenV4: Token? {
+        didSet { persistTokenSummary() }
+    }
 
     /// The currently visible toast notification, if any.
     var toast: Toast?
@@ -45,6 +51,17 @@ class AuthViewModel {
                 showToast(.success("Tokens refreshed successfully."))
             }
         }
+    }
+
+    /// Writes a lightweight token summary to the shared App Group UserDefaults
+    /// so the WidgetKit extension can read expiry dates without keychain access.
+    private func persistTokenSummary() {
+        let defaults = UserDefaults(suiteName: "group.global")
+        defaults?.set(tokenV3?.expires_at, forKey: "widget.tokenV3.expiresAt")
+        defaults?.set(tokenV4?.expires_at, forKey: "widget.tokenV4.expiresAt")
+        defaults?.set(tokenV3 != nil, forKey: "widget.tokenV3.hasToken")
+        defaults?.set(tokenV4 != nil, forKey: "widget.tokenV4.hasToken")
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func logOut(environment: LoginEnvironment) {
