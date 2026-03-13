@@ -47,6 +47,7 @@
 		EA78814B2B656FC800E14E3C /* TokenModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78814A2B656FC800E14E3C /* TokenModels.swift */; };
 		EA78814E2B6592DF00E14E3C /* HomeViewAccessToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78814D2B6592DF00E14E3C /* HomeViewAccessToken.swift */; };
 		EA7881502B6593D300E14E3C /* HomeViewRefreshToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78814F2B6593D300E14E3C /* HomeViewRefreshToken.swift */; };
+		EA86FA1B2F63F2E5009FF55C /* AuthAppForTesla.icon in Resources */ = {isa = PBXBuildFile; fileRef = EA86FA1A2F63F2E5009FF55C /* AuthAppForTesla.icon */; };
 		EA9EA87325DAAF25002FE23E /* AuthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9EA86D25DAAAA6002FE23E /* AuthController.swift */; };
 		EAAB1D082B5A676700AC5271 /* NetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D072B5A676700AC5271 /* NetworkController.swift */; };
 		EAAB1D0B2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D0A2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift */; };
@@ -124,6 +125,7 @@
 		EA78814A2B656FC800E14E3C /* TokenModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenModels.swift; sourceTree = "<group>"; };
 		EA78814D2B6592DF00E14E3C /* HomeViewAccessToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewAccessToken.swift; sourceTree = "<group>"; };
 		EA78814F2B6593D300E14E3C /* HomeViewRefreshToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewRefreshToken.swift; sourceTree = "<group>"; };
+		EA86FA1A2F63F2E5009FF55C /* AuthAppForTesla.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AuthAppForTesla.icon; sourceTree = "<group>"; };
 		EA9EA7F725DA7E13002FE23E /* AuthAppForTesla.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AuthAppForTesla.entitlements; sourceTree = "<group>"; };
 		EA9EA86D25DAAAA6002FE23E /* AuthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthController.swift; sourceTree = "<group>"; };
 		EAAB1D072B5A676700AC5271 /* NetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkController.swift; sourceTree = "<group>"; };
@@ -268,6 +270,7 @@
 				EA5640932F5D998300A50586 /* Auth for Tesla UI Tests */,
 				EA63696F25CAB11D000216BF /* Products */,
 				003A0F6CF2DBC27EAD7A2DB1 /* Frameworks */,
+				EA86FA1A2F63F2E5009FF55C /* AuthAppForTesla.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -475,6 +478,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA86FA1B2F63F2E5009FF55C /* AuthAppForTesla.icon in Resources */,
 				EA5641FE2F5DDFCF00A50586 /* TipJarProducts.storekit in Resources */,
 				EA63697925CAB11D000216BF /* Preview Assets.xcassets in Resources */,
 				EA1A333D272D88A100B66EB0 /* InfoPlist.strings in Resources */,
@@ -808,7 +812,7 @@
 		EA63697E25CAB11D000216BF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AuthAppForTesla;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = GlobalAccentColor;
 				CODE_SIGN_ENTITLEMENTS = AuthAppForTesla/AuthAppForTesla.entitlements;
 				CODE_SIGN_STYLE = Automatic;
@@ -834,7 +838,7 @@
 		EA63697F25CAB11D000216BF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AuthAppForTesla;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = GlobalAccentColor;
 				CODE_SIGN_ENTITLEMENTS = AuthAppForTesla/AuthAppForTesla.entitlements;
 				CODE_SIGN_STYLE = Automatic;
