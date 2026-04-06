@@ -1,0 +1,104 @@
+{
+  "app" : {
+    "name" : "Auth app for Tesla",
+    "privacyPolicyUrl" : "https://danskrumskrot.com/privacy",
+    "subtitle" : "Tesla token generator"
+  },
+  "bundleID" : "dk.kimhansen.AuthAppForTesla",
+  "iap" : {
+    "products" : [
+      {
+        "description" : "A huge thank-you to support the app.",
+        "name" : "Large Tip",
+        "productId" : "dk.kimhansen.AuthAppForTesla.LargeTip"
+      },
+      {
+        "description" : "A generous thank-you to support the app.",
+        "name" : "Medium Tip",
+        "productId" : "dk.kimhansen.AuthAppForTesla.MediumTip"
+      },
+      {
+        "description" : "A small thank-you to support the app.",
+        "name" : "Small Tip",
+        "productId" : "dk.kimhansen.AuthAppForTesla.SmallTip"
+      }
+    ]
+  },
+  "primaryLocale" : "en-US",
+  "review" : {
+    "demoPassword" : "cjNZnCfEhfMYHYwn2fyvwkHm",
+    "demoUsername" : "noteslavehicles@kimhansen.dk",
+    "email" : "mac@kimhansen.dk",
+    "firstName" : "Kim",
+    "lastName" : "Hansen",
+    "notes" : "Sign in using provided credentials - app will generate login tokens that can be copied to clipboard and will expose shortcut actions for getting these tokens for use in custom shortcuts by users. \n\nThis is a simple app in nature, as the functionality was previously possible to implement directly in shortcuts - but due to the nature of the modern oauth implementation recently enforced, an app is now required to donate these features. ",
+    "phone" : "+45 30930053"
+  },
+  "schemaVersion" : 1,
+  "screenshots" : [
+    {
+      "headline" : "Quick Token Access",
+      "key" : "01_owners_home",
+      "platform" : "iPhone",
+      "sortOrder" : 0,
+      "subtitle" : "Just tap to copy - it's that simple"
+    },
+    {
+      "headline" : "Secure Authentication",
+      "key" : "02_owners_login",
+      "platform" : "iPhone",
+      "sortOrder" : 1,
+      "subtitle" : "Login using modern OAuth for Tesla's API"
+    },
+    {
+      "headline" : "Fleet API Support",
+      "key" : "03_fleet_login",
+      "platform" : "iPhone",
+      "sortOrder" : 2,
+      "subtitle" : "Ready for Tesla's modern Fleet API"
+    },
+    {
+      "headline" : "Works Everywhere",
+      "key" : "04_about",
+      "platform" : "iPhone",
+      "sortOrder" : 3,
+      "subtitle" : "Use generated tokens in a multitude of projects"
+    },
+    {
+      "headline" : "Quick Token Access",
+      "key" : "01_owners_home",
+      "platform" : "iPad",
+      "sortOrder" : 0,
+      "subtitle" : "Just tap to copy - it's that simple"
+    },
+    {
+      "headline" : "Secure Authentication",
+      "key" : "02_owners_login",
+      "platform" : "iPad",
+      "sortOrder" : 1,
+      "subtitle" : "Login using modern OAuth for Tesla's API"
+    },
+    {
+      "headline" : "Fleet API Support",
+      "key" : "03_fleet_login",
+      "platform" : "iPad",
+      "sortOrder" : 2,
+      "subtitle" : "Ready for Tesla's modern Fleet API"
+    },
+    {
+      "headline" : "Works Everywhere",
+      "key" : "04_about",
+      "platform" : "iPad",
+      "sortOrder" : 3,
+      "subtitle" : "Use generated tokens in a multitude of projects"
+    }
+  ],
+  "version" : {
+    "description" : "Need to generate modern, secure Tesla API authentication tokens? Auth for Tesla has you covered.\n\nBuilt on the proven authentication foundation of Watch for Tesla, this app lets you log in to your Tesla account once and instantly get the OAuth tokens you need — for Shortcuts, third-party apps, automation tools, and more.\n\n**What you get:**\n- Owners API (v3) tokens — the standard token used by most Tesla-compatible apps and Shortcuts\n- Fleet API (v4) tokens — for developers building on Tesla's modern Fleet API\n- Tap any token to copy it to your clipboard, ready to paste into any app or Shortcut\n- Built-in Siri and Shortcuts actions so automations can fetch and refresh your tokens on demand — no manual steps needed\n\n**Completely private by design.**\nYour Tesla username and password are entered directly in a secure in-app browser — they never pass through this app or any server run by the developer. Your tokens are stored encrypted in your iCloud Keychain and sync privately across your own devices.\n\n**Open source.**\nEvery line of code is publicly available and auditable at:\nhttps://github.com/TeslaBuds/AuthAppForTesla\n\nDisclaimer: This app is not affiliated with or endorsed by Tesla, Inc. Use at your own risk. No guarantee of proper function is given. You are solely responsible for any changes to your vehicle caused by the use of this app.\n\nMade in Denmark",
+    "keywords" : "Tesla,Token,Auth,Authentication,Shortcuts,Scripting,Login,Sign-in,Signin,OAuth,API,Automation",
+    "marketingUrl" : null,
+    "promotionalText" : null,
+    "supportUrl" : "https://github.com/TeslaBuds/AuthAppForTesla",
+    "whatsNew" : null
+  }
+}
