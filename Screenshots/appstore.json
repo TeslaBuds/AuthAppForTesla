@@ -155,12 +155,69 @@
       "subtitle": "Four built-in actions — Get and Refresh for both APIs — appear automatically in Shortcuts",
       "platform": "iPad",
       "sortOrder": 7
+    },
+    {
+      "key": "01_owners_home",
+      "headline": "Tesla API Tokens, in Seconds",
+      "subtitle": "Sign in once — your access and refresh tokens are always one tap from the clipboard",
+      "platform": "mac",
+      "sortOrder": 0
+    },
+    {
+      "key": "02_owners_login",
+      "headline": "Your Password Stays with Tesla",
+      "subtitle": "Sign in happens entirely inside Tesla's own secure web view — never through this app",
+      "platform": "mac",
+      "sortOrder": 1
+    },
+    {
+      "key": "03_test_token",
+      "headline": "Verify It Actually Works",
+      "subtitle": "Run real read-only Owners or Fleet API calls and see scopes, vehicles, and account info at a glance",
+      "platform": "mac",
+      "sortOrder": 2
+    },
+    {
+      "key": "04_jwt_inspector",
+      "headline": "Decode Any JWT, Instantly",
+      "subtitle": "Header, payload, scopes, and expiry — without leaving your Mac",
+      "platform": "mac",
+      "sortOrder": 3
+    },
+    {
+      "key": "05_snippet_exporter",
+      "headline": "Drop Into Any Codebase",
+      "subtitle": "Copy your token as ready-to-run cURL, HTTPie, Swift URLRequest, or Python requests",
+      "platform": "mac",
+      "sortOrder": 4
+    },
+    {
+      "key": "06_multi_account",
+      "headline": "Personal, Work, and Test — Side by Side",
+      "subtitle": "Multiple accounts per API with one-tap switching, rename, and add — no more signing in twice",
+      "platform": "mac",
+      "sortOrder": 5
+    },
+    {
+      "key": "07_fleet_home",
+      "headline": "Built for the Fleet API Too",
+      "subtitle": "Region auto-detect, scope inspection, and live expiry for Tesla's modern partner API",
+      "platform": "mac",
+      "sortOrder": 6
+    },
+    {
+      "key": "08_about",
+      "headline": "Made for Siri and Shortcuts",
+      "subtitle": "Four built-in actions — Get and Refresh for both APIs — appear automatically in Shortcuts",
+      "platform": "mac",
+      "sortOrder": 7
     }
   ],
   "capture": {
     "schemeIOS": "AuthAppForTesla",
     "uiTestTarget": "Auth for Tesla UI Tests/ScreenshotTests",
     "iPhoneSimulators": ["iPhone 17 Pro Max"],
-    "iPadSimulators": ["iPad Pro 13-inch (M5)"]
+    "iPadSimulators": ["iPad Pro 13-inch (M5)"],
+    "macCatalyst": true
   }
 }
