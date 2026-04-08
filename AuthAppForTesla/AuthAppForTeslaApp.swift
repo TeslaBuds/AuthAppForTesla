@@ -25,6 +25,23 @@ struct AuthAppForTeslaApp: App {
                     await downloadLatestExternalApplicationList()
                 }
         }
+        // The app is fundamentally a phone-shaped column of token cards.
+        // On Mac Catalyst we want it to open at a comfortable size that
+        // fits the four-tab title bar SwiftUI renders. Catalyst applies
+        // iPad-to-Mac scaling (~0.77x) on top of this value, so 940 here
+        // renders as roughly 720pt of visual width — wide enough that
+        // the tab bar doesn't collapse into a popup picker.
+        // `.contentSize` lets the user resize freely from there.
+        .defaultSize(width: 940, height: 1080)
+        .windowResizability(.contentSize)
+        .commands {
+            CommandGroup(after: .sidebar) {
+                Button("Refresh All Tokens", systemImage: "arrow.clockwise") {
+                    model.refreshAll()
+                }
+                .keyboardShortcut("r", modifiers: .command)
+            }
+        }
     }
 
     private var initialTab: AppTab {

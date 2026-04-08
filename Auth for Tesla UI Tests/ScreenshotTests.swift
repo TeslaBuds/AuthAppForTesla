@@ -87,8 +87,10 @@ final class ScreenshotTests: XCTestCase {
             app.buttons["refreshTokensButton"].waitForExistence(timeout: 10),
             "Expected authenticated Owners API home view"
         )
-        // Open the account menu so the profile switcher is visible.
-        let accountMenu = app.buttons["homeMenu"]
+        // Open the account menu so the profile switcher is visible. On
+        // Mac Catalyst the SwiftUI `Menu` is exposed as a popUpButton
+        // rather than a button, so query by identifier across all types.
+        let accountMenu = app.descendants(matching: .any)["homeMenu"].firstMatch
         XCTAssertTrue(accountMenu.waitForExistence(timeout: 5))
         accountMenu.tap()
         // Wait briefly for the menu to expand.
