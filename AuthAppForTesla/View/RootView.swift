@@ -95,6 +95,11 @@ struct RootView: View {
         .task {
             #if DEBUG
             guard !CommandLine.arguments.contains("enable-testing") else { return }
+            // Live UI tests pre-set hasSeenOnboarding=true in App.init,
+            // so we don't need to do anything here for them.
+            if CommandLine.arguments.contains("live-test-clear-state") {
+                return
+            }
             #endif
             if !hasSeenOnboarding {
                 showOnboarding = true

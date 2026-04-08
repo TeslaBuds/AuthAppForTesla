@@ -65,6 +65,24 @@ actor AuthController {
     func suggestedProfileName(environment: LoginEnvironment) async -> String {
         await TokenProfileStore.shared.suggestedName(for: environment)
     }
+
+    /// Removes every Owners and Fleet token profile, plus any legacy
+    /// single-token keychain entries. Used by the live UI test harness
+    /// so each test starts from a guaranteed clean keychain — never
+    /// invoked from production code paths.
+    func wipeAllProfiles() async {
+        for env in [LoginEnvironment.owner, LoginEnvironment.fleet] {
+            let collection = await TokenProfileStore.shared.load(environment: env)
+            for profile in collection.profiles {
+                await TokenProfileStore.shared.delete(id: profile.id, environment: env)
+            }
+        }
+        // Belt and braces — clear any legacy mirror entries the store
+        // didn't already wipe (e.g. from a build that pre-dated profile
+        // storage entirely).
+        KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+        KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+    }
     
     var v3Token: Token? {
         var token: Token?

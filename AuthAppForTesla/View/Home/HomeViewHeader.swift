@@ -76,15 +76,21 @@ private struct HomeViewAccountMenu: View {
 
     @State private var isPresented = false
     @State private var renameTarget: TokenProfile?
-    @State private var renameText: String = ""
 
     var body: some View {
         Button {
             isPresented.toggle()
         } label: {
-            Label("Account", systemImage: "person.crop.circle")
+            // Person icon + chevron together so it visibly reads as a
+            // menu trigger. Without the chevron the avatar looks like
+            // a static badge and most users don't realise it's tappable.
+            HStack(spacing: 4) {
+                Image(systemName: "person.crop.circle")
+                Image(systemName: "chevron.down")
+                    .font(.caption.weight(.bold))
+            }
+            .accessibilityLabel("Account menu")
         }
-        .labelStyle(.iconOnly)
         .foregroundStyle(Color("TeslaRed"))
         .font(.title)
         .buttonStyle(.plain)
@@ -102,141 +108,180 @@ private struct HomeViewAccountMenu: View {
                 collection: collection,
                 onAddAccount: onAddAccount,
                 renameTarget: $renameTarget,
-                renameText: $renameText,
                 dismiss: { isPresented = false }
             )
-            .frame(minWidth: 260)
+            .frame(minWidth: 280, idealHeight: 360)
             .presentationCompactAdaptation(.popover)
         }
-        .alert("Rename Account", isPresented: Binding(
-            get: { renameTarget != nil },
-            set: { if !$0 { renameTarget = nil } }
-        )) {
-            TextField("Name", text: $renameText)
-            Button("Save") {
-                if let target = renameTarget {
-                    let newName = renameText.trimmingCharacters(in: .whitespaces)
-                    if !newName.isEmpty {
-                        Task { await model.renameProfile(id: target.id, to: newName, environment: environment) }
+        // SwiftUI alerts don't honor .buttonStyle, so we can't override
+        // the inherited TeslaRed tint that bleeds into Save and Cancel.
+        // Use a small sheet with a real Form instead so Save can be
+        // .borderedProminent and Cancel can be the system default.
+        .sheet(item: $renameTarget) { target in
+            RenameAccountSheet(
+                initialName: target.name,
+                onSave: { newName in
+                    Task {
+                        await model.renameProfile(id: target.id, to: newName, environment: environment)
                     }
+                    renameTarget = nil
+                },
+                onCancel: {
+                    renameTarget = nil
                 }
-                renameTarget = nil
-            }
-            Button("Cancel", role: .cancel) {
-                renameTarget = nil
-            }
+            )
         }
     }
 }
 
-/// The body of the account popover. Lives in its own view so the
-/// trigger button doesn't have to know about every action.
+/// The body of the account popover. Uses a `List` so each row gets a
+/// canonical menu-row hit target (full row width, hover highlight,
+/// proper tap behavior on every Apple platform). The previous VStack
+/// approach with `.contentShape(.rect)` had a hit area that collapsed
+/// to the visible text bounds on Mac Catalyst, so users could only
+/// click directly on the row label.
 private struct HomeViewAccountMenuContent: View {
     @Bindable var model: AuthViewModel
     let environment: LoginEnvironment
     let collection: TokenProfileCollection
     var onAddAccount: (() -> Void)?
     @Binding var renameTarget: TokenProfile?
-    @Binding var renameText: String
     let dismiss: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        List {
             if collection.profiles.count > 1 {
-                MenuSectionHeader("Switch Account")
-                ForEach(collection.profiles) { profile in
-                    MenuRow(
-                        title: profile.name,
-                        systemImage: profile.id == collection.activeProfileId ? "checkmark" : nil
-                    ) {
-                        dismiss()
-                        Task { await model.switchProfile(id: profile.id, environment: environment) }
+                Section("Switch Account") {
+                    ForEach(collection.profiles) { profile in
+                        Button {
+                            dismiss()
+                            Task {
+                                await model.switchProfile(
+                                    id: profile.id,
+                                    environment: environment
+                                )
+                            }
+                        } label: {
+                            Label {
+                                Text(profile.name)
+                                    .foregroundStyle(.primary)
+                            } icon: {
+                                if profile.id == collection.activeProfileId {
+                                    Image(systemName: "checkmark")
+                                        .foregroundStyle(Color("TeslaRed"))
+                                } else {
+                                    Image(systemName: "circle")
+                                        .foregroundStyle(.secondary)
+                                }
+                            }
+                        }
                     }
                 }
-                Divider().padding(.vertical, 4)
             }
 
             if let active = collection.activeProfile {
-                MenuSectionHeader(active.name)
-                MenuRow(title: "Rename", systemImage: "pencil") {
-                    dismiss()
-                    renameText = active.name
-                    renameTarget = active
-                }
-                if onAddAccount != nil {
-                    MenuRow(title: "Add Another Account", systemImage: "person.badge.plus") {
+                Section(active.name) {
+                    Button {
+                        renameTarget = active
                         dismiss()
-                        onAddAccount?()
+                    } label: {
+                        Label("Rename", systemImage: "pencil")
+                            .foregroundStyle(.primary)
                     }
-                }
-                if collection.profiles.count > 1 {
-                    MenuRow(
-                        title: "Delete This Account",
-                        systemImage: "trash",
-                        role: .destructive
-                    ) {
-                        dismiss()
-                        model.logOut(environment: environment)
+                    if onAddAccount != nil {
+                        Button {
+                            dismiss()
+                            onAddAccount?()
+                        } label: {
+                            Label("Add Another Account", systemImage: "person.badge.plus")
+                                .foregroundStyle(.primary)
+                        }
                     }
-                    .accessibilityIdentifier("logoutButton")
-                } else {
-                    MenuRow(
-                        title: "Logout",
-                        systemImage: "rectangle.portrait.and.arrow.right",
-                        role: .destructive
-                    ) {
-                        dismiss()
-                        model.logOut(environment: environment)
+                    if collection.profiles.count > 1 {
+                        Button(role: .destructive) {
+                            dismiss()
+                            model.logOut(environment: environment)
+                        } label: {
+                            Label("Delete This Account", systemImage: "trash")
+                        }
+                        .accessibilityIdentifier("logoutButton")
+                    } else {
+                        Button(role: .destructive) {
+                            dismiss()
+                            model.logOut(environment: environment)
+                        } label: {
+                            Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
+                        }
+                        .accessibilityIdentifier("logoutButton")
                     }
-                    .accessibilityIdentifier("logoutButton")
                 }
             } else if onAddAccount != nil {
-                MenuRow(title: "Add Another Account", systemImage: "person.badge.plus") {
-                    dismiss()
-                    onAddAccount?()
+                Section {
+                    Button {
+                        dismiss()
+                        onAddAccount?()
+                    } label: {
+                        Label("Add Another Account", systemImage: "person.badge.plus")
+                            .foregroundStyle(.primary)
+                    }
                 }
             }
         }
-        .padding(.vertical, 8)
+        .listStyle(.insetGrouped)
+        .scrollContentBackground(.hidden)
     }
 }
 
-private struct MenuSectionHeader: View {
-    let title: String
-    init(_ title: String) { self.title = title }
-    var body: some View {
-        Text(title)
-            .font(.caption)
-            .foregroundStyle(.secondary)
-            .padding(.horizontal, 16)
-            .padding(.top, 4)
-            .padding(.bottom, 2)
-    }
-}
+/// Sheet-based rename form. Used instead of `.alert` because alerts
+/// don't honor `.buttonStyle`, so the inherited TeslaRed tint at the
+/// RootView level can't be overridden — Save and Cancel ended up
+/// rendering in alarming red even though neither action is destructive.
+private struct RenameAccountSheet: View {
+    let initialName: String
+    let onSave: (String) -> Void
+    let onCancel: () -> Void
 
-private struct MenuRow: View {
-    let title: String
-    let systemImage: String?
-    var role: ButtonRole? = nil
-    let action: () -> Void
+    @State private var name: String = ""
+    @FocusState private var isNameFocused: Bool
 
     var body: some View {
-        Button(role: role, action: action) {
-            HStack(spacing: 12) {
-                if let systemImage {
-                    Image(systemName: systemImage)
-                        .frame(width: 20)
-                } else {
-                    Spacer().frame(width: 20)
+        NavigationStack {
+            Form {
+                Section {
+                    TextField("Account name", text: $name)
+                        .focused($isNameFocused)
+                        .textInputAutocapitalization(.words)
+                        .submitLabel(.done)
+                        .onSubmit(saveIfValid)
                 }
-                Text(title)
-                Spacer()
             }
-            .contentShape(.rect)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
+            .navigationTitle("Rename Account")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", action: onCancel)
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save", action: saveIfValid)
+                        .buttonStyle(.borderedProminent)
+                        .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
+                }
+            }
+            .onAppear {
+                name = initialName
+                // Defer focus a hair so the sheet finishes presenting first.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                    isNameFocused = true
+                }
+            }
         }
-        .buttonStyle(.plain)
+        .presentationDetents([.medium])
+    }
+
+    private func saveIfValid() {
+        let trimmed = name.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+        onSave(trimmed)
     }
 }
 

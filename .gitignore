@@ -88,3 +88,6 @@ Screenshots/output/
 Screenshots/.xcresult*
 
 # End of https://www.gitignore.io/api/xcode,macos,swift
+
+# Live test artifacts
+Screenshots/.live-test-result*

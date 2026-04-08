@@ -20,6 +20,8 @@ struct HomeView: View {
                 HomeViewHeader(model: model, loginEnvironment: loginEnvironment) {
                     isAddingAccount = true
                 }
+                .padding()
+                .glassEffect(.clear, in: .rect(cornerRadius: 24))
                 .padding(.horizontal)
                 .padding(.top)
 
