@@ -7,7 +7,12 @@
 //  without signing in to a real Tesla account.
 //
 
-#if DEBUG
+// Not gated with `#if DEBUG`: Apple's `#Preview` macro doesn't wrap its
+// expansion in DEBUG, so the call sites in the populated previews would
+// fail to compile in Release if this type didn't exist there too. The
+// type is tiny and only referenced from preview blocks, so dead-code
+// elimination strips it from shipping binaries.
+
 import Foundation
 
 @MainActor
@@ -54,4 +59,3 @@ enum PreviewModelFactory {
         return model
     }
 }
-#endif

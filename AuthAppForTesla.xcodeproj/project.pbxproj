@@ -345,7 +345,6 @@
 			isa = PBXGroup;
 			children = (
 				EA63697825CAB11D000216BF /* Preview Assets.xcassets */,
-				EAC032E62F868CBD00A29E67 /* PreviewModelFactory.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -361,6 +360,7 @@
 				EAC032DA2F8688B900A29E67 /* TokenProfile.swift */,
 				EAC033382F86937100A29E67 /* ScreenshotScenario.swift */,
 				EAC0333A2F8693CA00A29E67 /* ScreenshotHarness.swift */,
+				EAC032E62F868CBD00A29E67 /* PreviewModelFactory.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
