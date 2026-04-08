@@ -11,14 +11,17 @@ struct HomeView: View {
     @Bindable var model: AuthViewModel
     @State private var showDetails = false
     @State private var scrollPosition = ScrollPosition()
+    @State private var isAddingAccount = false
     let loginEnvironment: LoginEnvironment
 
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                HomeViewHeader(model: model, loginEnvironment: loginEnvironment)
-                    .padding(.horizontal)
-                    .padding(.top)
+                HomeViewHeader(model: model, loginEnvironment: loginEnvironment) {
+                    isAddingAccount = true
+                }
+                .padding(.horizontal)
+                .padding(.top)
 
                 VStack {
                     let token = loginEnvironment == .owner ? model.tokenV3 : model.tokenV4
@@ -58,13 +61,72 @@ struct HomeView: View {
             }
             .scrollPosition($scrollPosition)
         }
+        .sheet(isPresented: $isAddingAccount) {
+            HomeViewAddAccountSheet(model: model, loginEnvironment: loginEnvironment, isPresented: $isAddingAccount)
+        }
     }
 }
 
-#Preview("Owners API") {
-    HomeView(model: AuthViewModel(), loginEnvironment: .owner)
+private struct HomeViewAddAccountSheet: View {
+    @Bindable var model: AuthViewModel
+    let loginEnvironment: LoginEnvironment
+    @Binding var isPresented: Bool
+    @State private var initialProfileCount: Int?
+
+    private var currentProfileCount: Int {
+        switch loginEnvironment {
+        case .owner: model.profilesV3.profiles.count
+        case .fleet: model.profilesV4.profiles.count
+        }
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                LoginViewHeader()
+                Group {
+                    switch loginEnvironment {
+                    case .owner:
+                        LoginViewSignInOwnersAPI(model: model, addAsNewProfile: true)
+                    case .fleet:
+                        LoginViewSignInFleetAPI(model: model, addAsNewProfile: true)
+                    }
+                }
+                .fixedSize(horizontal: false, vertical: true)
+            }
+            .navigationTitle("Add Account")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { isPresented = false }
+                }
+            }
+            .task {
+                if initialProfileCount == nil {
+                    initialProfileCount = currentProfileCount
+                }
+            }
+            .onChange(of: currentProfileCount) { _, newValue in
+                if let initial = initialProfileCount, newValue > initial {
+                    let collection = loginEnvironment == .owner ? model.profilesV3 : model.profilesV4
+                    if let active = collection.activeProfile {
+                        model.showToast(.success("Added account \"\(active.name)\"."))
+                    }
+                    isPresented = false
+                }
+            }
+        }
+    }
 }
 
-#Preview("Fleet API") {
-    HomeView(model: AuthViewModel(), loginEnvironment: .fleet)
+#Preview("Owners API – Populated") {
+    HomeView(model: PreviewModelFactory.populatedModel(), loginEnvironment: .owner)
+}
+
+#Preview("Fleet API – Populated") {
+    HomeView(model: PreviewModelFactory.populatedModel(), loginEnvironment: .fleet)
+}
+
+#Preview("Owners API – Empty") {
+    HomeView(model: AuthViewModel(), loginEnvironment: .owner)
 }

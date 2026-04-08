@@ -21,6 +21,11 @@ class AuthViewModel {
         didSet { persistTokenSummary() }
     }
 
+    /// All known Owners API token profiles.
+    var profilesV3: TokenProfileCollection = TokenProfileCollection()
+    /// All known Fleet API token profiles.
+    var profilesV4: TokenProfileCollection = TokenProfileCollection()
+
     /// The currently visible toast notification, if any.
     var toast: Toast?
 
@@ -35,6 +40,38 @@ class AuthViewModel {
 
     /// Loads the initial token state from the AuthController actor.
     func loadTokens() async {
+        tokenV3 = await AuthController.shared.v3Token
+        tokenV4 = await AuthController.shared.v4Token
+        await loadProfiles()
+    }
+
+    /// Reloads both profile collections from the underlying store.
+    func loadProfiles() async {
+        profilesV3 = await AuthController.shared.loadProfiles(environment: .owner)
+        profilesV4 = await AuthController.shared.loadProfiles(environment: .fleet)
+    }
+
+    /// Activates a different profile and reloads the active token mirror.
+    func switchProfile(id: UUID, environment: LoginEnvironment) async {
+        await AuthController.shared.setActiveProfile(id: id, environment: environment)
+        await loadProfiles()
+        tokenV3 = await AuthController.shared.v3Token
+        tokenV4 = await AuthController.shared.v4Token
+
+        let collection = environment == .owner ? profilesV3 : profilesV4
+        if let active = collection.activeProfile {
+            showToast(.success("Switched to \(active.name)."))
+        }
+    }
+
+    func renameProfile(id: UUID, to name: String, environment: LoginEnvironment) async {
+        await AuthController.shared.renameProfile(id: id, to: name, environment: environment)
+        await loadProfiles()
+    }
+
+    func deleteProfile(id: UUID, environment: LoginEnvironment) async {
+        await AuthController.shared.deleteProfile(id: id, environment: environment)
+        await loadProfiles()
         tokenV3 = await AuthController.shared.v3Token
         tokenV4 = await AuthController.shared.v4Token
     }
@@ -65,14 +102,14 @@ class AuthViewModel {
     }
 
     func logOut(environment: LoginEnvironment) {
-        switch environment {
-        case .owner:
-            tokenV3 = nil
-        case .fleet:
-            tokenV4 = nil
-        }
         Task {
             await AuthController.shared.logOut(environment: environment)
+            // Reload so that, if other profiles still exist, the new
+            // active profile becomes visible instead of dumping the
+            // user back to the sign-in screen.
+            await loadProfiles()
+            tokenV3 = await AuthController.shared.v3Token
+            tokenV4 = await AuthController.shared.v4Token
         }
     }
 

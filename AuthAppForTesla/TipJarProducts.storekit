@@ -10,13 +10,13 @@
       "internalID" : "6760261431",
       "localizations" : [
         {
-          "description" : "Buy the developer a coffee",
-          "displayName" : "Coffee Tip",
+          "description" : "A small thank-you to support the app.",
+          "displayName" : "Small Tip",
           "locale" : "en_US"
         }
       ],
       "productID" : "dk.kimhansen.AuthAppForTesla.SmallTip",
-      "referenceName" : "Coffee Tip",
+      "referenceName" : "Small Tip",
       "type" : "Consumable"
     },
     {
@@ -25,13 +25,13 @@
       "internalID" : "6760261432",
       "localizations" : [
         {
-          "description" : "Buy the developer dinner",
-          "displayName" : "Dinner Tip",
+          "description" : "A generous thank-you to support the app.",
+          "displayName" : "Medium Tip",
           "locale" : "en_US"
         }
       ],
       "productID" : "dk.kimhansen.AuthAppForTesla.MediumTip",
-      "referenceName" : "Dinner Tip",
+      "referenceName" : "Medium Tip",
       "type" : "Consumable"
     },
     {
@@ -40,13 +40,13 @@
       "internalID" : "6760261406",
       "localizations" : [
         {
-          "description" : "Treat the developer to an awesome night out",
-          "displayName" : "Night Out Tip",
+          "description" : "A huge thank-you to support the app.",
+          "displayName" : "Large Tip",
           "locale" : "en_US"
         }
       ],
       "productID" : "dk.kimhansen.AuthAppForTesla.LargeTip",
-      "referenceName" : "Night Out Tip",
+      "referenceName" : "Large Tip",
       "type" : "Consumable"
     }
   ],

@@ -2,104 +2,131 @@
 //  ScreenshotTests.swift
 //  Auth for Tesla UI Tests
 //
-//  Created by Kim Hansen on 08/03/2026.
+//  Captures App Store screenshots — one test method per scenario.
+//
+//  Each test launches the app with `enable-testing` plus a scenario-
+//  specific flag (e.g. `screenshot-jwt-inspector`). The app reads these
+//  flags via `ScreenshotHarness` to seed token fixtures, choose the
+//  initial tab, deep-link into a Tools sub-screen, and (where useful)
+//  inject fake API results — all without ever hitting the network.
+//
+//  The screenshots are saved as `XCTAttachment`s with `.keepAlways`
+//  lifetime so the shared DRSFramer capture script can extract them
+//  from the .xcresult bundle.
 //
 
 import XCTest
 
-/// Captures App Store screenshots in a single linear pass.
-///
-/// The app is launched once with the `enable-testing` flag, which injects
-/// a realistic (but long-expired and harmless) JWT into the keychain.
-/// This lets us capture both the authenticated and unauthenticated states
-/// without any network calls.
-///
-/// Flow:
-///  1. Owners API — authenticated home (token is present at launch)
-///  2. Owners API — login screen (after tapping logout)
-///  3. Fleet API — login screen (no Fleet token is ever set)
-///  4. About
-///
-/// Each screenshot is saved as an `XCTAttachment` with `.keepAlways`
-/// lifetime, which `xcparse` later extracts from the `.xcresult` bundle.
 final class ScreenshotTests: XCTestCase {
-
-    private var app: XCUIApplication!
 
     override func setUpWithError() throws {
         continueAfterFailure = false
-        app = XCUIApplication()
-        app.launchArguments = ["enable-testing"]
+    }
+
+    // MARK: - Owners API
+
+    @MainActor
+    func testCapture01_OwnersHome() throws {
+        let app = launch(scenario: "screenshot-owners-home")
+        XCTAssertTrue(
+            app.buttons["refreshTokensButton"].waitForExistence(timeout: 10),
+            "Expected authenticated Owners API home view"
+        )
+        takeScreenshot(of: app, named: "01_owners_home")
     }
 
     @MainActor
-    func testCaptureAllScreenshots() throws {
-        app.launch()
-
-        // ── 1. Owners API — Authenticated ──────────────────────────
-
-        selectTab("Owners API")
-
-        // Wait for the token to load and the home view to render.
-        let refreshButton = app.buttons["refreshTokensButton"]
+    func testCapture02_OwnersLogin() throws {
+        let app = launch(scenario: "screenshot-owners-login")
         XCTAssertTrue(
-            refreshButton.waitForExistence(timeout: 10),
+            app.buttons["loginButton"].waitForExistence(timeout: 10),
+            "Expected Owners API login view"
+        )
+        takeScreenshot(of: app, named: "02_owners_login")
+    }
+
+    // MARK: - Tools
+
+    @MainActor
+    func testCapture03_TestToken() throws {
+        let app = launch(scenario: "screenshot-test-token")
+        // Wait for the navigation title to land on the Test Token screen.
+        XCTAssertTrue(
+            app.navigationBars["Test Token"].waitForExistence(timeout: 10),
+            "Expected Test Token screen"
+        )
+        takeScreenshot(of: app, named: "03_test_token")
+    }
+
+    @MainActor
+    func testCapture04_JWTInspector() throws {
+        let app = launch(scenario: "screenshot-jwt-inspector")
+        XCTAssertTrue(
+            app.navigationBars["JWT Inspector"].waitForExistence(timeout: 10),
+            "Expected JWT Inspector screen"
+        )
+        takeScreenshot(of: app, named: "04_jwt_inspector")
+    }
+
+    @MainActor
+    func testCapture05_SnippetExporter() throws {
+        let app = launch(scenario: "screenshot-snippet-exporter")
+        XCTAssertTrue(
+            app.navigationBars["Snippet Exporter"].waitForExistence(timeout: 10),
+            "Expected Snippet Exporter screen"
+        )
+        takeScreenshot(of: app, named: "05_snippet_exporter")
+    }
+
+    // MARK: - Multi-account
+
+    @MainActor
+    func testCapture06_MultiAccount() throws {
+        let app = launch(scenario: "screenshot-multi-account")
+        XCTAssertTrue(
+            app.buttons["refreshTokensButton"].waitForExistence(timeout: 10),
             "Expected authenticated Owners API home view"
         )
-
-        takeScreenshot(named: "01_owners_home")
-
-        // ── 2. Owners API — Login ──────────────────────────────────
-
-        // Log out to reveal the login screen.
+        // Open the account menu so the profile switcher is visible.
         let accountMenu = app.buttons["homeMenu"]
         XCTAssertTrue(accountMenu.waitForExistence(timeout: 5))
         accountMenu.tap()
+        // Wait briefly for the menu to expand.
+        sleep(1)
+        takeScreenshot(of: app, named: "06_multi_account")
+    }
 
-        let logoutButton = app.buttons["logoutButton"]
-        XCTAssertTrue(logoutButton.waitForExistence(timeout: 5))
-        logoutButton.tap()
+    // MARK: - Fleet API
 
-        // The login view should appear after logout.
-        let loginButton = app.buttons["loginButton"]
+    @MainActor
+    func testCapture07_FleetHome() throws {
+        let app = launch(scenario: "screenshot-fleet-home")
         XCTAssertTrue(
-            loginButton.waitForExistence(timeout: 5),
-            "Expected Owners API login view after logout"
+            app.buttons["refreshTokensButton"].waitForExistence(timeout: 10),
+            "Expected authenticated Fleet API home view"
         )
+        takeScreenshot(of: app, named: "07_fleet_home")
+    }
 
-        takeScreenshot(named: "02_owners_login")
+    // MARK: - About
 
-        // ── 3. Fleet API — Login ───────────────────────────────────
-
-        selectTab("Fleet API")
+    @MainActor
+    func testCapture08_About() throws {
+        let app = launch(scenario: "screenshot-about")
         sleep(1)
-
-        takeScreenshot(named: "03_fleet_login")
-
-        // ── 4. About ───────────────────────────────────────────────
-
-        selectTab("About")
-        sleep(1)
-
-        takeScreenshot(named: "04_about")
+        takeScreenshot(of: app, named: "08_about")
     }
 
     // MARK: - Helpers
 
-    /// Selects a tab by name, handling both iPhone (tab bar) and
-    /// iPad (floating tab bar with duplicate accessibility elements).
-    private func selectTab(_ name: String) {
-        let button = app.buttons[name].firstMatch
-        XCTAssertTrue(
-            button.waitForExistence(timeout: 5),
-            "Tab '\(name)' not found"
-        )
-        button.tap()
+    private func launch(scenario: String) -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments = ["enable-testing", scenario]
+        app.launch()
+        return app
     }
 
-    /// Captures a full-window screenshot and attaches it to the test
-    /// result with a deterministic name for `xcparse` extraction.
-    private func takeScreenshot(named name: String) {
+    private func takeScreenshot(of app: XCUIApplication, named name: String) {
         let screenshot = app.windows.firstMatch.screenshot()
         let attachment = XCTAttachment(screenshot: screenshot)
         attachment.name = name

@@ -15,25 +15,55 @@ actor AuthController {
         // Private initializer, so no accidental class instantiations outside singleton can happen
     }
     
-    public func logOut(environment: LoginEnvironment)
+    public func logOut(environment: LoginEnvironment) async
     {
-        switch environment {
-        case .owner:
-            KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-        case .fleet:
-            KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-//            KeychainWrapper.global.removeObject(forKey: kFleetClientID, withAccessibility: .afterFirstUnlock)
-//            KeychainWrapper.global.removeObject(forKey: kFleetClientSecret, withAccessibility: .afterFirstUnlock)
-//            KeychainWrapper.global.removeObject(forKey: kFleetRedirectUri, withAccessibility: .afterFirstUnlock)
+        // Delete the active profile (and its mirrored legacy entry).
+        let collection = await TokenProfileStore.shared.load(environment: environment)
+        if let active = collection.activeProfile {
+            await TokenProfileStore.shared.delete(id: active.id, environment: environment)
+        } else {
+            // Fallback: clean any stale legacy keychain entry directly.
+            switch environment {
+            case .owner:
+                KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+            case .fleet:
+                KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+            }
         }
-//        KeychainWrapper.global.removeAllKeys()
     }
-    
-    func setJwtToken(_ token: Token)
+
+    func setJwtToken(_ token: Token) async
     {
-        if let encodedToken = try? JSONEncoder().encode(token) {
-            KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-        }
+        // Persist via the profile store so the active profile + legacy
+        // keychain mirror are updated together.
+        await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
+    }
+
+    // MARK: - Profile management
+
+    func loadProfiles(environment: LoginEnvironment) async -> TokenProfileCollection {
+        await TokenProfileStore.shared.load(environment: environment)
+    }
+
+    func setActiveProfile(id: UUID, environment: LoginEnvironment) async {
+        await TokenProfileStore.shared.setActive(id: id, environment: environment)
+    }
+
+    func renameProfile(id: UUID, to name: String, environment: LoginEnvironment) async {
+        await TokenProfileStore.shared.rename(id: id, to: name, environment: environment)
+    }
+
+    func deleteProfile(id: UUID, environment: LoginEnvironment) async {
+        await TokenProfileStore.shared.delete(id: id, environment: environment)
+    }
+
+    func addProfile(name: String, token: Token, environment: LoginEnvironment, makeActive: Bool = true) async {
+        let profile = TokenProfile(name: name, token: token)
+        await TokenProfileStore.shared.upsert(profile: profile, environment: environment, makeActive: makeActive)
+    }
+
+    func suggestedProfileName(environment: LoginEnvironment) async -> String {
+        await TokenProfileStore.shared.suggestedName(for: environment)
     }
     
     var v3Token: Token? {
@@ -59,18 +89,15 @@ actor AuthController {
         if let tokenJson = getV3Token() {
             token = try? JSONDecoder().decode(Token.self, from: tokenJson)
         }
-        
+
         if let token
         {
             if (forceRefresh || token.expires_at ?? Date() <= Date().addingTimeInterval(60))
             {
                 let refreshedToken = await oauthRenew(token.refresh_token, token.region ?? .global)
-                if let refreshedToken = refreshedToken, let encodedToken = try? JSONEncoder().encode(refreshedToken)
-                {
-                    KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-                }
-                else
-                {
+                if let refreshedToken {
+                    await TokenProfileStore.shared.updateActiveToken(refreshedToken, environment: .owner)
+                } else {
                     return nil
                 }
                 return refreshedToken
@@ -108,10 +135,8 @@ actor AuthController {
                 let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
                 
                 token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
-                if let encodedToken = try? JSONEncoder().encode(token) {
-                    KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-                }
-                if refreshToken != refresh_token {
+                if let token {
+                    await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
                 }
             }
             return token
@@ -160,12 +185,15 @@ actor AuthController {
         return (url, codeRequest.codeVerifier)
     }
 
-    /// Exchanges an OAuth authorization code for a V3 token.
-    func exchangeCodeV3(_ code: String, codeVerifier: String, region: TokenRegion) async -> Token? {
-        await oauthCodeV3(code, codeVerifier, region)
+    /// Exchanges an OAuth authorization code for a V3 token. When
+    /// `addAsNewProfile` is true, the resulting token is stored in a new
+    /// profile (using the suggested name) instead of replacing the active
+    /// profile's token.
+    func exchangeCodeV3(_ code: String, codeVerifier: String, region: TokenRegion, addAsNewProfile: Bool = false) async -> Token? {
+        await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile)
     }
-    
-    fileprivate func oauthCodeV3(_ code: String, _ codeVerifier: String, _ region: TokenRegion, retries: Int = 0) async -> Token? {
+
+    fileprivate func oauthCodeV3(_ code: String, _ codeVerifier: String, _ region: TokenRegion, addAsNewProfile: Bool = false, retries: Int = 0) async -> Token? {
         let url = getAuthByRegion(region: region)
         let result = await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
                                         ["grant_type": "authorization_code",
@@ -184,34 +212,40 @@ actor AuthController {
                 let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
                 
                 token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
-                if let encodedToken = try? JSONEncoder().encode(token) {
-                    KeychainWrapper.global.set(encodedToken, forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                if let token {
+                    if addAsNewProfile {
+                        let name = await TokenProfileStore.shared.suggestedName(for: .owner)
+                        let profile = TokenProfile(name: name, token: token)
+                        await TokenProfileStore.shared.upsert(profile: profile, environment: .owner, makeActive: true)
+                    } else {
+                        await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
+                    }
                 }
             }
             return token
         case .failure(let error):
             if error.statusCode == 400 {
                 if retries < 3 {
-                    return await oauthCodeV3(code, codeVerifier, region, retries: retries + 1)
+                    return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)
                 }
                 KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
             } else if error.statusCode == 401 {
                 if retries < 3 {
-                    return await oauthCodeV3(code, codeVerifier, region, retries: retries + 1)
+                    return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)
                 }
                 KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
             } else if error.statusCode == 848 {
                 // Mystical SSL error
                 if retries < 3 {
-                    return await oauthCodeV3(code, codeVerifier, region, retries: retries + 1)
+                    return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)
                 }
             } else {
                 // 19 - network connection was lost
                 // 23 - request timed out
                 if retries < 3 {
-                    return await oauthCodeV3(code, codeVerifier, region, retries: retries + 1)
+                    return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)
                 }
-                
+
             }
             return nil
         }

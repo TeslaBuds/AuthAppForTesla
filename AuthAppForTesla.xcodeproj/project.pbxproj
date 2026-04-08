@@ -59,6 +59,21 @@
 		EAAB1D1C2B5AA6D200AC5271 /* RefreshOwnersAPIToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D182B5AA6D200AC5271 /* RefreshOwnersAPIToken.swift */; };
 		EAAB1D1D2B5AA6D200AC5271 /* TokenResponseAppEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D192B5AA6D200AC5271 /* TokenResponseAppEntity.swift */; };
 		EAAB1D222B5AAC7E00AC5271 /* GetFleetAPIToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D1F2B5AAC7E00AC5271 /* GetFleetAPIToken.swift */; };
+		EAC032C52F86877A00A29E67 /* JWTDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032C42F86877900A29E67 /* JWTDecoder.swift */; };
+		EAC032C92F8687C000A29E67 /* JWTInspectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032C82F8687C000A29E67 /* JWTInspectorView.swift */; };
+		EAC032CB2F8687E100A29E67 /* SnippetGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032CA2F8687E100A29E67 /* SnippetGenerator.swift */; };
+		EAC032CD2F8687F100A29E67 /* SnippetExporterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032CC2F8687F100A29E67 /* SnippetExporterView.swift */; };
+		EAC032CF2F86880A00A29E67 /* TokenRegionDetection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032CE2F86880A00A29E67 /* TokenRegionDetection.swift */; };
+		EAC032D12F86881A00A29E67 /* HomeViewRegionBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032D02F86881A00A29E67 /* HomeViewRegionBadge.swift */; };
+		EAC032D32F86882300A29E67 /* HomeViewTokenHealth.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032D22F86882300A29E67 /* HomeViewTokenHealth.swift */; };
+		EAC032D52F86885D00A29E67 /* TestAPIController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032D42F86885D00A29E67 /* TestAPIController.swift */; };
+		EAC032D72F86887200A29E67 /* TestTokenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032D62F86887200A29E67 /* TestTokenView.swift */; };
+		EAC032D92F86887D00A29E67 /* ToolsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032D82F86887D00A29E67 /* ToolsView.swift */; };
+		EAC032DB2F8688B900A29E67 /* TokenProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032DA2F8688B900A29E67 /* TokenProfile.swift */; };
+		EAC032DD2F8688D300A29E67 /* TokenProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032DC2F8688D300A29E67 /* TokenProfileStore.swift */; };
+		EAC032E72F868CBD00A29E67 /* PreviewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032E62F868CBD00A29E67 /* PreviewModelFactory.swift */; };
+		EAC033392F86937100A29E67 /* ScreenshotScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC033382F86937100A29E67 /* ScreenshotScenario.swift */; };
+		EAC0333B2F8693CA00A29E67 /* ScreenshotHarness.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC0333A2F8693CA00A29E67 /* ScreenshotHarness.swift */; };
 		EAE6FCA52B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6FCA42B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift */; };
 /* End PBXBuildFile section */
 
@@ -138,6 +153,21 @@
 		EAAB1D182B5AA6D200AC5271 /* RefreshOwnersAPIToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshOwnersAPIToken.swift; sourceTree = "<group>"; };
 		EAAB1D192B5AA6D200AC5271 /* TokenResponseAppEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenResponseAppEntity.swift; sourceTree = "<group>"; };
 		EAAB1D1F2B5AAC7E00AC5271 /* GetFleetAPIToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFleetAPIToken.swift; sourceTree = "<group>"; };
+		EAC032C42F86877900A29E67 /* JWTDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTDecoder.swift; sourceTree = "<group>"; };
+		EAC032C82F8687C000A29E67 /* JWTInspectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JWTInspectorView.swift; sourceTree = "<group>"; };
+		EAC032CA2F8687E100A29E67 /* SnippetGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnippetGenerator.swift; sourceTree = "<group>"; };
+		EAC032CC2F8687F100A29E67 /* SnippetExporterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnippetExporterView.swift; sourceTree = "<group>"; };
+		EAC032CE2F86880A00A29E67 /* TokenRegionDetection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenRegionDetection.swift; sourceTree = "<group>"; };
+		EAC032D02F86881A00A29E67 /* HomeViewRegionBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewRegionBadge.swift; sourceTree = "<group>"; };
+		EAC032D22F86882300A29E67 /* HomeViewTokenHealth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewTokenHealth.swift; sourceTree = "<group>"; };
+		EAC032D42F86885D00A29E67 /* TestAPIController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestAPIController.swift; sourceTree = "<group>"; };
+		EAC032D62F86887200A29E67 /* TestTokenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTokenView.swift; sourceTree = "<group>"; };
+		EAC032D82F86887D00A29E67 /* ToolsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolsView.swift; sourceTree = "<group>"; };
+		EAC032DA2F8688B900A29E67 /* TokenProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProfile.swift; sourceTree = "<group>"; };
+		EAC032DC2F8688D300A29E67 /* TokenProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProfileStore.swift; sourceTree = "<group>"; };
+		EAC032E62F868CBD00A29E67 /* PreviewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModelFactory.swift; sourceTree = "<group>"; };
+		EAC033382F86937100A29E67 /* ScreenshotScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotScenario.swift; sourceTree = "<group>"; };
+		EAC0333A2F8693CA00A29E67 /* ScreenshotHarness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotHarness.swift; sourceTree = "<group>"; };
 		EAE6FCA42B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshFleetAPIToken.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -194,6 +224,7 @@
 				20CDC55625E1D11600E895C8 /* AboutView.swift */,
 				20F8775E25E2F67800953E51 /* LicenseView.swift */,
 				EA5643562F5F2F6A00A50586 /* Onboarding */,
+				EAC032C72F8687A800A29E67 /* Tools */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -229,6 +260,8 @@
 				EA78814D2B6592DF00E14E3C /* HomeViewAccessToken.swift */,
 				EA78814F2B6593D300E14E3C /* HomeViewRefreshToken.swift */,
 				20F8775B25E2DA5300953E51 /* HomeViewRefreshTokens.swift */,
+				EAC032D02F86881A00A29E67 /* HomeViewRegionBadge.swift */,
+				EAC032D22F86882300A29E67 /* HomeViewTokenHealth.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -312,6 +345,7 @@
 			isa = PBXGroup;
 			children = (
 				EA63697825CAB11D000216BF /* Preview Assets.xcassets */,
+				EAC032E62F868CBD00A29E67 /* PreviewModelFactory.swift */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -321,6 +355,12 @@
 			children = (
 				EA78814A2B656FC800E14E3C /* TokenModels.swift */,
 				EA56434F2F5F2F1500A50586 /* Toast.swift */,
+				EAC032C42F86877900A29E67 /* JWTDecoder.swift */,
+				EAC032CA2F8687E100A29E67 /* SnippetGenerator.swift */,
+				EAC032CE2F86880A00A29E67 /* TokenRegionDetection.swift */,
+				EAC032DA2F8688B900A29E67 /* TokenProfile.swift */,
+				EAC033382F86937100A29E67 /* ScreenshotScenario.swift */,
+				EAC0333A2F8693CA00A29E67 /* ScreenshotHarness.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -333,6 +373,8 @@
 				EAAB1D072B5A676700AC5271 /* NetworkController.swift */,
 				EA563F682F5D8C0500A50586 /* AuthWebView.swift */,
 				EA5641F92F5DDF8F00A50586 /* TipJarManager.swift */,
+				EAC032D42F86885D00A29E67 /* TestAPIController.swift */,
+				EAC032DC2F8688D300A29E67 /* TokenProfileStore.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -348,6 +390,17 @@
 				EA56435E2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift */,
 			);
 			path = AppIntents;
+			sourceTree = "<group>";
+		};
+		EAC032C72F8687A800A29E67 /* Tools */ = {
+			isa = PBXGroup;
+			children = (
+				EAC032C82F8687C000A29E67 /* JWTInspectorView.swift */,
+				EAC032CC2F8687F100A29E67 /* SnippetExporterView.swift */,
+				EAC032D62F86887200A29E67 /* TestTokenView.swift */,
+				EAC032D82F86887D00A29E67 /* ToolsView.swift */,
+			);
+			path = Tools;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -508,6 +561,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAC032D52F86885D00A29E67 /* TestAPIController.swift in Sources */,
 				20F8775A25E2DA4300953E51 /* HomeViewToken.swift in Sources */,
 				20CDC55725E1D11600E895C8 /* AboutView.swift in Sources */,
 				EA6369A725CAD79D000216BF /* AuthViewModel.swift in Sources */,
@@ -515,7 +569,9 @@
 				EA9EA87325DAAF25002FE23E /* AuthController.swift in Sources */,
 				EA63699F25CABA68000216BF /* KeychainWrapper.swift in Sources */,
 				EA5641FC2F5DDFA200A50586 /* TipJarView.swift in Sources */,
+				EAC032DD2F8688D300A29E67 /* TokenProfileStore.swift in Sources */,
 				EA63697425CAB11D000216BF /* RootView.swift in Sources */,
+				EAC032D92F86887D00A29E67 /* ToolsView.swift in Sources */,
 				EAAB1D102B5A84D300AC5271 /* OwnersAPIView.swift in Sources */,
 				20CDC54725E1B52500E895C8 /* IconBackgroundView.swift in Sources */,
 				20F8775F25E2F67800953E51 /* LicenseView.swift in Sources */,
@@ -523,11 +579,15 @@
 				20CDC54D25E1C27E00E895C8 /* LoginViewSignIn.swift in Sources */,
 				EAAB1D122B5A893900AC5271 /* LoginViewSignInOwnersAPI.swift in Sources */,
 				EA5643502F5F2F1500A50586 /* Toast.swift in Sources */,
+				EAC032CB2F8687E100A29E67 /* SnippetGenerator.swift in Sources */,
 				EAAB1D1C2B5AA6D200AC5271 /* RefreshOwnersAPIToken.swift in Sources */,
 				EA63698C25CAB620000216BF /* Consts.swift in Sources */,
 				EAAB1D082B5A676700AC5271 /* NetworkController.swift in Sources */,
+				EAC033392F86937100A29E67 /* ScreenshotScenario.swift in Sources */,
 				EA563F692F5D8C0500A50586 /* AuthWebView.swift in Sources */,
+				EAC032C92F8687C000A29E67 /* JWTInspectorView.swift in Sources */,
 				EA5641EE2F5DD84200A50586 /* AppVersionLabel.swift in Sources */,
+				EAC0333B2F8693CA00A29E67 /* ScreenshotHarness.swift in Sources */,
 				EA56435F2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift in Sources */,
 				20F8775825E2D9DA00953E51 /* HomeViewHeader.swift in Sources */,
 				20CDC54B25E1C21C00E895C8 /* LoginViewFooter.swift in Sources */,
@@ -536,9 +596,12 @@
 				EA63698F25CAB660000216BF /* Util.swift in Sources */,
 				20CDC55A25E1D13600E895C8 /* AboutViewHeader.swift in Sources */,
 				20CDC55E25E1D3B800E895C8 /* AboutViewFriend.swift in Sources */,
+				EAC032CD2F8687F100A29E67 /* SnippetExporterView.swift in Sources */,
 				EAAB1D1A2B5AA6D200AC5271 /* GetOwnersAPIToken.swift in Sources */,
 				20F8776125E2F73800953E51 /* LicenseViewEntry.swift in Sources */,
+				EAC032D72F86887200A29E67 /* TestTokenView.swift in Sources */,
 				EA5643522F5F2F2000A50586 /* ToastView.swift in Sources */,
+				EAC032DB2F8688B900A29E67 /* TokenProfile.swift in Sources */,
 				EAAB1D0B2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift in Sources */,
 				20F8775C25E2DA5300953E51 /* HomeViewRefreshTokens.swift in Sources */,
 				EA5643642F5F2FDA00A50586 /* AboutViewShortcuts.swift in Sources */,
@@ -546,13 +609,18 @@
 				EAAB1D142B5A893B00AC5271 /* LoginViewSignInFleetAPI.swift in Sources */,
 				EAAB1D0E2B5A84D000AC5271 /* FleetAPIView.swift in Sources */,
 				EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */,
+				EAC032D32F86882300A29E67 /* HomeViewTokenHealth.swift in Sources */,
+				EAC032C52F86877A00A29E67 /* JWTDecoder.swift in Sources */,
 				EAAB1D1D2B5AA6D200AC5271 /* TokenResponseAppEntity.swift in Sources */,
 				EA78814E2B6592DF00E14E3C /* HomeViewAccessToken.swift in Sources */,
 				EA63699E25CABA68000216BF /* KeychainItemAccessibility.swift in Sources */,
+				EAC032D12F86881A00A29E67 /* HomeViewRegionBadge.swift in Sources */,
 				EA5643582F5F2F6F00A50586 /* OnboardingPageView.swift in Sources */,
 				20007B9B25E15E6B00958060 /* LoginView.swift in Sources */,
 				20CDC54925E1C1AB00E895C8 /* LoginViewHeader.swift in Sources */,
+				EAC032E72F868CBD00A29E67 /* PreviewModelFactory.swift in Sources */,
 				EAAB1D222B5AAC7E00AC5271 /* GetFleetAPIToken.swift in Sources */,
+				EAC032CF2F86880A00A29E67 /* TokenRegionDetection.swift in Sources */,
 				20CDC55C25E1D26700E895C8 /* AboutViewFooter.swift in Sources */,
 				EA78814B2B656FC800E14E3C /* TokenModels.swift in Sources */,
 			);

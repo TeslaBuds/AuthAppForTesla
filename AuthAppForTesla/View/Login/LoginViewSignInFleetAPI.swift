@@ -9,6 +9,9 @@ import SwiftUI
 
 struct LoginViewSignInFleetAPI: View {
     @Bindable var model: AuthViewModel
+    /// When `true`, a successful sign-in creates a brand-new profile
+    /// instead of replacing the active profile's token.
+    var addAsNewProfile: Bool = false
     @State private var region: TokenRegion = .global
     @State private var clientId = ""
     @State private var clientSecret = ""
@@ -40,7 +43,9 @@ struct LoginViewSignInFleetAPI: View {
             .padding(.bottom, 10)
 
             Button("Sign in with Tesla") {
-                model.logOut(environment: .fleet)
+                if !addAsNewProfile {
+                    model.logOut(environment: .fleet)
+                }
                 authenticateV4(region: region, clientId: clientId, clientSecret: clientSecret, redirectUri: redirectUri)
             }
             .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
@@ -96,13 +101,15 @@ struct LoginViewSignInFleetAPI: View {
             let capturedClientId = clientId
             let capturedSecret = clientSecret
             let capturedRedirectUri = redirectUri
+            let capturedAddAsNew = addAsNewProfile
             Task {
                 let token = await AuthController.shared.exchangeCodeV4(
                     code,
                     region: capturedRegion,
                     fleetClientId: capturedClientId,
                     fleetSecret: capturedSecret,
-                    fleetRedirectUri: capturedRedirectUri
+                    fleetRedirectUri: capturedRedirectUri,
+                    addAsNewProfile: capturedAddAsNew
                 )
                 if token != nil {
                     await model.loadTokens()

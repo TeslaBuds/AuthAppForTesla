@@ -52,11 +52,13 @@ extension AuthController {
     }
 
     /// Exchanges an OAuth authorization code for a V4 (Fleet API) token.
-    func exchangeCodeV4(_ code: String, region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String) async -> Token? {
-        await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri)
+    /// When `addAsNewProfile` is true, the resulting token is stored in a
+    /// new profile instead of replacing the active profile's token.
+    func exchangeCodeV4(_ code: String, region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String, addAsNewProfile: Bool = false) async -> Token? {
+        await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, addAsNewProfile: addAsNewProfile)
     }
-    
-    fileprivate func oauthCodeV4(_ code: String, _ region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String, retries: Int = 0) async -> Token? {
+
+    fileprivate func oauthCodeV4(_ code: String, _ region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String, addAsNewProfile: Bool = false, retries: Int = 0) async -> Token? {
         let url = getAuthByRegion(region: region)
                 
         let audience = "https://fleet-api.prd.\(String(code.prefix(2)).lowercased()).vn.cloud.tesla.\(region == .global ? "com" : "cn")"
@@ -78,35 +80,41 @@ extension AuthController {
                let token_type = result.dictionaryBody["token_type"] as? String,
                let refresh_token = result.dictionaryBody["refresh_token"] as? String {
                 let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
-                
+
                 token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
-                if let encodedToken = try? JSONEncoder().encode(token) {
-                    KeychainWrapper.global.set(encodedToken, forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+                if let token {
+                    if addAsNewProfile {
+                        let name = await TokenProfileStore.shared.suggestedName(for: .fleet)
+                        let profile = TokenProfile(name: name, token: token)
+                        await TokenProfileStore.shared.upsert(profile: profile, environment: .fleet, makeActive: true)
+                    } else {
+                        await TokenProfileStore.shared.updateActiveToken(token, environment: .fleet)
+                    }
                 }
             }
             return token
         case .failure(let error):
             if error.statusCode == 400 {
                 if retries < 3 {
-                    return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1)
+                    return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, addAsNewProfile: addAsNewProfile, retries: retries + 1)
                 }
                 KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
             } else if error.statusCode == 401 {
                 if retries < 3 {
-                    return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1)
+                    return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, addAsNewProfile: addAsNewProfile, retries: retries + 1)
                 }
                 KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
             } else if error.statusCode == 848 {
                 // Mystical SSL error
                 if retries < 3 {
-                    return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1)
+                    return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, addAsNewProfile: addAsNewProfile, retries: retries + 1)
                 }
             } else {
                 // 19 - network connection was lost
                 // 23 - request timed out
-                
+
                 if retries < 3 {
-                    return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, retries: retries + 1)
+                    return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, addAsNewProfile: addAsNewProfile, retries: retries + 1)
                 }
             }
             return nil
@@ -124,21 +132,21 @@ extension AuthController {
         case .success(let result):
             if let error = result.dictionaryBody["error"] as? String, error.count > 0 {
                 if error == "login_required" {
-                    self.logOut(environment: .fleet)
+                    await self.logOut(environment: .fleet)
                     return nil
                 }
             }
-            
+
             var token: Token?
             if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
                let access_token = result.dictionaryBody["access_token"] as? String,
                let token_type = result.dictionaryBody["token_type"] as? String,
                let refresh_token = result.dictionaryBody["refresh_token"] as? String {
                 let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
-                
+
                 token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
-                if let encodedToken = try? JSONEncoder().encode(token) {
-                    KeychainWrapper.global.set(encodedToken, forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+                if let token {
+                    await TokenProfileStore.shared.updateActiveToken(token, environment: .fleet)
                 }
             }
             return token
@@ -190,10 +198,10 @@ extension AuthController {
     func acquireTokenV4Silent(forceRefresh: Bool = false) async -> Token? {
         if let token = v4Token {
             if (forceRefresh || token.expires_at ?? Date() <= Date().addingTimeInterval(60)) {
-                
+
                 let refreshedToken = await oauthRenewV4(token.refresh_token, token.region ?? .global, fleetClientId: fleetClientId)
-                if let refreshedToken, let encodedToken = try? JSONEncoder().encode(refreshedToken) {
-                    KeychainWrapper.global.set(encodedToken, forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+                if let refreshedToken {
+                    await TokenProfileStore.shared.updateActiveToken(refreshedToken, environment: .fleet)
                 } else {
                     return nil
                 }

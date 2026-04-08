@@ -40,22 +40,25 @@ extension View {
 enum AppTab: Hashable {
     case owners
     case fleet
+    case tools
     case about
 }
 
 struct RootView: View {
     @Bindable var model: AuthViewModel
     @State private var selection: AppTab
+    @State private var navigationPath: NavigationPath
     @State private var showOnboarding = false
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     init(model: AuthViewModel, initialTab: AppTab = .owners) {
         self.model = model
         _selection = State(initialValue: initialTab)
+        _navigationPath = State(initialValue: Self.initialNavigationPath())
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationPath) {
             TabView(selection: $selection) {
                 Tab("Owners API", systemImage: "steeringwheel", value: .owners) {
                     OwnersAPIView(model: model)
@@ -63,11 +66,24 @@ struct RootView: View {
                 Tab("Fleet API", systemImage: "car.2.fill", value: .fleet) {
                     FleetAPIView(model: model)
                 }
+                Tab("Tools", systemImage: "wrench.and.screwdriver", value: .tools) {
+                    ToolsView(model: model)
+                }
                 Tab("About", systemImage: "info.circle", value: .about) {
                     AboutView()
                 }
             }
             .tint(Color("TeslaRed"))
+            .navigationDestination(for: ToolsDestination.self) { destination in
+                switch destination {
+                case .jwtInspector:
+                    JWTInspectorView(model: model, initialInput: Self.jwtInspectorInitialInput())
+                case .snippetExporter:
+                    SnippetExporterView(model: model)
+                case .testToken:
+                    TestTokenView(model: model)
+                }
+            }
         }
         .toast($model.toast)
         .sheet(isPresented: $showOnboarding) {
@@ -85,5 +101,31 @@ struct RootView: View {
             }
             model.refreshAll()
         }
+    }
+
+    /// Builds the initial NavigationPath for screenshot scenarios that
+    /// want to land on a specific Tools sub-screen.
+    private static func initialNavigationPath() -> NavigationPath {
+        var path = NavigationPath()
+        #if DEBUG
+        switch ScreenshotScenario.current {
+        case .jwtInspector: path.append(ToolsDestination.jwtInspector)
+        case .snippetExporter: path.append(ToolsDestination.snippetExporter)
+        case .testToken: path.append(ToolsDestination.testToken)
+        default: break
+        }
+        #endif
+        return path
+    }
+
+    /// Pre-fills the JWT inspector with the sample token only when the
+    /// matching screenshot scenario is active.
+    private static func jwtInspectorInitialInput() -> String {
+        #if DEBUG
+        if ScreenshotScenario.current == .jwtInspector {
+            return ScreenshotHarness.sampleOwnersToken
+        }
+        #endif
+        return ""
     }
 }
