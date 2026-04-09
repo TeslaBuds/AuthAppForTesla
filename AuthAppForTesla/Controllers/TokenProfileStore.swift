@@ -57,6 +57,21 @@ actor TokenProfileStore {
         return collection
     }
 
+    /// Updates the token for a specific profile (regardless of active
+    /// status). Used by App Intents that operate on a chosen account
+    /// rather than the active one. If the profile id is unknown the
+    /// collection is returned unchanged.
+    @discardableResult
+    func updateProfileToken(id: UUID, token: Token, environment: LoginEnvironment) -> TokenProfileCollection {
+        var collection = load(environment: environment)
+        guard let index = collection.profiles.firstIndex(where: { $0.id == id }) else {
+            return collection
+        }
+        collection.profiles[index].token = token
+        persist(collection, environment: environment)
+        return collection
+    }
+
     /// Updates the token for the currently active profile (used by token
     /// refreshes). If no profiles exist, creates a Default one.
     @discardableResult

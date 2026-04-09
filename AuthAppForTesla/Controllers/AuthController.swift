@@ -150,9 +150,14 @@ actor AuthController {
     }
     
     
-    func oauthRenew(_ refreshToken: String, _ region: TokenRegion, retries: Int = 0) async -> Token? {
+    /// Refreshes a V3 (Owners API) refresh token. When `targetProfileId`
+    /// is provided, the refreshed token is written back to that specific
+    /// profile in the store rather than the currently active one. App
+    /// Intents that operate on a non-active profile use this so they
+    /// don't accidentally promote the chosen profile to active.
+    func oauthRenew(_ refreshToken: String, _ region: TokenRegion, targetProfileId: UUID? = nil, retries: Int = 0) async -> Token? {
         let url = getAuthByRegion(region: region)
-        
+
         let result = await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
                                                             ["grant_type": "refresh_token",
                                                              "scope": "openid email offline_access",
@@ -166,39 +171,59 @@ actor AuthController {
                let token_type = result.dictionaryBody["token_type"] as? String,
                let refresh_token = result.dictionaryBody["refresh_token"] as? String {
                 let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
-                
+
                 token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
                 if let token {
-                    await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
+                    if let targetProfileId {
+                        await TokenProfileStore.shared.updateProfileToken(id: targetProfileId, token: token, environment: .owner)
+                    } else {
+                        await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
+                    }
                 }
             }
             return token
         case let .failure(error):
             if error.statusCode == 400 {
                 if retries < 3 {
-                    return await oauthRenew(refreshToken, region, retries: retries + 1)
+                    return await oauthRenew(refreshToken, region, targetProfileId: targetProfileId, retries: retries + 1)
                 }
                 KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
             } else if error.statusCode == 401 {
                 if retries < 3 {
-                    return await oauthRenew(refreshToken, region, retries: retries + 1)
+                    return await oauthRenew(refreshToken, region, targetProfileId: targetProfileId, retries: retries + 1)
                 }
                 KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
             } else if error.statusCode == 848 {
                 // Mystical SSL error
                 if retries < 3 {
-                    return await oauthRenew(refreshToken, region, retries: retries + 1)
+                    return await oauthRenew(refreshToken, region, targetProfileId: targetProfileId, retries: retries + 1)
                 }
             } else {
                 // 19 - network connection was lost
                 // 23 - request timed out
-                
+
                 if retries < 3 {
-                    return await oauthRenew(refreshToken, region, retries: retries + 1)
+                    return await oauthRenew(refreshToken, region, targetProfileId: targetProfileId, retries: retries + 1)
                 }
             }
             return nil
         }
+    }
+
+    /// Returns the V3 (Owners API) token for a specific profile,
+    /// refreshing if it's expired or about to expire. Does NOT change
+    /// the active profile — used exclusively by the App Intent path
+    /// when the user has explicitly chosen an account in their Shortcut.
+    func acquireTokenV3Silent(profileId: UUID, forceRefresh: Bool = false) async -> Token? {
+        let collection = await TokenProfileStore.shared.load(environment: .owner)
+        guard let profile = collection.profiles.first(where: { $0.id == profileId }) else {
+            return nil
+        }
+        let token = profile.token
+        if forceRefresh || (token.expires_at ?? Date()) <= Date().addingTimeInterval(60) {
+            return await oauthRenew(token.refresh_token, token.region ?? .global, targetProfileId: profileId)
+        }
+        return token
     }
 
     /// Builds the OAuth authorization URL for V3 (Owners API) login.

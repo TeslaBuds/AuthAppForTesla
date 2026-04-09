@@ -77,6 +77,7 @@
 		EAC0333B2F8693CA00A29E67 /* ScreenshotHarness.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC0333A2F8693CA00A29E67 /* ScreenshotHarness.swift */; };
 		C4E0A2D682FD41AFB5D11655 /* LiveTestLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692739F5613469097CA1786 /* LiveTestLog.swift */; };
 		EAE6FCA52B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6FCA42B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift */; };
+		D13185A79914463F9079DD04 /* TokenProfileAppEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EFE42CE20749B385AE6DBE /* TokenProfileAppEntities.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -173,6 +174,7 @@
 		EAC0333A2F8693CA00A29E67 /* ScreenshotHarness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotHarness.swift; sourceTree = "<group>"; };
 		1692739F5613469097CA1786 /* LiveTestLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveTestLog.swift; sourceTree = "<group>"; };
 		EAE6FCA42B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshFleetAPIToken.swift; sourceTree = "<group>"; };
+		63EFE42CE20749B385AE6DBE /* TokenProfileAppEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProfileAppEntities.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -393,6 +395,7 @@
 				EAAB1D1F2B5AAC7E00AC5271 /* GetFleetAPIToken.swift */,
 				EAE6FCA42B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift */,
 				EAAB1D192B5AA6D200AC5271 /* TokenResponseAppEntity.swift */,
+				63EFE42CE20749B385AE6DBE /* TokenProfileAppEntities.swift */,
 				EA56435E2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift */,
 			);
 			path = AppIntents;
@@ -620,6 +623,7 @@
 				EAC032D32F86882300A29E67 /* HomeViewTokenHealth.swift in Sources */,
 				EAC032C52F86877A00A29E67 /* JWTDecoder.swift in Sources */,
 				EAAB1D1D2B5AA6D200AC5271 /* TokenResponseAppEntity.swift in Sources */,
+				D13185A79914463F9079DD04 /* TokenProfileAppEntities.swift in Sources */,
 				EA78814E2B6592DF00E14E3C /* HomeViewAccessToken.swift in Sources */,
 				EA63699E25CABA68000216BF /* KeychainItemAccessibility.swift in Sources */,
 				EAC032D12F86881A00A29E67 /* HomeViewRegionBadge.swift in Sources */,

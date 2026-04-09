@@ -121,9 +121,14 @@ extension AuthController {
         }
     }
     
-    fileprivate func oauthRenewV4(_ refreshToken: String, _ region: TokenRegion, fleetClientId: String, retries: Int = 0) async -> Token? {
+    /// Refreshes a V4 (Fleet API) refresh token. When `targetProfileId`
+    /// is provided, the refreshed token is written back to that profile
+    /// in the store rather than the currently active one. App Intents
+    /// that operate on a non-active profile use this so they don't
+    /// accidentally promote the chosen profile to active.
+    func oauthRenewV4(_ refreshToken: String, _ region: TokenRegion, fleetClientId: String, targetProfileId: UUID? = nil, retries: Int = 0) async -> Token? {
         let url = getAuthByRegion(region: region)
-        
+
         let result = await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
                                                     [   "grant_type": "refresh_token",
                                                         "client_id": fleetClientId,
@@ -146,35 +151,55 @@ extension AuthController {
 
                 token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
                 if let token {
-                    await TokenProfileStore.shared.updateActiveToken(token, environment: .fleet)
+                    if let targetProfileId {
+                        await TokenProfileStore.shared.updateProfileToken(id: targetProfileId, token: token, environment: .fleet)
+                    } else {
+                        await TokenProfileStore.shared.updateActiveToken(token, environment: .fleet)
+                    }
                 }
             }
             return token
         case .failure(let error):
             if error.statusCode == 400 {
                 if retries < 3 {
-                    return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1)
+                    return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, targetProfileId: targetProfileId, retries: retries + 1)
                 }
                 KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
             } else if error.statusCode == 401 {
                 if retries < 3 {
-                    return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1)
+                    return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, targetProfileId: targetProfileId, retries: retries + 1)
                 }
                 KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
             } else if error.statusCode == 848 {
                 // Mystical SSL error
                 if retries < 3 {
-                    return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1)
+                    return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, targetProfileId: targetProfileId, retries: retries + 1)
                 }
             } else {
                 // 19 - network connection was lost
                 // 23 - request timed out
                 if retries < 3 {
-                    return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, retries: retries + 1)
+                    return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, targetProfileId: targetProfileId, retries: retries + 1)
                 }
             }
             return nil
         }
+    }
+
+    /// Returns the V4 (Fleet API) token for a specific profile,
+    /// refreshing if it's expired or about to expire. Does NOT change
+    /// the active profile — used exclusively by the App Intent path
+    /// when the user has explicitly chosen an account in their Shortcut.
+    func acquireTokenV4Silent(profileId: UUID, forceRefresh: Bool = false) async -> Token? {
+        let collection = await TokenProfileStore.shared.load(environment: .fleet)
+        guard let profile = collection.profiles.first(where: { $0.id == profileId }) else {
+            return nil
+        }
+        let token = profile.token
+        if forceRefresh || (token.expires_at ?? Date()) <= Date().addingTimeInterval(60) {
+            return await oauthRenewV4(token.refresh_token, token.region ?? .global, fleetClientId: fleetClientId, targetProfileId: profileId)
+        }
+        return token
     }
 
     var v4Token: Token? {
