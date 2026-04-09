@@ -84,16 +84,22 @@ private struct HomeViewAccountMenu: View {
             // Person icon + chevron together so it visibly reads as a
             // menu trigger. Without the chevron the avatar looks like
             // a static badge and most users don't realise it's tappable.
+            // The HStack contentShape and explicit padding give the
+            // glass capsule a comfortably large hit area instead of
+            // collapsing to the icon glyphs themselves.
             HStack(spacing: 4) {
                 Image(systemName: "person.crop.circle")
                 Image(systemName: "chevron.down")
                     .font(.caption.weight(.bold))
             }
+            .font(.title3)
+            .padding(.horizontal, 4)
+            .padding(.vertical, 2)
+            .contentShape(.capsule)
             .accessibilityLabel("Account menu")
         }
-        .foregroundStyle(Color("TeslaRed"))
-        .font(.title)
-        .buttonStyle(.plain)
+        .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
+        .foregroundStyle(.white)
         .accessibilityIdentifier("homeMenu")
         // Anchor the arrow to the trailing edge of the popover so it
         // points right toward the icon — that places the popover body
