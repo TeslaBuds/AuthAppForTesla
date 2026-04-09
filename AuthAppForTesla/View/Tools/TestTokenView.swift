@@ -47,20 +47,22 @@ struct TestTokenView: View {
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                TestTokenHeaderCard()
-                    .padding(.top)
+                VStack(spacing: 16) {
+                    TestTokenHeaderCard()
 
-                TestTokenEnvironmentCard(environment: $viewModel.environment)
+                    TestTokenEnvironmentCard(environment: $viewModel.environment)
 
-                if hasToken {
-                    TestTokenRunCard(viewModel: viewModel, model: model)
-                    TestTokenResultsCard(
-                        results: viewModel.results,
-                        isRunning: viewModel.isRunning
-                    )
-                } else {
-                    TestTokenEmptyCard(environment: viewModel.environment)
+                    if hasToken {
+                        TestTokenRunCard(viewModel: viewModel, model: model)
+                        TestTokenResultsCard(
+                            results: viewModel.results,
+                            isRunning: viewModel.isRunning
+                        )
+                    } else {
+                        TestTokenEmptyCard(environment: viewModel.environment)
+                    }
                 }
+                .padding(.vertical)
             }
         }
         .navigationTitle("Test Token")
@@ -123,7 +125,6 @@ private struct TestTokenRunCard: View {
         .foregroundStyle(.white)
         .disabled(viewModel.isRunning)
         .accessibilityIdentifier("runTestsButton")
-        .padding(.top, 4)
     }
 }
 

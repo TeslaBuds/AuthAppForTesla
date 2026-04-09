@@ -27,26 +27,28 @@ struct JWTInspectorView: View {
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                JWTHeaderCard()
-                    .padding(.top)
+                VStack(spacing: 16) {
+                    JWTHeaderCard()
 
-                JWTInputCard(input: $input, model: model)
+                    JWTInputCard(input: $input, model: model)
 
-                if let decoded {
-                    JWTStatusCard(decoded: decoded)
-                    JWTClaimsCard(decoded: decoded)
-                    if let header = decoded.header {
-                        JWTRawSegmentCard(title: "Header", json: header)
+                    if let decoded {
+                        JWTStatusCard(decoded: decoded)
+                        JWTClaimsCard(decoded: decoded)
+                        if let header = decoded.header {
+                            JWTRawSegmentCard(title: "Header", json: header)
+                        }
+                        if let payload = decoded.payload {
+                            JWTRawSegmentCard(title: "Payload", json: payload)
+                        }
+                        if let signature = decoded.signature, !signature.isEmpty {
+                            JWTSignatureCard(signature: signature)
+                        }
+                    } else if !input.isEmpty {
+                        JWTInvalidCard()
                     }
-                    if let payload = decoded.payload {
-                        JWTRawSegmentCard(title: "Payload", json: payload)
-                    }
-                    if let signature = decoded.signature, !signature.isEmpty {
-                        JWTSignatureCard(signature: signature)
-                    }
-                } else if !input.isEmpty {
-                    JWTInvalidCard()
                 }
+                .padding(.vertical)
             }
         }
         .navigationTitle("JWT Inspector")

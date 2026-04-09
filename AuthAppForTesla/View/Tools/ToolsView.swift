@@ -17,32 +17,34 @@ struct ToolsView: View {
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                ToolsHeaderCard()
-                    .padding(.top)
+                VStack(spacing: 16) {
+                    ToolsHeaderCard()
 
-                VStack(spacing: 0) {
-                    ToolsRow(
-                        icon: "checkmark.shield.fill",
-                        title: "Test Your Token",
-                        subtitle: "Run read-only API calls to verify your stored token works end-to-end.",
-                        destination: .testToken
-                    )
-                    Divider()
-                    ToolsRow(
-                        icon: "magnifyingglass.circle.fill",
-                        title: "JWT Inspector",
-                        subtitle: "Decode any JWT into its header, payload, scopes, and expiry.",
-                        destination: .jwtInspector
-                    )
-                    Divider()
-                    ToolsRow(
-                        icon: "curlybraces",
-                        title: "Snippet Exporter",
-                        subtitle: "Generate ready-to-paste cURL, HTTPie, Swift, and Python snippets.",
-                        destination: .snippetExporter
-                    )
+                    VStack(spacing: 0) {
+                        ToolsRow(
+                            icon: "checkmark.shield.fill",
+                            title: "Test Your Token",
+                            subtitle: "Run read-only API calls to verify your stored token works end-to-end.",
+                            destination: .testToken
+                        )
+                        Divider()
+                        ToolsRow(
+                            icon: "magnifyingglass.circle.fill",
+                            title: "JWT Inspector",
+                            subtitle: "Decode any JWT into its header, payload, scopes, and expiry.",
+                            destination: .jwtInspector
+                        )
+                        Divider()
+                        ToolsRow(
+                            icon: "curlybraces",
+                            title: "Snippet Exporter",
+                            subtitle: "Generate ready-to-paste cURL, HTTPie, Swift, and Python snippets.",
+                            destination: .snippetExporter
+                        )
+                    }
+                    .glassCard()
                 }
-                .glassCard()
+                .padding(.vertical)
             }
         }
         .navigationTitle("Tools")

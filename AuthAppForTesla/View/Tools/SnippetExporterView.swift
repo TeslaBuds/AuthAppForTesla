@@ -32,17 +32,19 @@ struct SnippetExporterView: View {
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                SnippetHeaderCard()
-                    .padding(.top)
+                VStack(spacing: 16) {
+                    SnippetHeaderCard()
 
-                SnippetOptionsCard(environment: $environment, language: $language)
-                SnippetEndpointCard(endpoint: $endpoint)
+                    SnippetOptionsCard(environment: $environment, language: $language)
+                    SnippetEndpointCard(endpoint: $endpoint)
 
-                if token == nil {
-                    SnippetEmptyCard(environment: environment)
-                } else {
-                    SnippetCodeCard(snippet: snippet)
+                    if token == nil {
+                        SnippetEmptyCard(environment: environment)
+                    } else {
+                        SnippetCodeCard(snippet: snippet)
+                    }
                 }
+                .padding(.vertical)
             }
         }
         .navigationTitle("Snippet Exporter")
