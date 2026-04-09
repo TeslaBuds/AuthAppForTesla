@@ -159,13 +159,17 @@ run_on_simulator() {
     rm -rf "$RESULT_BUNDLE" "${RESULT_BUNDLE}.xcresult" "$LOG_PATH"
 
     echo "  building test bundles…"
+    # The KeychainWrapper uses accessGroup="group.global", which is
+    # only honoured when the app is signed with the matching
+    # entitlement. CODE_SIGN_IDENTITY="-" / CODE_SIGNING_ALLOWED="NO"
+    # would strip entitlements and silently break every keychain write
+    # — so we sign with the dev team via -allowProvisioningUpdates.
     if ! xcodebuild build-for-testing \
             -project "$XCODEPROJ" \
             -scheme "$SCHEME" \
             -destination "$destination" \
             -only-testing:"$UI_TEST_TARGET" \
-            CODE_SIGN_IDENTITY="-" \
-            CODE_SIGNING_ALLOWED="NO" \
+            -allowProvisioningUpdates \
             > "$LOG_PATH" 2>&1; then
         echo "Error: build-for-testing failed."
         tail -30 "$LOG_PATH"
@@ -193,14 +197,14 @@ run_on_simulator() {
         fi
 
         echo "Running LiveAuthTests on $source_name (attempt $attempt/3)"
+
         xcodebuild test-without-building \
             -project "$XCODEPROJ" \
             -scheme "$SCHEME" \
             -destination "$destination" \
             -resultBundlePath "$RESULT_BUNDLE" \
             -only-testing:"$UI_TEST_TARGET" \
-            CODE_SIGN_IDENTITY="-" \
-            CODE_SIGNING_ALLOWED="NO" \
+            -allowProvisioningUpdates \
             > "$LOG_PATH" 2>&1
         exit_code=$?
 
@@ -213,9 +217,16 @@ run_on_simulator() {
     done
 
     tail -60 "$LOG_PATH"
+
     if [ "$exit_code" -ne 0 ]; then
         echo ""
         echo "Live test run failed. Full log: $LOG_PATH"
+        echo ""
+        echo "On failure, the LiveTestLog OAuth trace is attached to"
+        echo "${RESULT_BUNDLE}.xcresult as DEBUG_z_oauth_log. Extract it with:"
+        echo "  xcrun xcresulttool get test-results activities \\"
+        echo "    --test-id 'LiveAuthTests/<test name>()' \\"
+        echo "    --path ${RESULT_BUNDLE}.xcresult"
     fi
     exit $exit_code
 }

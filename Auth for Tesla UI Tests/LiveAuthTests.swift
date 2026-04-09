@@ -89,6 +89,7 @@ final class LiveAuthTests: XCTestCase {
                 toastAttachment.lifetime = .keepAlways
                 add(toastAttachment)
             }
+            attachLiveTestLog(app: app, named: "DEBUG_z_oauth_log")
         }
         XCTAssertTrue(
             appeared,
@@ -483,6 +484,29 @@ final class LiveAuthTests: XCTestCase {
     private func attach(_ app: XCUIApplication, named name: String) {
         let screenshot = app.windows.firstMatch.screenshot()
         let attachment = XCTAttachment(screenshot: screenshot)
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    /// Pulls the in-app LiveTestLog out of the running app via its
+    /// hidden accessibility-exposed Text view (identifier
+    /// `liveTestLog`) and attaches it to the test result bundle. This
+    /// is the only reliable way to get OAuth diagnostics out of a UI
+    /// test, since xcodebuild runs UI tests on an ephemeral cloned
+    /// simulator that gets deleted before `simctl log show` can reach
+    /// it.
+    private func attachLiveTestLog(app: XCUIApplication, named name: String) {
+        let logElement = app.descendants(matching: .any)
+            .matching(identifier: "liveTestLog")
+            .firstMatch
+        let body: String
+        if logElement.exists {
+            body = logElement.label
+        } else {
+            body = "(liveTestLog accessibility element not found)"
+        }
+        let attachment = XCTAttachment(string: body)
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)

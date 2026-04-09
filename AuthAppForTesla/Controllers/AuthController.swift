@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import os
+
+private let aftOAuthLogger = Logger(subsystem: "dk.kimhansen.AuthAppForTesla", category: "oauth")
 import CryptoKit
 
 actor AuthController {
@@ -14,7 +17,19 @@ actor AuthController {
     private init() {
         // Private initializer, so no accidental class instantiations outside singleton can happen
     }
-    
+
+    /// Mirror an OAuth diagnostic line to both os.Logger (so a developer
+    /// running the app under Console.app can see it) and to LiveTestLog
+    /// (so the live UI test can read it back via accessibility on a
+    /// hidden Text view in the root view).
+    private nonisolated func logOAuth(_ message: String) {
+        #if DEBUG
+        aftOAuthLogger.notice("[AFT-OAUTH] \(message)")
+        LiveTestLog.shared.append(message)
+        #endif
+    }
+
+
     public func logOut(environment: LoginEnvironment) async
     {
         // Delete the active profile (and its mirrored legacy entry).
@@ -213,6 +228,7 @@ actor AuthController {
 
     fileprivate func oauthCodeV3(_ code: String, _ codeVerifier: String, _ region: TokenRegion, addAsNewProfile: Bool = false, retries: Int = 0) async -> Token? {
         let url = getAuthByRegion(region: region)
+        logOAuth("oauthCodeV3 attempt \(retries + 1): POST \(url)/oauth2/v3/token code=\(String(code.prefix(20)))… verifier=\(String(codeVerifier.prefix(10)))…")
         let result = await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
                                         ["grant_type": "authorization_code",
                                          "client_id": "ownerapi",
@@ -222,6 +238,10 @@ actor AuthController {
                                          "scope": "openid email offline_access phone"])
         switch result {
         case let .success(result):
+            logOAuth("oauthCodeV3 200 OK, body keys: \(Array(result.dictionaryBody.keys))")
+            if let body = String(data: result.data, encoding: .utf8) {
+                logOAuth("oauthCodeV3 body: \(String(body.prefix(500)))")
+            }
             var token: Token?
             if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
                let access_token = result.dictionaryBody["access_token"] as? String,
@@ -239,9 +259,15 @@ actor AuthController {
                         await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
                     }
                 }
+            } else {
+                logOAuth("oauthCodeV3 200 OK but missing one of expires_in/access_token/token_type/refresh_token")
             }
             return token
         case .failure(let error):
+            logOAuth("oauthCodeV3 FAIL status=\(error.statusCode) error=\(error.error)")
+            if let body = String(data: error.data, encoding: .utf8) {
+                logOAuth("oauthCodeV3 fail body: \(String(body.prefix(500)))")
+            }
             if error.statusCode == 400 {
                 if retries < 3 {
                     return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)

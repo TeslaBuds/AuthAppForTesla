@@ -75,6 +75,7 @@
 		EAC032E72F868CBD00A29E67 /* PreviewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032E62F868CBD00A29E67 /* PreviewModelFactory.swift */; };
 		EAC033392F86937100A29E67 /* ScreenshotScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC033382F86937100A29E67 /* ScreenshotScenario.swift */; };
 		EAC0333B2F8693CA00A29E67 /* ScreenshotHarness.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC0333A2F8693CA00A29E67 /* ScreenshotHarness.swift */; };
+		C4E0A2D682FD41AFB5D11655 /* LiveTestLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692739F5613469097CA1786 /* LiveTestLog.swift */; };
 		EAE6FCA52B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6FCA42B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift */; };
 /* End PBXBuildFile section */
 
@@ -170,6 +171,7 @@
 		EAC032E62F868CBD00A29E67 /* PreviewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModelFactory.swift; sourceTree = "<group>"; };
 		EAC033382F86937100A29E67 /* ScreenshotScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotScenario.swift; sourceTree = "<group>"; };
 		EAC0333A2F8693CA00A29E67 /* ScreenshotHarness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotHarness.swift; sourceTree = "<group>"; };
+		1692739F5613469097CA1786 /* LiveTestLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveTestLog.swift; sourceTree = "<group>"; };
 		EAE6FCA42B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshFleetAPIToken.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -363,6 +365,7 @@
 				EAC032DA2F8688B900A29E67 /* TokenProfile.swift */,
 				EAC033382F86937100A29E67 /* ScreenshotScenario.swift */,
 				EAC0333A2F8693CA00A29E67 /* ScreenshotHarness.swift */,
+				1692739F5613469097CA1786 /* LiveTestLog.swift */,
 				EAC032E62F868CBD00A29E67 /* PreviewModelFactory.swift */,
 			);
 			path = Models;
@@ -591,6 +594,7 @@
 				EAC032C92F8687C000A29E67 /* JWTInspectorView.swift in Sources */,
 				EA5641EE2F5DD84200A50586 /* AppVersionLabel.swift in Sources */,
 				EAC0333B2F8693CA00A29E67 /* ScreenshotHarness.swift in Sources */,
+				C4E0A2D682FD41AFB5D11655 /* LiveTestLog.swift in Sources */,
 				EA56435F2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift in Sources */,
 				20F8775825E2D9DA00953E51 /* HomeViewHeader.swift in Sources */,
 				20CDC54B25E1C21C00E895C8 /* LoginViewFooter.swift in Sources */,

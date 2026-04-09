@@ -6,6 +6,9 @@
 //
 
 import SwiftUI
+import os
+
+private let aftOAuthLogger = Logger(subsystem: "dk.kimhansen.AuthAppForTesla", category: "oauth")
 
 struct LoginViewSignInOwnersAPI: View {
     @Bindable var model: AuthViewModel
@@ -62,21 +65,28 @@ struct LoginViewSignInOwnersAPI: View {
     private func handleAuthResult(_ result: Result<URL, Error>) {
         switch result {
         case .success(let url):
+            logOAuth("redirect URL: \(url.absoluteString)")
             let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
+            logOAuth("query items: \(String(describing: urlComponents?.queryItems))")
             guard let code = urlComponents?.queryItems?.first(where: { $0.name == "code" })?.value else {
+                logOAuth("no code in redirect — query was: \(String(describing: urlComponents?.query))")
                 authURL = nil
                 model.showToast(.error("Sign-in failed: no authorization code received."))
                 return
             }
+            logOAuth("extracted code prefix: \(String(code.prefix(20)))… length=\(code.count)")
             guard let verifier = codeVerifier else {
+                logOAuth("codeVerifier was nil at handleAuthResult time")
                 authURL = nil
                 model.showToast(.error("Sign-in failed: missing code verifier."))
                 return
             }
+            logOAuth("codeVerifier length=\(verifier.count) prefix=\(String(verifier.prefix(10)))…")
             let capturedRegion = region
             let capturedAddAsNew = addAsNewProfile
             Task {
                 let token = await AuthController.shared.exchangeCodeV3(code, codeVerifier: verifier, region: capturedRegion, addAsNewProfile: capturedAddAsNew)
+                logOAuth("exchangeCodeV3 returned \(token == nil ? "nil" : "token \(String(token!.access_token.prefix(20)))…")")
                 if token != nil {
                     await model.loadTokens()
                 } else {
@@ -85,9 +95,17 @@ struct LoginViewSignInOwnersAPI: View {
                 authURL = nil
             }
         case .failure(let error):
+            logOAuth("auth result failure: \(error)")
             model.showToast(.error("Sign-in failed: \(error.localizedDescription)"))
             authURL = nil
         }
+    }
+
+    private func logOAuth(_ message: String) {
+        #if DEBUG
+        aftOAuthLogger.notice("[AFT-OAUTH] \(message)")
+        LiveTestLog.shared.append(message)
+        #endif
     }
 }
 

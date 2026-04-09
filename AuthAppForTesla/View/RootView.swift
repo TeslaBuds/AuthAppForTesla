@@ -85,6 +85,18 @@ struct RootView: View {
                 }
             }
         }
+        .overlay(alignment: .topLeading) {
+            #if DEBUG
+            // Hidden mirror of LiveTestLog for the live UI test. The
+            // test reads `.label` on this Text via the accessibility
+            // identifier and attaches it to the test result bundle.
+            // The view is sized 1x1 and almost transparent so it
+            // doesn't affect screenshots.
+            if LiveTestLog.isActive {
+                LiveTestLogReader()
+            }
+            #endif
+        }
         .toast($model.toast)
         .sheet(isPresented: $showOnboarding) {
             OnboardingView(isPresented: $showOnboarding)
@@ -134,3 +146,23 @@ struct RootView: View {
         return ""
     }
 }
+
+#if DEBUG
+/// Hidden Text view that mirrors LiveTestLog content into the
+/// accessibility tree so the live UI test can read it after the OAuth
+/// flow finishes. Observing LiveTestLog forces SwiftUI to refresh the
+/// label whenever the app appends a new line.
+private struct LiveTestLogReader: View {
+    @State private var log = LiveTestLog.shared
+
+    var body: some View {
+        Text(log.joined.isEmpty ? "(empty)" : log.joined)
+            .font(.system(size: 1))
+            .foregroundStyle(.clear)
+            .frame(width: 1, height: 1)
+            .accessibilityIdentifier("liveTestLog")
+            .accessibilityLabel(log.joined.isEmpty ? "(empty)" : log.joined)
+            .allowsHitTesting(false)
+    }
+}
+#endif
