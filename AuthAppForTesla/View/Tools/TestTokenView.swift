@@ -45,19 +45,21 @@ struct TestTokenView: View {
     }
 
     var body: some View {
-        Form {
-            TestTokenEnvironmentSection(environment: $viewModel.environment)
+        IconBackgroundView {
+            ScrollView {
+                TestTokenHeaderCard()
+                    .padding(.top)
 
-            if hasToken {
-                TestTokenRunSection(viewModel: viewModel, model: model)
-                TestTokenResultsSection(results: viewModel.results, isRunning: viewModel.isRunning)
-            } else {
-                Section {
-                    ContentUnavailableView(
-                        "No token signed in",
-                        systemImage: "key.slash",
-                        description: Text("Sign in to the \(viewModel.environment == .owner ? "Owners" : "Fleet") API tab first.")
+                TestTokenEnvironmentCard(environment: $viewModel.environment)
+
+                if hasToken {
+                    TestTokenRunCard(viewModel: viewModel, model: model)
+                    TestTokenResultsCard(
+                        results: viewModel.results,
+                        isRunning: viewModel.isRunning
                     )
+                } else {
+                    TestTokenEmptyCard(environment: viewModel.environment)
                 }
             }
         }
@@ -76,56 +78,84 @@ struct TestTokenView: View {
     }
 }
 
-private struct TestTokenEnvironmentSection: View {
+// MARK: - Cards
+
+private struct TestTokenHeaderCard: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Test Your Token")
+                .font(.title)
+                .bold()
+            Text("Runs a handful of read-only API calls so you can confirm your stored token actually works end-to-end.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .glassCard()
+    }
+}
+
+private struct TestTokenEnvironmentCard: View {
     @Binding var environment: LoginEnvironment
 
     var body: some View {
-        Section("API") {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("API")
+                .font(.headline)
             Picker("API", selection: $environment) {
                 Text("Owners API").tag(LoginEnvironment.owner)
                 Text("Fleet API").tag(LoginEnvironment.fleet)
             }
             .pickerStyle(.segmented)
         }
+        .glassCard()
     }
 }
 
-private struct TestTokenRunSection: View {
+private struct TestTokenRunCard: View {
     @Bindable var viewModel: TestTokenViewModel
     @Bindable var model: AuthViewModel
 
     var body: some View {
-        Section {
-            Button("Run Tests", systemImage: "play.fill") {
-                Task { await viewModel.run(model: model) }
-            }
-            .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
-            .foregroundStyle(.white)
-            .disabled(viewModel.isRunning)
-            .accessibilityIdentifier("runTestsButton")
-            .frame(maxWidth: .infinity)
+        Button("Run Tests", systemImage: "play.fill") {
+            Task { await viewModel.run(model: model) }
         }
+        .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
+        .foregroundStyle(.white)
+        .disabled(viewModel.isRunning)
+        .accessibilityIdentifier("runTestsButton")
+        .padding(.top, 4)
     }
 }
 
-private struct TestTokenResultsSection: View {
+private struct TestTokenResultsCard: View {
     let results: [TestAPIResult]
     let isRunning: Bool
 
     var body: some View {
         if isRunning {
-            Section {
-                HStack {
-                    ProgressView()
-                    Text("Running tests…")
-                }
+            HStack(spacing: 10) {
+                ProgressView()
+                Text("Running tests…")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
             }
+            .frame(maxWidth: .infinity)
+            .glassCard()
         } else if !results.isEmpty {
-            Section("Results") {
-                ForEach(results) { result in
-                    TestTokenResultRow(result: result)
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Results")
+                    .font(.title2)
+                    .bold()
+                VStack(spacing: 10) {
+                    ForEach(Array(results.enumerated()), id: \.element.id) { index, result in
+                        TestTokenResultRow(result: result)
+                        if index < results.count - 1 {
+                            Divider()
+                        }
+                    }
                 }
             }
+            .glassCard()
         }
     }
 }
@@ -135,30 +165,53 @@ private struct TestTokenResultRow: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .top) {
-                Image(systemName: result.isSuccess ? "checkmark.circle.fill" : "xmark.octagon.fill")
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: result.isSuccess ? "checkmark.seal.fill" : "xmark.octagon.fill")
+                    .font(.title3)
                     .foregroundStyle(result.isSuccess ? .green : Color("TeslaRed"))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(result.title).bold()
+                    Text(result.title)
+                        .font(.headline)
                     Text(result.endpoint)
                         .font(.caption.monospaced())
                         .foregroundStyle(.secondary)
                 }
+                Spacer(minLength: 0)
             }
             if let summary = result.summary {
                 Text(summary)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                    .padding(.leading, 28)
+                    .padding(.leading, 30)
             }
             if case .failure(let code) = result.status, code > 0 {
                 Text("HTTP \(code)")
-                    .font(.caption2)
+                    .font(.caption2.weight(.semibold))
                     .foregroundStyle(Color("TeslaRed"))
-                    .padding(.leading, 28)
+                    .padding(.leading, 30)
             }
         }
-        .padding(.vertical, 4)
+    }
+}
+
+private struct TestTokenEmptyCard: View {
+    let environment: LoginEnvironment
+
+    var body: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "key.slash")
+                .font(.largeTitle)
+                .foregroundStyle(Color("TeslaRed"))
+            Text("No token signed in")
+                .font(.title2)
+                .bold()
+            Text("Sign in to the \(environment == .owner ? "Owners" : "Fleet") API tab first.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .glassCard()
     }
 }
 

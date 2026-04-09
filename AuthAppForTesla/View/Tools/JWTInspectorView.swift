@@ -25,33 +25,64 @@ struct JWTInspectorView: View {
     }
 
     var body: some View {
-        Form {
-            Section("Token") {
-                JWTInputField(text: $input)
-                JWTInspectorActions(input: $input, model: model)
-            }
+        IconBackgroundView {
+            ScrollView {
+                JWTHeaderCard()
+                    .padding(.top)
 
-            if let decoded {
-                JWTStatusSection(decoded: decoded)
-                JWTClaimsSection(decoded: decoded)
-                JWTRawSegmentSection(title: "Header", json: decoded.header)
-                JWTRawSegmentSection(title: "Payload", json: decoded.payload)
-                if let signature = decoded.signature, !signature.isEmpty {
-                    Section("Signature") {
-                        Text(signature)
-                            .font(.footnote.monospaced())
-                            .textSelection(.enabled)
+                JWTInputCard(input: $input, model: model)
+
+                if let decoded {
+                    JWTStatusCard(decoded: decoded)
+                    JWTClaimsCard(decoded: decoded)
+                    if let header = decoded.header {
+                        JWTRawSegmentCard(title: "Header", json: header)
                     }
-                }
-            } else if !input.isEmpty {
-                Section {
-                    Label("This doesn't look like a valid JWT.", systemImage: "exclamationmark.triangle")
-                        .foregroundStyle(.secondary)
+                    if let payload = decoded.payload {
+                        JWTRawSegmentCard(title: "Payload", json: payload)
+                    }
+                    if let signature = decoded.signature, !signature.isEmpty {
+                        JWTSignatureCard(signature: signature)
+                    }
+                } else if !input.isEmpty {
+                    JWTInvalidCard()
                 }
             }
         }
         .navigationTitle("JWT Inspector")
         .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+// MARK: - Cards
+
+private struct JWTHeaderCard: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("JWT Inspector")
+                .font(.title)
+                .bold()
+            Text("Decode any JWT into its header, payload, scopes, and expiry. Signatures are not verified.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .glassCard()
+    }
+}
+
+private struct JWTInputCard: View {
+    @Binding var input: String
+    @Bindable var model: AuthViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Token")
+                .font(.title2)
+                .bold()
+            JWTInputField(text: $input)
+            JWTInspectorActions(input: $input, model: model)
+        }
+        .glassCard()
     }
 }
 
@@ -62,7 +93,8 @@ private struct JWTInputField: View {
         ZStack(alignment: .topLeading) {
             TextEditor(text: $text)
                 .font(.footnote.monospaced())
-                .frame(minHeight: 90)
+                .scrollContentBackground(.hidden)
+                .frame(minHeight: 110)
                 .accessibilityIdentifier("jwtInspectorInput")
             if text.isEmpty {
                 Text("Paste a JWT here, or pick one from your stored tokens below.")
@@ -73,6 +105,8 @@ private struct JWTInputField: View {
                     .allowsHitTesting(false)
             }
         }
+        .padding(10)
+        .glassEffect(.clear, in: .rect(cornerRadius: 16))
     }
 }
 
@@ -87,7 +121,7 @@ private struct JWTInspectorActions: View {
                     input = pasted
                 }
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(.glass(.regular))
 
             Spacer()
 
@@ -105,91 +139,177 @@ private struct JWTInspectorActions: View {
                     Button("Fleet API – Refresh") { input = refresh }
                 }
             }
+            .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
+            .foregroundStyle(.white)
             .disabled(model.tokenV3 == nil && model.tokenV4 == nil)
         }
     }
 }
 
-private struct JWTStatusSection: View {
+private struct JWTStatusCard: View {
     let decoded: DecodedJWT
 
     var body: some View {
-        Section("Status") {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Status")
+                .font(.title2)
+                .bold()
             if let expiresAt = decoded.expiresAt {
                 let isExpired = expiresAt <= Date()
-                LabeledContent("Status") {
-                    Label(
-                        isExpired ? "Expired" : "Valid",
-                        systemImage: isExpired ? "xmark.circle.fill" : "checkmark.seal.fill"
-                    )
-                    .foregroundStyle(isExpired ? Color("TeslaRed") : .green)
+                HStack(spacing: 6) {
+                    Image(systemName: isExpired ? "xmark.octagon.fill" : "checkmark.seal.fill")
+                        .foregroundStyle(isExpired ? Color("TeslaRed") : .green)
+                    Text(isExpired ? "Expired" : "Valid")
+                        .font(.headline)
+                        .foregroundStyle(isExpired ? Color("TeslaRed") : .green)
                 }
-                LabeledContent(isExpired ? "Expired" : "Expires") {
+                LabeledRow(label: isExpired ? "Expired" : "Expires") {
                     Text(expiresAt, style: .relative)
                 }
-                LabeledContent("Expiry Date") {
+                LabeledRow(label: "Expiry Date") {
                     Text(expiresAt.formatted(date: .abbreviated, time: .shortened))
                 }
             }
             if let issuedAt = decoded.issuedAt {
-                LabeledContent("Issued") {
+                LabeledRow(label: "Issued") {
                     Text(issuedAt.formatted(date: .abbreviated, time: .shortened))
                 }
             }
         }
+        .glassCard()
     }
 }
 
-private struct JWTClaimsSection: View {
+private struct JWTClaimsCard: View {
     let decoded: DecodedJWT
+    @State private var audiencesExpanded = false
+    @State private var scopesExpanded = false
 
     var body: some View {
-        Section("Claims") {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Claims")
+                .font(.title2)
+                .bold()
             if let issuer = decoded.issuer {
-                LabeledContent("Issuer", value: issuer)
+                LabeledRow(label: "Issuer") {
+                    Text(issuer).multilineTextAlignment(.trailing)
+                }
             }
             if let subject = decoded.subject {
-                LabeledContent("Subject", value: subject)
+                LabeledRow(label: "Subject") { Text(subject) }
             }
             if let azp = decoded.authorizedParty {
-                LabeledContent("Authorized Party", value: azp)
+                LabeledRow(label: "Authorized Party") { Text(azp) }
             }
             if !decoded.audiences.isEmpty {
-                DisclosureGroup("Audiences (\(decoded.audiences.count))") {
-                    ForEach(decoded.audiences, id: \.self) { aud in
-                        Text(aud).font(.footnote.monospaced())
+                DisclosureGroup(isExpanded: $audiencesExpanded) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        ForEach(decoded.audiences, id: \.self) { aud in
+                            Text(aud).font(.footnote.monospaced()).foregroundStyle(.secondary)
+                        }
                     }
+                    .padding(.top, 4)
+                } label: {
+                    Text("Audiences (\(decoded.audiences.count))")
+                        .font(.subheadline)
                 }
+                .tint(Color("TeslaRed"))
             }
             if !decoded.scopes.isEmpty {
-                DisclosureGroup("Scopes (\(decoded.scopes.count))") {
-                    ForEach(decoded.scopes, id: \.self) { scope in
-                        Text(scope).font(.footnote.monospaced())
+                DisclosureGroup(isExpanded: $scopesExpanded) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        ForEach(decoded.scopes, id: \.self) { scope in
+                            Text(scope).font(.footnote.monospaced()).foregroundStyle(.secondary)
+                        }
                     }
+                    .padding(.top, 4)
+                } label: {
+                    Text("Scopes (\(decoded.scopes.count))")
+                        .font(.subheadline)
                 }
+                .tint(Color("TeslaRed"))
             }
         }
+        .glassCard()
     }
 }
 
-private struct JWTRawSegmentSection: View {
+private struct JWTRawSegmentCard: View {
     let title: String
-    let json: String?
+    let json: String
 
     var body: some View {
-        if let json {
-            Section(title) {
-                Text(json)
-                    .font(.footnote.monospaced())
-                    .textSelection(.enabled)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text(title)
+                    .font(.title2)
+                    .bold()
+                Spacer()
                 Button("Copy", systemImage: "doc.on.doc") {
                     UIPasteboard.general.setItems(
                         [[UTType.utf8PlainText.identifier: json]],
                         options: [.expirationDate: Date(timeIntervalSinceNow: 3600)]
                     )
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.glass(.regular))
+                .labelStyle(.iconOnly)
             }
+            Text(json)
+                .font(.footnote.monospaced())
+                .foregroundStyle(.secondary)
+                .textSelection(.enabled)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(10)
+                .glassEffect(.clear, in: .rect(cornerRadius: 16))
+        }
+        .glassCard()
+    }
+}
+
+private struct JWTSignatureCard: View {
+    let signature: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Signature")
+                .font(.title2)
+                .bold()
+            Text(signature)
+                .font(.footnote.monospaced())
+                .foregroundStyle(.secondary)
+                .textSelection(.enabled)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(10)
+                .glassEffect(.clear, in: .rect(cornerRadius: 16))
+        }
+        .glassCard()
+    }
+}
+
+private struct JWTInvalidCard: View {
+    var body: some View {
+        Label("This doesn't look like a valid JWT.", systemImage: "exclamationmark.triangle.fill")
+            .font(.subheadline)
+            .foregroundStyle(Color("TeslaRed"))
+            .glassCard()
+    }
+}
+
+/// A horizontal label/value row that mimics the look of `LabeledContent`
+/// in a `Form`, but works on a plain `VStack` inside a glass card.
+private struct LabeledRow<Value: View>: View {
+    let label: String
+    @ViewBuilder var value: Value
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline) {
+            Text(label)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+            Spacer()
+            value
+                .font(.subheadline)
+                .foregroundStyle(.primary)
         }
     }
 }

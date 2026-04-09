@@ -30,21 +30,19 @@ struct SnippetExporterView: View {
     }
 
     var body: some View {
-        Form {
-            SnippetEnvironmentSection(model: model, environment: $environment)
-            SnippetLanguageSection(language: $language)
-            SnippetEndpointSection(endpoint: $endpoint)
+        IconBackgroundView {
+            ScrollView {
+                SnippetHeaderCard()
+                    .padding(.top)
 
-            if token == nil {
-                Section {
-                    ContentUnavailableView(
-                        "No token signed in",
-                        systemImage: "key.slash",
-                        description: Text("Sign in to the \(environment == .owner ? "Owners" : "Fleet") API tab to generate a snippet.")
-                    )
+                SnippetOptionsCard(environment: $environment, language: $language)
+                SnippetEndpointCard(endpoint: $endpoint)
+
+                if token == nil {
+                    SnippetEmptyCard(environment: environment)
+                } else {
+                    SnippetCodeCard(snippet: snippet)
                 }
-            } else {
-                SnippetCodeSection(snippet: snippet)
             }
         }
         .navigationTitle("Snippet Exporter")
@@ -66,67 +64,123 @@ struct SnippetExporterView: View {
     }
 }
 
-private struct SnippetEnvironmentSection: View {
-    @Bindable var model: AuthViewModel
-    @Binding var environment: LoginEnvironment
+// MARK: - Cards
 
+private struct SnippetHeaderCard: View {
     var body: some View {
-        Section("API") {
-            Picker("API", selection: $environment) {
-                Text("Owners API").tag(LoginEnvironment.owner)
-                Text("Fleet API").tag(LoginEnvironment.fleet)
-            }
-            .pickerStyle(.segmented)
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Snippet Exporter")
+                .font(.title)
+                .bold()
+            Text("Generate ready-to-paste cURL, HTTPie, Swift, and Python code for the currently active token.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
         }
+        .glassCard()
     }
 }
 
-private struct SnippetLanguageSection: View {
+private struct SnippetOptionsCard: View {
+    @Binding var environment: LoginEnvironment
     @Binding var language: SnippetLanguage
 
     var body: some View {
-        Section("Language") {
-            Picker("Language", selection: $language) {
-                ForEach(SnippetLanguage.allCases) { lang in
-                    Text(lang.displayName).tag(lang)
+        VStack(alignment: .leading, spacing: 14) {
+            VStack(alignment: .leading, spacing: 6) {
+                Text("API")
+                    .font(.headline)
+                Picker("API", selection: $environment) {
+                    Text("Owners API").tag(LoginEnvironment.owner)
+                    Text("Fleet API").tag(LoginEnvironment.fleet)
                 }
+                .pickerStyle(.segmented)
             }
-            .pickerStyle(.segmented)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Language")
+                    .font(.headline)
+                Picker("Language", selection: $language) {
+                    ForEach(SnippetLanguage.allCases) { lang in
+                        Text(lang.displayName).tag(lang)
+                    }
+                }
+                .pickerStyle(.segmented)
+            }
         }
+        .glassCard()
     }
 }
 
-private struct SnippetEndpointSection: View {
+private struct SnippetEndpointCard: View {
     @Binding var endpoint: String
 
     var body: some View {
-        Section("Endpoint") {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Endpoint")
+                .font(.title2)
+                .bold()
             TextField("URL", text: $endpoint, axis: .vertical)
                 .font(.footnote.monospaced())
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
+                .padding(10)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .glassEffect(.clear, in: .rect(cornerRadius: 16))
         }
+        .glassCard()
     }
 }
 
-private struct SnippetCodeSection: View {
+private struct SnippetCodeCard: View {
     let snippet: String
 
     var body: some View {
-        Section("Snippet") {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Snippet")
+                    .font(.title2)
+                    .bold()
+                Spacer()
+                Button("Copy", systemImage: "doc.on.doc") {
+                    UIPasteboard.general.setItems(
+                        [[UTType.utf8PlainText.identifier: snippet]],
+                        options: [.expirationDate: Date(timeIntervalSinceNow: 3600)]
+                    )
+                }
+                .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
+                .foregroundStyle(.white)
+                .accessibilityIdentifier("snippetCopyButton")
+            }
             Text(snippet)
                 .font(.footnote.monospaced())
+                .foregroundStyle(.secondary)
                 .textSelection(.enabled)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            Button("Copy", systemImage: "doc.on.doc") {
-                UIPasteboard.general.setItems(
-                    [[UTType.utf8PlainText.identifier: snippet]],
-                    options: [.expirationDate: Date(timeIntervalSinceNow: 3600)]
-                )
-            }
-            .buttonStyle(.bordered)
-            .accessibilityIdentifier("snippetCopyButton")
+                .padding(12)
+                .glassEffect(.clear, in: .rect(cornerRadius: 16))
         }
+        .glassCard()
+    }
+}
+
+private struct SnippetEmptyCard: View {
+    let environment: LoginEnvironment
+
+    var body: some View {
+        VStack(spacing: 10) {
+            Image(systemName: "key.slash")
+                .font(.largeTitle)
+                .foregroundStyle(Color("TeslaRed"))
+            Text("No token signed in")
+                .font(.title2)
+                .bold()
+            Text("Sign in to the \(environment == .owner ? "Owners" : "Fleet") API tab to generate a snippet.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .glassCard()
     }
 }
 
