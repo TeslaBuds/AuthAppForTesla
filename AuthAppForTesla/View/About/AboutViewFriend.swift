@@ -28,9 +28,9 @@ struct AboutViewFriend: View {
             VStack {
                 Image(icon)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .scaledToFit()
+                    .frame(width: 60, height: 60)
                     .clipShape(.rect(cornerRadius: 12))
-                    .frame(width: 60)
                 Text(name)
                     .font(.subheadline)
             }

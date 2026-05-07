@@ -18,6 +18,7 @@ struct AboutView: View {
                 Spacer()
                 AboutViewShortcuts()
                     .padding(.vertical)
+                AboutViewMoreApps()
                 AboutViewFooter()
                 TipJarView(scrollPosition: $scrollPosition)
                     .padding(.bottom)

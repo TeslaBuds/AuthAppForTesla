@@ -34,6 +34,7 @@
 		EA56435A2F5F2F7D00A50586 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5643592F5F2F7D00A50586 /* OnboardingView.swift */; };
 		EA56435F2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA56435E2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift */; };
 		EA5643642F5F2FDA00A50586 /* AboutViewShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5643632F5F2FDA00A50586 /* AboutViewShortcuts.swift */; };
+		EAFF00000000000000A50587 /* AboutViewMoreApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF00000000000000A50586 /* AboutViewMoreApps.swift */; };
 		EA5644B62F5F7FE100A50586 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EA5644B52F5F7FE100A50586 /* PrivacyInfo.xcprivacy */; };
 		EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */; };
 		EA63697425CAB11D000216BF /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697325CAB11D000216BF /* RootView.swift */; };
@@ -124,6 +125,7 @@
 		EA5643592F5F2F7D00A50586 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		EA56435E2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeslaAppShortcutsProvider.swift; sourceTree = "<group>"; };
 		EA5643632F5F2FDA00A50586 /* AboutViewShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewShortcuts.swift; sourceTree = "<group>"; };
+		EAFF00000000000000A50586 /* AboutViewMoreApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewMoreApps.swift; sourceTree = "<group>"; };
 		EA5644B52F5F7FE100A50586 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EA63696E25CAB11D000216BF /* AuthAppForTesla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthAppForTesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAppForTeslaApp.swift; sourceTree = "<group>"; };
@@ -273,6 +275,7 @@
 				20CDC55B25E1D26700E895C8 /* AboutViewFooter.swift */,
 				20CDC55D25E1D3B800E895C8 /* AboutViewFriend.swift */,
 				EA5643632F5F2FDA00A50586 /* AboutViewShortcuts.swift */,
+				EAFF00000000000000A50586 /* AboutViewMoreApps.swift */,
 			);
 			path = About;
 			sourceTree = "<group>";
@@ -605,6 +608,7 @@
 				EAAB1D0B2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift in Sources */,
 				20F8775C25E2DA5300953E51 /* HomeViewRefreshTokens.swift in Sources */,
 				EA5643642F5F2FDA00A50586 /* AboutViewShortcuts.swift in Sources */,
+				EAFF00000000000000A50587 /* AboutViewMoreApps.swift in Sources */,
 				20CDC55425E1CC0A00E895C8 /* HomeView.swift in Sources */,
 				EAAB1D142B5A893B00AC5271 /* LoginViewSignInFleetAPI.swift in Sources */,
 				EAAB1D0E2B5A84D000AC5271 /* FleetAPIView.swift in Sources */,
