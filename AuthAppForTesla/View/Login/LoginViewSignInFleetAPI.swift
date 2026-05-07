@@ -62,7 +62,7 @@ struct LoginViewSignInFleetAPI: View {
             redirectUri = await AuthController.shared.fleetRedirectUri
         }
         .sheet(item: $model.fleetAuth) { auth in
-            AuthWebView(url: auth.url, redirectUrl: auth.redirectUri) { result in
+            AuthWebView(session: auth.session) { result in
                 handleAuthResult(result, auth: auth)
             }
         }
@@ -85,13 +85,16 @@ struct LoginViewSignInFleetAPI: View {
                 return
             }
 
+            let session = TeslaAuthSession(url: url, redirectUrl: redirectUri)
+
             model.fleetAuth = FleetAuthInFlight(
                 url: url,
                 region: region,
                 clientId: clientId,
                 clientSecret: clientSecret,
                 redirectUri: redirectUri,
-                addAsNewProfile: addAsNewProfile
+                addAsNewProfile: addAsNewProfile,
+                session: session
             )
         }
     }

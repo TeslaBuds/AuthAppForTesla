@@ -8,77 +8,53 @@
 import SwiftUI
 import WebKit
 
-/// A SwiftUI view that presents Tesla's OAuth login page using a WKWebView
-/// and intercepts the redirect URL to extract the authorization code.
+/// Owns a long-lived `WKWebView` for an in-flight OAuth flow.
 ///
-/// The `onResult` closure is called when the redirect is detected.
-/// The caller is responsible for dismissing the sheet (e.g. by nil-ing the
-/// `sheet(item:)` binding) after processing the result.
-struct AuthWebView: View {
-    let url: URL
-    let redirectUrl: String
-    let onResult: (Result<URL, Error>) -> Void
+/// The WKWebView lives on this class — held by `OwnersAuthInFlight` /
+/// `FleetAuthInFlight` on `AuthViewModel` — instead of being created
+/// inside a `UIViewRepresentable.makeUIView`. SwiftUI is free to
+/// rebuild the parent view tree at any time (most painfully on
+/// background → foreground when the user goes to grab a password from
+/// their password manager), and a representable that creates its own
+/// WKWebView gets a fresh one on every rebuild — losing any text the
+/// user has typed but not submitted, and dropping back to Tesla's
+/// email-entry page even mid-password.
+///
+/// By owning the `WKWebView` here and letting the representable just
+/// adopt it, the same WKWebView (with its DOM, scroll position, and
+/// typed input intact) is re-attached to whatever new SwiftUI host
+/// shows up after a rebuild.
+@MainActor
+final class TeslaAuthSession {
+    let webView: WKWebView
+    private let coordinator: Coordinator
 
-    @State private var hasHandledRedirect = false
-    @Environment(\.dismiss) private var dismiss
+    /// Called when the WKWebView is about to navigate to a URL with
+    /// the configured redirect prefix. Captures the full callback
+    /// URL so the caller can extract `?code=…` from it.
+    var onRedirect: ((URL) -> Void)?
 
-    var body: some View {
-        NavigationStack {
-            OAuthWebViewRepresentable(
-                url: url,
-                redirectUrl: redirectUrl,
-                onRedirect: { callbackURL in
-                    guard !hasHandledRedirect else { return }
-                    hasHandledRedirect = true
-                    onResult(.success(callbackURL))
-                }
-            )
-            .ignoresSafeArea(edges: .bottom)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", systemImage: "xmark.circle.fill") {
-                        dismiss()
-                    }
-                    .labelStyle(.iconOnly)
-                    .foregroundStyle(.secondary)
-                }
-            }
-            .navigationTitle("Sign in with Tesla")
-            .navigationBarTitleDisplayMode(.inline)
-        }
-    }
-}
-
-/// A `UIViewRepresentable` wrapper around `WKWebView` that intercepts
-/// OAuth redirect navigations via the navigation delegate.
-private struct OAuthWebViewRepresentable: UIViewRepresentable {
-    let url: URL
-    let redirectUrl: String
-    let onRedirect: (URL) -> Void
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(redirectUrl: redirectUrl, onRedirect: onRedirect)
-    }
-
-    func makeUIView(context: Context) -> WKWebView {
+    init(url: URL, redirectUrl: String) {
         let configuration = WKWebViewConfiguration()
         configuration.websiteDataStore = .nonPersistent()
-        let webView = WKWebView(frame: .zero, configuration: configuration)
-        webView.navigationDelegate = context.coordinator
-        webView.load(URLRequest(url: url))
-        return webView
+        let wv = WKWebView(frame: .zero, configuration: configuration)
+        self.webView = wv
+        let coord = Coordinator(redirectUrl: redirectUrl)
+        self.coordinator = coord
+        wv.navigationDelegate = coord
+        coord.onRedirect = { [weak self] url in
+            self?.onRedirect?(url)
+        }
+        wv.load(URLRequest(url: url))
     }
 
-    func updateUIView(_ uiView: WKWebView, context: Context) {
-    }
-
-    final class Coordinator: NSObject, WKNavigationDelegate {
+    fileprivate final class Coordinator: NSObject, WKNavigationDelegate {
         let redirectUrl: String
-        let onRedirect: (URL) -> Void
+        var onRedirect: ((URL) -> Void)?
+        var hasHandledRedirect = false
 
-        init(redirectUrl: String, onRedirect: @escaping (URL) -> Void) {
+        init(redirectUrl: String) {
             self.redirectUrl = redirectUrl
-            self.onRedirect = onRedirect
         }
 
         func webView(
@@ -87,12 +63,65 @@ private struct OAuthWebViewRepresentable: UIViewRepresentable {
         ) async -> WKNavigationActionPolicy {
             let url = navigationAction.request.url
             if let url, url.absoluteString.hasPrefix(redirectUrl) {
-                onRedirect(url)
+                if !hasHandledRedirect {
+                    hasHandledRedirect = true
+                    await MainActor.run {
+                        onRedirect?(url)
+                    }
+                }
                 return .cancel
             }
             return .allow
         }
+    }
+}
 
+/// Sheet content that hosts an externally-owned `TeslaAuthSession`.
+/// The session's WKWebView is reattached on every body evaluation
+/// instead of being recreated, so its DOM state survives parent
+/// rebuilds.
+struct AuthWebView: View {
+    let session: TeslaAuthSession
+    let onResult: (Result<URL, Error>) -> Void
 
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            TeslaAuthWebViewWrapper(session: session)
+                .ignoresSafeArea(edges: .bottom)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel", systemImage: "xmark.circle.fill") {
+                            dismiss()
+                        }
+                        .labelStyle(.iconOnly)
+                        .foregroundStyle(.secondary)
+                    }
+                }
+                .navigationTitle("Sign in with Tesla")
+                .navigationBarTitleDisplayMode(.inline)
+                .onAppear {
+                    session.onRedirect = { url in
+                        onResult(.success(url))
+                    }
+                }
+        }
+    }
+}
+
+/// Re-attaches the externally-owned WKWebView whenever SwiftUI
+/// reinstantiates this representable. `makeUIView` returns the same
+/// WKWebView reference every time, so the user's in-progress sign-in
+/// (typed email, password manager hop, anything mid-flow) survives.
+private struct TeslaAuthWebViewWrapper: UIViewRepresentable {
+    let session: TeslaAuthSession
+
+    func makeUIView(context: Context) -> WKWebView {
+        session.webView
+    }
+
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        // The session owns the WKWebView. Nothing to update.
     }
 }

@@ -152,18 +152,29 @@ class AuthViewModel {
 /// so it can drive `.sheet(item:)`; a stable id (UUID per flow) keeps
 /// SwiftUI from recreating the auth sheet's content view if the model
 /// republishes for unrelated reasons.
+///
+/// Carries a `TeslaAuthSession` (long-lived `WKWebView` + nav
+/// delegate) so the in-flight auth WebView survives SwiftUI parent
+/// view rebuilds — without it the user loses anything they've typed
+/// when iOS reactivates the app from a password-manager hop.
 struct OwnersAuthInFlight: Identifiable, Equatable {
     let id = UUID()
     var url: URL
     var codeVerifier: String
     var region: TokenRegion
     var addAsNewProfile: Bool
+    let session: TeslaAuthSession
+
+    static func == (lhs: OwnersAuthInFlight, rhs: OwnersAuthInFlight) -> Bool {
+        lhs.id == rhs.id
+    }
 }
 
 /// Snapshot of a Fleet API OAuth flow in flight. Carries the
 /// developer-supplied client credentials so the code exchange can
 /// complete with the same values the URL was built from, even if the
-/// user has navigated away from the login view since.
+/// user has navigated away from the login view since. Also carries
+/// the `TeslaAuthSession` (see `OwnersAuthInFlight` for rationale).
 struct FleetAuthInFlight: Identifiable, Equatable {
     let id = UUID()
     var url: URL
@@ -172,4 +183,9 @@ struct FleetAuthInFlight: Identifiable, Equatable {
     var clientSecret: String
     var redirectUri: String
     var addAsNewProfile: Bool
+    let session: TeslaAuthSession
+
+    static func == (lhs: FleetAuthInFlight, rhs: FleetAuthInFlight) -> Bool {
+        lhs.id == rhs.id
+    }
 }

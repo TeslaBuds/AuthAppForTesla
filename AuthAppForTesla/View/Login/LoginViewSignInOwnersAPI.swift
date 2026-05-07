@@ -44,7 +44,7 @@ struct LoginViewSignInOwnersAPI: View {
         .padding(.horizontal, 35)
         .padding(.vertical, 20)
         .sheet(item: $model.ownersAuth) { auth in
-            AuthWebView(url: auth.url, redirectUrl: kTeslaRedirectUri) { result in
+            AuthWebView(session: auth.session) { result in
                 handleAuthResult(result, auth: auth)
             }
         }
@@ -59,11 +59,17 @@ struct LoginViewSignInOwnersAPI: View {
                 return
             }
 
+            let session = TeslaAuthSession(
+                url: oauthInfo.url,
+                redirectUrl: kTeslaRedirectUri
+            )
+
             model.ownersAuth = OwnersAuthInFlight(
                 url: oauthInfo.url,
                 codeVerifier: oauthInfo.codeVerifier,
                 region: region,
-                addAsNewProfile: addAsNewProfile
+                addAsNewProfile: addAsNewProfile,
+                session: session
             )
         }
     }
