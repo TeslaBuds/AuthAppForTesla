@@ -22,7 +22,7 @@ struct LoginViewSignInOwnersAPI: View {
     @State private var region: TokenRegion = .global
 
     var body: some View {
-        VStack {
+        VStack(spacing: AppSpacing.sm) {
             Text("Choose login region")
             Picker("Region", selection: $region) {
                 ForEach(TokenRegion.allCases) { region in
@@ -30,7 +30,6 @@ struct LoginViewSignInOwnersAPI: View {
                 }
             }
             .pickerStyle(.segmented)
-            .padding(.bottom, 10)
             Button("Sign in with Tesla") {
                 if !addAsNewProfile {
                     model.logOut(environment: .owner)
@@ -40,9 +39,10 @@ struct LoginViewSignInOwnersAPI: View {
             .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
             .foregroundStyle(.white)
             .accessibilityIdentifier("loginButton")
+            .padding(.top, AppSpacing.xs)
         }
-        .padding(.horizontal, 35)
-        .padding(.vertical, 20)
+        .padding(.horizontal, AppSpacing.lg)
+        .padding(.vertical, AppSpacing.md)
         .sheet(item: $model.ownersAuth) { auth in
             AuthWebView(session: auth.session) { result in
                 handleAuthResult(result, auth: auth)

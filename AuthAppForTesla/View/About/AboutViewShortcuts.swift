@@ -39,7 +39,7 @@ struct AboutViewShortcuts: View {
     ]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
             Label("Siri & Shortcuts", systemImage: "sparkles")
                 .font(.headline)
                 .foregroundStyle(Color("TeslaRed"))
@@ -51,13 +51,13 @@ struct AboutViewShortcuts: View {
             Divider()
 
             ForEach(items) { item in
-                HStack(alignment: .top, spacing: 14) {
+                HStack(alignment: .top, spacing: AppSpacing.md) {
                     Image(systemName: item.systemImage)
                         .imageScale(.medium)
                         .foregroundStyle(Color("TeslaRed"))
                         .frame(width: 28)
 
-                    VStack(alignment: .leading, spacing: 2) {
+                    VStack(alignment: .leading, spacing: AppSpacing.xs) {
                         Text(item.title)
                             .font(.subheadline)
                             .bold()
@@ -75,11 +75,10 @@ struct AboutViewShortcuts: View {
             }
             .font(.subheadline)
             .foregroundStyle(Color("TeslaRed"))
-            .padding(.top, 4)
+            .padding(.top, AppSpacing.xs)
         }
-        .padding()
-        .glassEffect(.regular, in: .rect(cornerRadius: 16))
-        .padding(.horizontal)
+        .padding(AppSpacing.cardInner)
+        .glassEffect(.regular, in: .rect(cornerRadius: AppCornerRadius.card))
     }
 }
 

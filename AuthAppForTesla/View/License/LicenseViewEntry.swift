@@ -16,9 +16,9 @@ struct LicenseViewEntry: View {
     @State private var isExpanded = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
             HStack {
-                VStack(alignment: .leading, spacing: 4) {
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
                     Text(name)
                         .font(.headline)
                     Text("by \(author)")
@@ -41,13 +41,13 @@ struct LicenseViewEntry: View {
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.top, 4)
+                        .padding(.top, AppSpacing.xs)
                 }
                 .font(.subheadline)
                 .tint(Color("TeslaRed"))
             }
         }
-        .padding()
+        .padding(AppSpacing.cardInner)
     }
 }
 

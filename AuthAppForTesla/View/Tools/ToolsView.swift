@@ -17,7 +17,7 @@ struct ToolsView: View {
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: AppSpacing.cardGap) {
                     ToolsHeaderCard()
 
                     VStack(spacing: 0) {
@@ -44,7 +44,8 @@ struct ToolsView: View {
                     }
                     .glassCard()
                 }
-                .padding(.vertical)
+                .padding(.top, AppSpacing.scrollTop)
+                .padding(.bottom, AppSpacing.scrollBottom)
             }
         }
         .navigationTitle("Tools")
@@ -54,7 +55,7 @@ struct ToolsView: View {
 
 private struct ToolsHeaderCard: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
             Text("Tools")
                 .font(.title)
                 .bold()
@@ -74,12 +75,12 @@ private struct ToolsRow: View {
 
     var body: some View {
         NavigationLink(value: destination) {
-            HStack(spacing: 14) {
+            HStack(spacing: AppSpacing.md) {
                 Image(systemName: icon)
                     .font(.title2)
                     .foregroundStyle(Color("TeslaRed"))
                     .frame(width: 34)
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
                     Text(title)
                         .font(.headline)
                         .foregroundStyle(.primary)
@@ -94,7 +95,7 @@ private struct ToolsRow: View {
                     .foregroundStyle(.tertiary)
             }
             .contentShape(.rect)
-            .padding(.vertical, 10)
+            .padding(.vertical, AppSpacing.sm)
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)

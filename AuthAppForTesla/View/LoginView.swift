@@ -15,12 +15,15 @@ struct LoginView: View {
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                LoginViewHeader()
-                Spacer()
-                LoginViewFooter(model: model, loginEnvironment: loginEnvironment)
-                    .fixedSize(horizontal: false, vertical: true)
-                TipJarView(scrollPosition: $scrollPosition)
-                    .padding(.bottom)
+                VStack(spacing: AppSpacing.cardGap) {
+                    LoginViewHeader()
+                    LoginViewFooter(model: model, loginEnvironment: loginEnvironment)
+                        .fixedSize(horizontal: false, vertical: true)
+                    TipJarView(scrollPosition: $scrollPosition)
+                }
+                .padding(.horizontal, AppSpacing.screenEdge)
+                .padding(.top, AppSpacing.scrollTop)
+                .padding(.bottom, AppSpacing.scrollBottom)
             }
             .scrollPosition($scrollPosition)
         }

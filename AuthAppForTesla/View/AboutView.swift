@@ -13,14 +13,16 @@ struct AboutView: View {
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                AboutViewHeader()
-                Spacer()
-                AboutViewShortcuts()
-                    .padding(.vertical)
-                AboutViewMoreApps()
-                AboutViewFooter()
-                TipJarView(scrollPosition: $scrollPosition)
-                    .padding(.bottom)
+                VStack(spacing: AppSpacing.cardGap) {
+                    AboutViewHeader()
+                    AboutViewShortcuts()
+                    AboutViewMoreApps()
+                    AboutViewFooter()
+                    TipJarView(scrollPosition: $scrollPosition)
+                }
+                .padding(.horizontal, AppSpacing.screenEdge)
+                .padding(.top, AppSpacing.scrollTop)
+                .padding(.bottom, AppSpacing.scrollBottom)
             }
             .scrollPosition($scrollPosition)
         }

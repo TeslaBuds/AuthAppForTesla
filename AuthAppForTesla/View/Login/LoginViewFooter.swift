@@ -12,29 +12,27 @@ struct LoginViewFooter: View {
     let loginEnvironment: LoginEnvironment
     
     var body: some View {
-        VStack {
+        VStack(spacing: AppSpacing.sm) {
             Spacer()
             Text("Login to Tesla to generate Tokens")
                 .font(.title2)
             Text("In order to generate tokens, you have to login with your Tesla account.")
                 .font(.body)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 25)
-                .padding(.top, 2)
+                .padding(.horizontal, AppSpacing.md)
             LoginViewSignIn(model: model, loginEnvironment: loginEnvironment)
+                .padding(.vertical, AppSpacing.sm)
             Text("You will be presented with a web browser where you can enter your Tesla credentials into the Tesla website. If you have MFA configured you will be asked to enter a valid MFA code.")
                 .font(.caption)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 35)
+                .padding(.horizontal, AppSpacing.lg)
                 .foregroundStyle(.secondary)
             Spacer()
             AppVersionLabel()
-                .padding(.bottom)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-        .padding()
-        .glassEffect(.clear, in: .rect(cornerRadius: 24))
-        .padding()
+        .padding(AppSpacing.cardInner)
+        .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
     }
 }
 

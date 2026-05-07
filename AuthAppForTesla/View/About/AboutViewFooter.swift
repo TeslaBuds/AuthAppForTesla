@@ -9,23 +9,22 @@ import SwiftUI
 
 struct AboutViewFooter: View {
     private var columns: [GridItem] = [
-        GridItem(.fixed(150), spacing: 8),
-        GridItem(.fixed(150), spacing: 8),
+        GridItem(.fixed(150), spacing: AppSpacing.sm),
+        GridItem(.fixed(150), spacing: AppSpacing.sm),
     ]
-    
+
     let friends = [
         Friend(name: "TeSlate", appId: "1532406445", appUrl: nil, icon: "TeSlate"),
         Friend(name: "Teslascope", appId: nil, appUrl: "https://teslascope.com", icon: "TeslaScope"),
         Friend(name: "Tesla iOS Shortcuts", appId: nil, appUrl: "https://github.com/dburkland/tesla_ios_shortcuts/blob/master/README.md", icon: "tesla_ios_shortcuts"),
         Friend(name: "Autarkie Manager", appId: "1518598578", appUrl: nil, icon: "AutarkieManager"),
     ]
-    
+
     var body: some View {
 #if !targetEnvironment(macCatalyst)
-        VStack {
+        VStack(spacing: AppSpacing.sm) {
             Text("Friends of the App")
                 .font(.title)
-                .padding(.bottom, -5)
             LazyVGrid(
                 columns: columns,
                 alignment: .center,
@@ -38,9 +37,8 @@ struct AboutViewFooter: View {
                 }
             }
         }
-        .padding()
-        .glassEffect(.clear, in: .rect(cornerRadius: 24))
-        .padding()
+        .padding(AppSpacing.cardInner)
+        .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
 #else
         EmptyView()
 #endif

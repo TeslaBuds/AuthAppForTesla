@@ -27,7 +27,7 @@ struct JWTInspectorView: View {
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: AppSpacing.cardGap) {
                     JWTHeaderCard()
 
                     JWTInputCard(input: $input, model: model)
@@ -48,7 +48,8 @@ struct JWTInspectorView: View {
                         JWTInvalidCard()
                     }
                 }
-                .padding(.vertical)
+                .padding(.top, AppSpacing.scrollTop)
+                .padding(.bottom, AppSpacing.scrollBottom)
             }
         }
         .navigationTitle("JWT Inspector")
@@ -60,7 +61,7 @@ struct JWTInspectorView: View {
 
 private struct JWTHeaderCard: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
             Text("JWT Inspector")
                 .font(.title)
                 .bold()
@@ -77,7 +78,7 @@ private struct JWTInputCard: View {
     @Bindable var model: AuthViewModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
             Text("Token")
                 .font(.title2)
                 .bold()
@@ -107,8 +108,8 @@ private struct JWTInputField: View {
                     .allowsHitTesting(false)
             }
         }
-        .padding(10)
-        .glassEffect(.clear, in: .rect(cornerRadius: 16))
+        .padding(AppSpacing.sm)
+        .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.card))
     }
 }
 
@@ -152,7 +153,7 @@ private struct JWTStatusCard: View {
     let decoded: DecodedJWT
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
             Text("Status")
                 .font(.title2)
                 .bold()
@@ -188,7 +189,7 @@ private struct JWTClaimsCard: View {
     @State private var scopesExpanded = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
             Text("Claims")
                 .font(.title2)
                 .bold()
@@ -205,12 +206,12 @@ private struct JWTClaimsCard: View {
             }
             if !decoded.audiences.isEmpty {
                 DisclosureGroup(isExpanded: $audiencesExpanded) {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: AppSpacing.xs) {
                         ForEach(decoded.audiences, id: \.self) { aud in
                             Text(aud).font(.footnote.monospaced()).foregroundStyle(.secondary)
                         }
                     }
-                    .padding(.top, 4)
+                    .padding(.top, AppSpacing.xs)
                 } label: {
                     Text("Audiences (\(decoded.audiences.count))")
                         .font(.subheadline)
@@ -219,12 +220,12 @@ private struct JWTClaimsCard: View {
             }
             if !decoded.scopes.isEmpty {
                 DisclosureGroup(isExpanded: $scopesExpanded) {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: AppSpacing.xs) {
                         ForEach(decoded.scopes, id: \.self) { scope in
                             Text(scope).font(.footnote.monospaced()).foregroundStyle(.secondary)
                         }
                     }
-                    .padding(.top, 4)
+                    .padding(.top, AppSpacing.xs)
                 } label: {
                     Text("Scopes (\(decoded.scopes.count))")
                         .font(.subheadline)
@@ -241,7 +242,7 @@ private struct JWTRawSegmentCard: View {
     let json: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
             HStack {
                 Text(title)
                     .font(.title2)
@@ -261,8 +262,8 @@ private struct JWTRawSegmentCard: View {
                 .foregroundStyle(.secondary)
                 .textSelection(.enabled)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(10)
-                .glassEffect(.clear, in: .rect(cornerRadius: 16))
+                .padding(AppSpacing.sm)
+                .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.card))
         }
         .glassCard()
     }
@@ -272,7 +273,7 @@ private struct JWTSignatureCard: View {
     let signature: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
             Text("Signature")
                 .font(.title2)
                 .bold()
@@ -281,8 +282,8 @@ private struct JWTSignatureCard: View {
                 .foregroundStyle(.secondary)
                 .textSelection(.enabled)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(10)
-                .glassEffect(.clear, in: .rect(cornerRadius: 16))
+                .padding(AppSpacing.sm)
+                .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.card))
         }
         .glassCard()
     }

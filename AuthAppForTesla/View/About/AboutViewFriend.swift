@@ -25,19 +25,18 @@ struct AboutViewFriend: View {
                 showSafari = true
             }
         } label: {
-            VStack {
+            VStack(spacing: AppSpacing.sm) {
                 Image(icon)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 60, height: 60)
-                    .clipShape(.rect(cornerRadius: 12))
+                    .clipShape(.rect(cornerRadius: AppCornerRadius.small))
                 Text(name)
                     .font(.subheadline)
             }
         }
         .buttonStyle(.plain)
-        .padding()
-        .clipShape(.rect(cornerRadius: 8))
+        .padding(AppSpacing.sm)
         .shadow(radius: AppTheme.shadowRadius)
         .sheet(isPresented: $showSafari) {
             if let appUrl, let url = URL(string: appUrl) {

@@ -21,8 +21,8 @@ struct LoginViewSignInFleetAPI: View {
     @State private var redirectUri = ""
 
     var body: some View {
-        VStack {
-            VStack {
+        VStack(spacing: AppSpacing.sm) {
+            VStack(spacing: AppSpacing.xs) {
                 Text("Client ID").bold()
                 TextField("Client ID", text: $clientId)
                     .textFieldStyle(.roundedBorder)
@@ -42,7 +42,6 @@ struct LoginViewSignInFleetAPI: View {
                 }
             }
             .pickerStyle(.segmented)
-            .padding(.bottom, 10)
 
             Button("Sign in with Tesla") {
                 if !addAsNewProfile {
@@ -53,9 +52,10 @@ struct LoginViewSignInFleetAPI: View {
             .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
             .foregroundStyle(.white)
             .accessibilityIdentifier("loginButtonv4")
+            .padding(.top, AppSpacing.xs)
         }
-        .padding(.horizontal, 35)
-        .padding(.vertical, 20)
+        .padding(.horizontal, AppSpacing.lg)
+        .padding(.vertical, AppSpacing.md)
         .task {
             clientId = await AuthController.shared.fleetClientId
             clientSecret = await AuthController.shared.fleetClientSecret

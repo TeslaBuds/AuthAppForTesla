@@ -17,49 +17,50 @@ struct HomeView: View {
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                HomeViewHeader(model: model, loginEnvironment: loginEnvironment) {
-                    isAddingAccount = true
+                VStack(spacing: AppSpacing.cardGap) {
+                    HomeViewHeader(model: model, loginEnvironment: loginEnvironment) {
+                        isAddingAccount = true
+                    }
+                    .padding(AppSpacing.cardInner)
+                    .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
+
+                    VStack(spacing: AppSpacing.sm) {
+                        let token = loginEnvironment == .owner ? model.tokenV3 : model.tokenV4
+                        HomeViewToken(
+                            title: "Refresh Token (Recommended)",
+                            description: "A refresh token allows for continuous interaction with your Tesla Account and is usually what is requested by other apps and third-party services. This is used to generate new access tokens.",
+                            token: token,
+                            tokenTypeToShow: .refreshToken,
+                            loginEnvironment: loginEnvironment,
+                            showDetails: showDetails
+                        )
+                        Divider()
+                        HomeViewToken(
+                            title: "Access Token",
+                            description: "An access token allows for temporary access to your Tesla Account and typically expires after several hours.",
+                            token: token,
+                            tokenTypeToShow: .accessToken,
+                            loginEnvironment: loginEnvironment,
+                            showDetails: showDetails
+                        )
+                        .opacity(0.5)
+                        Divider()
+                        Toggle("Show token details", isOn: $showDetails)
+                            .font(.headline)
+                            .padding(.horizontal, AppSpacing.md)
+                    }
+                    .padding(.vertical, AppSpacing.cardInner)
+                    .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
+
+                    HomeViewRefreshTokens(model: model)
+
+                    TipJarView(scrollPosition: $scrollPosition)
+
+                    AppVersionLabel()
                 }
-                .padding()
-                .glassEffect(.clear, in: .rect(cornerRadius: 24))
-                .padding(.horizontal)
-                .padding(.top)
-
-                VStack {
-                    let token = loginEnvironment == .owner ? model.tokenV3 : model.tokenV4
-                    HomeViewToken(
-                        title: "Refresh Token (Recommended)",
-                        description: "A refresh token allows for continuous interaction with your Tesla Account and is usually what is requested by other apps and third-party services. This is used to generate new access tokens.",
-                        token: token,
-                        tokenTypeToShow: .refreshToken,
-                        loginEnvironment: loginEnvironment,
-                        showDetails: showDetails
-                    )
-                    Divider()
-                    HomeViewToken(
-                        title: "Access Token",
-                        description: "An access token allows for temporary access to your Tesla Account and typically expires after several hours.",
-                        token: token,
-                        tokenTypeToShow: .accessToken,
-                        loginEnvironment: loginEnvironment,
-                        showDetails: showDetails
-                    )
-                    .opacity(0.5)
-                    Divider()
-                    Toggle("Show token details", isOn: $showDetails)
-                        .font(.headline)
-                        .padding(.horizontal)
-                }
-                .padding(.vertical)
-                .glassEffect(.clear, in: .rect(cornerRadius: 24))
-                .padding()
-
-                HomeViewRefreshTokens(model: model)
-
-                TipJarView(scrollPosition: $scrollPosition)
-
-                AppVersionLabel()
-                    .padding()
+                .padding(.horizontal, AppSpacing.screenEdge)
+                .padding(.top, AppSpacing.scrollTop)
+                .padding(.bottom, AppSpacing.scrollBottom)
             }
             .scrollPosition($scrollPosition)
         }

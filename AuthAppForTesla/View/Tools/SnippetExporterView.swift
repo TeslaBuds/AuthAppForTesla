@@ -32,7 +32,7 @@ struct SnippetExporterView: View {
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: AppSpacing.cardGap) {
                     SnippetHeaderCard()
 
                     SnippetOptionsCard(environment: $environment, language: $language)
@@ -44,7 +44,8 @@ struct SnippetExporterView: View {
                         SnippetCodeCard(snippet: snippet)
                     }
                 }
-                .padding(.vertical)
+                .padding(.top, AppSpacing.scrollTop)
+                .padding(.bottom, AppSpacing.scrollBottom)
             }
         }
         .navigationTitle("Snippet Exporter")
@@ -70,7 +71,7 @@ struct SnippetExporterView: View {
 
 private struct SnippetHeaderCard: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
             Text("Snippet Exporter")
                 .font(.title)
                 .bold()
@@ -87,8 +88,8 @@ private struct SnippetOptionsCard: View {
     @Binding var language: SnippetLanguage
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: AppSpacing.md) {
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
                 Text("API")
                     .font(.headline)
                 Picker("API", selection: $environment) {
@@ -98,7 +99,7 @@ private struct SnippetOptionsCard: View {
                 .pickerStyle(.segmented)
             }
 
-            VStack(alignment: .leading, spacing: 6) {
+            VStack(alignment: .leading, spacing: AppSpacing.xs) {
                 Text("Language")
                     .font(.headline)
                 Picker("Language", selection: $language) {
@@ -117,7 +118,7 @@ private struct SnippetEndpointCard: View {
     @Binding var endpoint: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
             Text("Endpoint")
                 .font(.title2)
                 .bold()
@@ -125,9 +126,9 @@ private struct SnippetEndpointCard: View {
                 .font(.footnote.monospaced())
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
-                .padding(10)
+                .padding(AppSpacing.sm)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .glassEffect(.clear, in: .rect(cornerRadius: 16))
+                .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.card))
         }
         .glassCard()
     }
@@ -137,7 +138,7 @@ private struct SnippetCodeCard: View {
     let snippet: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
             HStack {
                 Text("Snippet")
                     .font(.title2)
@@ -158,8 +159,8 @@ private struct SnippetCodeCard: View {
                 .foregroundStyle(.secondary)
                 .textSelection(.enabled)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(12)
-                .glassEffect(.clear, in: .rect(cornerRadius: 16))
+                .padding(AppSpacing.sm)
+                .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.card))
         }
         .glassCard()
     }
@@ -169,7 +170,7 @@ private struct SnippetEmptyCard: View {
     let environment: LoginEnvironment
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: AppSpacing.sm) {
             Image(systemName: "key.slash")
                 .font(.largeTitle)
                 .foregroundStyle(Color("TeslaRed"))

@@ -26,8 +26,10 @@ struct LicenseView: View {
                         license: mitLicense
                     )
                 }
-                .glassEffect(.clear, in: .rect(cornerRadius: 24))
-                .padding()
+                .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
+                .padding(.horizontal, AppSpacing.screenEdge)
+                .padding(.top, AppSpacing.scrollTop)
+                .padding(.bottom, AppSpacing.scrollBottom)
             }
             .navigationTitle("Open Source Licenses")
             .navigationBarTitleDisplayMode(.inline)

@@ -9,8 +9,8 @@ import SwiftUI
 /// but uses our own apps and our own copy.
 struct AboutViewMoreApps: View {
     private var columns: [GridItem] = [
-        GridItem(.fixed(150), spacing: 8),
-        GridItem(.fixed(150), spacing: 8),
+        GridItem(.fixed(150), spacing: AppSpacing.sm),
+        GridItem(.fixed(150), spacing: AppSpacing.sm),
     ]
 
     private let apps: [Friend] = [
@@ -22,10 +22,9 @@ struct AboutViewMoreApps: View {
 
     var body: some View {
 #if !targetEnvironment(macCatalyst)
-        VStack {
+        VStack(spacing: AppSpacing.sm) {
             Text("More from Dansk Rumskrot")
                 .font(.title)
-                .padding(.bottom, -5)
             LazyVGrid(
                 columns: columns,
                 alignment: .center,
@@ -38,9 +37,8 @@ struct AboutViewMoreApps: View {
                 }
             }
         }
-        .padding()
-        .glassEffect(.clear, in: .rect(cornerRadius: 24))
-        .padding()
+        .padding(AppSpacing.cardInner)
+        .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
 #else
         EmptyView()
 #endif

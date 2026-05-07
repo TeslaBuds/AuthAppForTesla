@@ -19,16 +19,15 @@ struct TipJarView: View {
     var scrollPosition: Binding<ScrollPosition>?
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: AppSpacing.sm) {
             tipHeader
             if isExpanded {
                 tipButtons
                     .transition(.blurReplace)
             }
         }
-        .padding()
-        .glassEffect(.clear, in: .rect(cornerRadius: 24))
-        .padding(.horizontal)
+        .padding(AppSpacing.cardInner)
+        .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
         .animation(.snappy, value: isExpanded)
         .id(TipJarView.scrollID)
         .onChange(of: isExpanded) {
@@ -54,13 +53,13 @@ struct TipJarView: View {
         Button {
             isExpanded.toggle()
         } label: {
-            HStack(spacing: 12) {
+            HStack(spacing: AppSpacing.sm) {
                 Image(systemName: tipManager.recentlyTipped ? "heart.fill" : "heart")
                     .font(.title3)
                     .foregroundStyle(Color("TeslaRed"))
                     .contentTransition(.symbolEffect(.replace))
 
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: AppSpacing.xs) {
                     if tipManager.recentlyTipped {
                         Text("Thank you for your support!")
                             .font(.subheadline)
@@ -92,13 +91,13 @@ struct TipJarView: View {
         if tipManager.isLoading {
             ProgressView()
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 8)
+                .padding(.vertical, AppSpacing.sm)
         } else if tipManager.products.isEmpty {
             Text("Tips unavailable right now")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         } else {
-            HStack(spacing: 12) {
+            HStack(spacing: AppSpacing.sm) {
                 ForEach(tipManager.products, id: \.id) { product in
                     TipButton(product: product, tipManager: tipManager)
                 }
@@ -152,7 +151,7 @@ struct TipButtonLabel: View {
     let displayPrice: String
 
     var body: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: AppSpacing.xs) {
             Image(systemName: icon)
                 .font(.title3)
             Text(title)
@@ -163,7 +162,7 @@ struct TipButtonLabel: View {
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 4)
+        .padding(.vertical, AppSpacing.xs)
     }
 }
 

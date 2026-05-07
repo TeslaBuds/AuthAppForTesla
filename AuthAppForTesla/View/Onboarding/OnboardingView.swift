@@ -63,9 +63,9 @@ struct OnboardingView: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(Color("TeslaRed"))
-            .padding(.horizontal, 32)
-            .padding(.bottom, 48)
-            .padding(.top, 16)
+            .padding(.horizontal, AppSpacing.xl)
+            .padding(.top, AppSpacing.md)
+            .padding(.bottom, AppSpacing.xl + AppSpacing.md)
             .animation(.default, value: currentPage)
         }
         .interactiveDismissDisabled()

@@ -47,7 +47,7 @@ struct TestTokenView: View {
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: AppSpacing.cardGap) {
                     TestTokenHeaderCard()
 
                     TestTokenEnvironmentCard(environment: $viewModel.environment)
@@ -62,7 +62,8 @@ struct TestTokenView: View {
                         TestTokenEmptyCard(environment: viewModel.environment)
                     }
                 }
-                .padding(.vertical)
+                .padding(.top, AppSpacing.scrollTop)
+                .padding(.bottom, AppSpacing.scrollBottom)
             }
         }
         .navigationTitle("Test Token")
@@ -84,7 +85,7 @@ struct TestTokenView: View {
 
 private struct TestTokenHeaderCard: View {
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
             Text("Test Your Token")
                 .font(.title)
                 .bold()
@@ -100,7 +101,7 @@ private struct TestTokenEnvironmentCard: View {
     @Binding var environment: LoginEnvironment
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: AppSpacing.sm) {
             Text("API")
                 .font(.headline)
             Picker("API", selection: $environment) {
@@ -134,7 +135,7 @@ private struct TestTokenResultsCard: View {
 
     var body: some View {
         if isRunning {
-            HStack(spacing: 10) {
+            HStack(spacing: AppSpacing.sm) {
                 ProgressView()
                 Text("Running tests…")
                     .font(.subheadline)
@@ -143,11 +144,11 @@ private struct TestTokenResultsCard: View {
             .frame(maxWidth: .infinity)
             .glassCard()
         } else if !results.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: AppSpacing.sm) {
                 Text("Results")
                     .font(.title2)
                     .bold()
-                VStack(spacing: 10) {
+                VStack(spacing: AppSpacing.sm) {
                     ForEach(Array(results.enumerated()), id: \.element.id) { index, result in
                         TestTokenResultRow(result: result)
                         if index < results.count - 1 {
@@ -165,8 +166,8 @@ private struct TestTokenResultRow: View {
     let result: TestAPIResult
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .top, spacing: 10) {
+        VStack(alignment: .leading, spacing: AppSpacing.xs) {
+            HStack(alignment: .top, spacing: AppSpacing.sm) {
                 Image(systemName: result.isSuccess ? "checkmark.seal.fill" : "xmark.octagon.fill")
                     .font(.title3)
                     .foregroundStyle(result.isSuccess ? .green : Color("TeslaRed"))
@@ -183,13 +184,13 @@ private struct TestTokenResultRow: View {
                 Text(summary)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
-                    .padding(.leading, 30)
+                    .padding(.leading, AppSpacing.xl - AppSpacing.xs)
             }
             if case .failure(let code) = result.status, code > 0 {
                 Text("HTTP \(code)")
                     .font(.caption2.weight(.semibold))
                     .foregroundStyle(Color("TeslaRed"))
-                    .padding(.leading, 30)
+                    .padding(.leading, AppSpacing.xl - AppSpacing.xs)
             }
         }
     }
@@ -199,7 +200,7 @@ private struct TestTokenEmptyCard: View {
     let environment: LoginEnvironment
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: AppSpacing.sm) {
             Image(systemName: "key.slash")
                 .font(.largeTitle)
                 .foregroundStyle(Color("TeslaRed"))

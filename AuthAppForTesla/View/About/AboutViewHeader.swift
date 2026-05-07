@@ -9,18 +9,18 @@ import SwiftUI
 
 struct AboutViewHeader: View {
     var body: some View {
-        VStack {
+        VStack(spacing: AppSpacing.xs) {
             Spacer()
             Image("SetupIcon")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 150, height: 150)
-                .clipShape(.rect(cornerRadius: 10))
+                .clipShape(.rect(cornerRadius: AppCornerRadius.small))
                 .shadow(radius: 6)
+                .padding(.bottom, AppSpacing.sm)
             Text("Auth for Tesla")
                 .font(.largeTitle)
                 .bold()
-                .padding(.bottom, 0.5)
             AppVersionLabel()
                 .font(.subheadline)
             Text("\u{00A9} 2026 Kim Hansen, Michael Teuscher")
@@ -33,7 +33,7 @@ struct AboutViewHeader: View {
             .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
             .foregroundStyle(.white)
             .font(.subheadline)
-            .padding(.top, 5)
+            .padding(.top, AppSpacing.sm)
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)

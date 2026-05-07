@@ -13,7 +13,7 @@ struct OnboardingPageView: View {
     let description: String
 
     var body: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: AppSpacing.lg) {
             Spacer()
 
             Image(systemName: systemImage)
@@ -21,10 +21,10 @@ struct OnboardingPageView: View {
                 .scaledToFit()
                 .frame(width: 90, height: 90)
                 .foregroundStyle(imageColor)
-                .padding(28)
+                .padding(AppSpacing.lg)
                 .background(imageColor.opacity(0.12), in: .circle)
 
-            VStack(spacing: 12) {
+            VStack(spacing: AppSpacing.sm) {
                 Text(title)
                     .font(.title2)
                     .bold()
@@ -36,7 +36,7 @@ struct OnboardingPageView: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.horizontal, 32)
+            .padding(.horizontal, AppSpacing.xl)
 
             Spacer()
         }
