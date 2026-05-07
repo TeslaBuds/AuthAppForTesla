@@ -22,16 +22,20 @@ struct LoginViewSignInFleetAPI: View {
 
     var body: some View {
         VStack(spacing: AppSpacing.sm) {
-            VStack(spacing: AppSpacing.xs) {
+            VStack(alignment: .leading, spacing: AppSpacing.sm) {
                 Text("Client ID").bold()
                 TextField("Client ID", text: $clientId)
-                    .textFieldStyle(.roundedBorder)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .glassField()
                 Text("Client Secret").bold()
                 SecureField("Client Secret", text: $clientSecret)
-                    .textFieldStyle(.roundedBorder)
+                    .glassField()
                 Text("Redirect URI").bold()
                 TextField("Redirect URI", text: $redirectUri)
-                    .textFieldStyle(.roundedBorder)
+                    .textInputAutocapitalization(.never)
+                    .autocorrectionDisabled()
+                    .glassField()
             }
             .font(.footnote)
 

@@ -39,9 +39,21 @@ extension View {
     func glassCard() -> some View {
         self
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
-            .glassEffect(.clear, in: .rect(cornerRadius: 24))
-            .padding(.horizontal)
+            .padding(AppSpacing.cardInner)
+            .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
+            .padding(.horizontal, AppSpacing.screenEdge)
+    }
+
+    /// Subtle glass-capsule background for free-standing text inputs
+    /// living on the IconBackgroundView pattern. Replaces the system
+    /// `.roundedBorder` style, which renders as a hard, near-black
+    /// rectangle in dark mode and reads as alien against the rest of
+    /// the app's Liquid Glass treatment.
+    func glassField() -> some View {
+        self
+            .padding(.horizontal, AppSpacing.sm)
+            .padding(.vertical, AppSpacing.sm)
+            .glassEffect(.regular, in: .rect(cornerRadius: AppCornerRadius.small))
     }
 }
 
