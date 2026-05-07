@@ -8,13 +8,12 @@
 import SwiftUI
 
 struct AboutView: View {
-    @State private var isLicenseViewPresented = false
     @State private var scrollPosition = ScrollPosition()
 
     var body: some View {
         IconBackgroundView {
             ScrollView {
-                AboutViewHeader(isLicenseViewPresented: $isLicenseViewPresented)
+                AboutViewHeader()
                 Spacer()
                 AboutViewShortcuts()
                     .padding(.vertical)
@@ -24,9 +23,6 @@ struct AboutView: View {
                     .padding(.bottom)
             }
             .scrollPosition($scrollPosition)
-        }
-        .navigationDestination(isPresented: $isLicenseViewPresented) {
-            LicenseView()
         }
     }
 }

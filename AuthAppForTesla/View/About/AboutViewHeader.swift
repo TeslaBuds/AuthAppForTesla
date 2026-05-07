@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct AboutViewHeader: View {
-    @Binding var isLicenseViewPresented: Bool
-
     var body: some View {
         VStack {
             Spacer()
@@ -27,8 +25,10 @@ struct AboutViewHeader: View {
                 .font(.subheadline)
             Text("\u{00A9} 2026 Kim Hansen, Michael Teuscher")
                 .font(.subheadline)
-            Button("Open Source Licenses") {
-                isLicenseViewPresented = true
+            NavigationLink {
+                LicenseView()
+            } label: {
+                Text("Open Source Licenses")
             }
             .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
             .foregroundStyle(.white)
@@ -42,6 +42,6 @@ struct AboutViewHeader: View {
 
 #Preview {
     NavigationStack {
-        AboutViewHeader(isLicenseViewPresented: .constant(false))
+        AboutViewHeader()
     }
 }
