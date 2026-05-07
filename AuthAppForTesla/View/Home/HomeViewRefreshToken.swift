@@ -10,72 +10,48 @@ import SwiftUI
 struct HomeViewRefreshToken: View {
     let token: Token?
     let loginEnvironment: LoginEnvironment
-    
+
     var body: some View {
-        VStack {
+        VStack(spacing: AppSpacing.xs) {
             if loginEnvironment == .owner {
                 if let payload = token?.ownerRefreshTokenPayload {
                     if let issuedAt = payload.issuedAtDate {
-                        let label = Text("Issued: ").foregroundStyle(.primary)
-                        let value = Text(issuedAt.formatted(date: .abbreviated, time: .shortened))
-                        Text("\(label)\(value)")
+                        TokenDetailRow(label: "Issued", value: issuedAt.formatted(date: .abbreviated, time: .shortened))
                     }
                     if let issuer = payload.issuer {
-                        let label = Text("Issuer: ").foregroundStyle(.primary)
-                        let value = Text(issuer)
-                        Text("\(label)\(value)")
+                        TokenDetailRow(label: "Issuer", value: issuer)
                     }
                     if let authorizedParty = payload.data?.authorizedParty {
-                        let label = Text("Client ID: ").foregroundStyle(.primary)
-                        let value = Text(authorizedParty)
-                        Text("\(label)\(value)")
+                        TokenDetailRow(label: "Client ID", value: authorizedParty)
                     }
-                    if let dataAudience = payload.data?.audience, let audience = payload.audience {
-                        Text("Audiences:").foregroundStyle(.primary)
-                        Text(audience)
-                        Text(dataAudience)
+                    let audiences = [payload.audience, payload.data?.audience].compactMap { $0 }
+                    if !audiences.isEmpty {
+                        TokenDetailList(label: "Audiences", values: audiences)
                     }
-                    if let scopes = payload.scopes {
-                        Text("Scopes:").foregroundStyle(.primary)
-                        ForEach(scopes, id: \.self) { scope in
-                            Text(scope)
-                        }
+                    if let scopes = payload.scopes, !scopes.isEmpty {
+                        TokenDetailList(label: "Scopes", values: scopes)
                     }
                 }
             } else {
                 if let payload = token?.fleetRefreshTokenPayload {
                     if let issuedAt = payload.issuedAtDate {
-                        let label = Text("Issued: ").foregroundStyle(.primary)
-                        let value = Text(issuedAt.formatted(date: .abbreviated, time: .shortened))
-                        Text("\(label)\(value)")
+                        TokenDetailRow(label: "Issued", value: issuedAt.formatted(date: .abbreviated, time: .shortened))
                     }
                     if let issuer = payload.issuer {
-                        let label = Text("Issuer: ").foregroundStyle(.primary)
-                        let value = Text(issuer)
-                        Text("\(label)\(value)")
+                        TokenDetailRow(label: "Issuer", value: issuer)
                     }
                     if let authorizedParty = payload.data?.authorizedParty {
-                        let label = Text("Client ID: ").foregroundStyle(.primary)
-                        let value = Text(authorizedParty)
-                        Text("\(label)\(value)")
+                        TokenDetailRow(label: "Client ID", value: authorizedParty)
                     }
-                    if let audience = payload.audience, let audiences = payload.data?.audiences {
-                        Text("Audiences:").foregroundStyle(.primary)
-                        Text(audience)
-                        ForEach(audiences, id: \.self) { audience in
-                            Text(audience)
-                        }
+                    let audiences = ([payload.audience].compactMap { $0 }) + (payload.data?.audiences ?? [])
+                    if !audiences.isEmpty {
+                        TokenDetailList(label: "Audiences", values: audiences)
                     }
-                    if let scopes = payload.scopes {
-                        Text("Scopes:").foregroundStyle(.primary)
-                        ForEach(scopes, id: \.self) { scope in
-                            Text(scope)
-                        }
+                    if let scopes = payload.scopes, !scopes.isEmpty {
+                        TokenDetailList(label: "Scopes", values: scopes)
                     }
                 } else if let region = token?.fleetRefreshTokenRegion {
-                    let label = Text("Region: ").foregroundStyle(.primary)
-                    let value = Text(region)
-                    Text("\(label)\(value)")
+                    TokenDetailRow(label: "Region", value: region)
                 }
             }
         }

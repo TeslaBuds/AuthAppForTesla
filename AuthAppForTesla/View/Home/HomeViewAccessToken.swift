@@ -9,51 +9,33 @@ import SwiftUI
 
 struct HomeViewAccessToken: View {
     let token: Token?
-    
+
     var body: some View {
-        VStack {
-            if let payload = token?.accessTokenPayload {
+        if let payload = token?.accessTokenPayload {
+            VStack(spacing: AppSpacing.xs) {
                 if let ouCode = payload.ouCode {
-                    let label = Text("Region: ").foregroundStyle(.primary)
-                    let value = Text(ouCode)
-                    Text("\(label)\(value)")
+                    TokenDetailRow(label: "Region", value: ouCode)
                 }
                 if let locale = payload.locale {
-                    let label = Text("Locale: ").foregroundStyle(.primary)
-                    let value = Text(locale)
-                    Text("\(label)\(value)")
+                    TokenDetailRow(label: "Locale", value: locale)
                 }
                 if let issuedAt = payload.issuedAtDate {
-                    let label = Text("Issued: ").foregroundStyle(.primary)
-                    let value = Text(issuedAt.formatted(date: .abbreviated, time: .shortened))
-                    Text("\(label)\(value)")
+                    TokenDetailRow(label: "Issued", value: issuedAt.formatted(date: .abbreviated, time: .shortened))
                 }
                 if let expiresAt = payload.expiresAtDate {
-                    let label = Text("Expires: ").foregroundStyle(.primary)
-                    let value = Text(expiresAt.formatted(date: .abbreviated, time: .shortened))
-                    Text("\(label)\(value)")
+                    TokenDetailRow(label: "Expires", value: expiresAt.formatted(date: .abbreviated, time: .shortened))
                 }
                 if let issuer = payload.issuer {
-                    let label = Text("Issuer: ").foregroundStyle(.primary)
-                    let value = Text(issuer)
-                    Text("\(label)\(value)")
+                    TokenDetailRow(label: "Issuer", value: issuer)
                 }
                 if let authorizedParty = payload.authorizedParty {
-                    let label = Text("Client ID: ").foregroundStyle(.primary)
-                    let value = Text(authorizedParty)
-                    Text("\(label)\(value)")
+                    TokenDetailRow(label: "Client ID", value: authorizedParty)
                 }
-                if let audiences = payload.audiences {
-                    Text("Audiences:").foregroundStyle(.primary)
-                    ForEach(audiences, id: \.self) { audience in
-                        Text(audience)
-                    }
+                if let audiences = payload.audiences, !audiences.isEmpty {
+                    TokenDetailList(label: "Audiences", values: audiences)
                 }
-                if let scopes = payload.scopes {
-                    Text("Scopes:").foregroundStyle(.primary)
-                    ForEach(scopes, id: \.self) { scope in
-                        Text(scope)
-                    }
+                if let scopes = payload.scopes, !scopes.isEmpty {
+                    TokenDetailList(label: "Scopes", values: scopes)
                 }
             }
         }

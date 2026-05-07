@@ -130,9 +130,9 @@ private struct TokenValidityBadge: View {
                 if isExpired {
                     Text("Expired")
                 } else {
-                    // "Valid for " static + relative countdown so the
-                    // badge keeps ticking down as the user looks at it.
-                    Text("Valid ") + Text(expiresAt, style: .relative)
+                    // Relative countdown so the badge keeps ticking
+                    // down as the user looks at it.
+                    Text("Valid \(expiresAt, style: .relative)")
                 }
             }
             .font(.caption.weight(.semibold))
@@ -177,6 +177,52 @@ private struct TokenValidityBadge: View {
             showDetails: false
         )
         .glassCard()
+    }
+}
+
+#Preview("Access Token – Details") {
+    IconBackgroundView {
+        ScrollView {
+            HomeViewToken(
+                title: "Access Token",
+                description: "An access token allows for temporary access to your Tesla Account and typically expires after several hours.",
+                token: Token(
+                    access_token: PreviewModelFactory.sampleAccessToken,
+                    token_type: "bearer",
+                    expires_in: 28_800,
+                    refresh_token: PreviewModelFactory.sampleAccessToken,
+                    expires_at: Date().addingTimeInterval(7_200),
+                    region: .global
+                ),
+                tokenTypeToShow: .accessToken,
+                loginEnvironment: .owner,
+                showDetails: true
+            )
+            .glassCard()
+        }
+    }
+}
+
+#Preview("Refresh Token – Details") {
+    IconBackgroundView {
+        ScrollView {
+            HomeViewToken(
+                title: "Refresh Token (Recommended)",
+                description: "A refresh token allows for continuous interaction with your Tesla Account and is usually what is requested by other apps and third-party services. This is used to generate new access tokens.",
+                token: Token(
+                    access_token: PreviewModelFactory.sampleAccessToken,
+                    token_type: "bearer",
+                    expires_in: 28_800,
+                    refresh_token: PreviewModelFactory.sampleAccessToken,
+                    expires_at: Date().addingTimeInterval(7_200),
+                    region: .global
+                ),
+                tokenTypeToShow: .refreshToken,
+                loginEnvironment: .owner,
+                showDetails: true
+            )
+            .glassCard()
+        }
     }
 }
 

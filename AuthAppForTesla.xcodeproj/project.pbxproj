@@ -19,6 +19,7 @@
 		20CDC55E25E1D3B800E895C8 /* AboutViewFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CDC55D25E1D3B800E895C8 /* AboutViewFriend.swift */; };
 		20F8775825E2D9DA00953E51 /* HomeViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775725E2D9DA00953E51 /* HomeViewHeader.swift */; };
 		20F8775A25E2DA4300953E51 /* HomeViewToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775925E2DA4300953E51 /* HomeViewToken.swift */; };
+		EAFF12000000000000A50587 /* TokenDetailRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF12000000000000A50586 /* TokenDetailRow.swift */; };
 		20F8775C25E2DA5300953E51 /* HomeViewRefreshTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775B25E2DA5300953E51 /* HomeViewRefreshTokens.swift */; };
 		20F8775F25E2F67800953E51 /* LicenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775E25E2F67800953E51 /* LicenseView.swift */; };
 		20F8776125E2F73800953E51 /* LicenseViewEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8776025E2F73800953E51 /* LicenseViewEntry.swift */; };
@@ -111,6 +112,7 @@
 		20CDC55D25E1D3B800E895C8 /* AboutViewFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewFriend.swift; sourceTree = "<group>"; };
 		20F8775725E2D9DA00953E51 /* HomeViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewHeader.swift; sourceTree = "<group>"; };
 		20F8775925E2DA4300953E51 /* HomeViewToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewToken.swift; sourceTree = "<group>"; };
+		EAFF12000000000000A50586 /* TokenDetailRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenDetailRow.swift; sourceTree = "<group>"; };
 		20F8775B25E2DA5300953E51 /* HomeViewRefreshTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewRefreshTokens.swift; sourceTree = "<group>"; };
 		20F8775E25E2F67800953E51 /* LicenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseView.swift; sourceTree = "<group>"; };
 		20F8776025E2F73800953E51 /* LicenseViewEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseViewEntry.swift; sourceTree = "<group>"; };
@@ -266,6 +268,7 @@
 			children = (
 				20F8775725E2D9DA00953E51 /* HomeViewHeader.swift */,
 				20F8775925E2DA4300953E51 /* HomeViewToken.swift */,
+				EAFF12000000000000A50586 /* TokenDetailRow.swift */,
 				EA78814D2B6592DF00E14E3C /* HomeViewAccessToken.swift */,
 				EA78814F2B6593D300E14E3C /* HomeViewRefreshToken.swift */,
 				20F8775B25E2DA5300953E51 /* HomeViewRefreshTokens.swift */,
@@ -575,6 +578,7 @@
 			files = (
 				EAC032D52F86885D00A29E67 /* TestAPIController.swift in Sources */,
 				20F8775A25E2DA4300953E51 /* HomeViewToken.swift in Sources */,
+				EAFF12000000000000A50587 /* TokenDetailRow.swift in Sources */,
 				20CDC55725E1D11600E895C8 /* AboutView.swift in Sources */,
 				EA6369A725CAD79D000216BF /* AuthViewModel.swift in Sources */,
 				EA56435A2F5F2F7D00A50586 /* OnboardingView.swift in Sources */,
