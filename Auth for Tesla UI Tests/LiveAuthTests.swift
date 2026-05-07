@@ -216,6 +216,11 @@ final class LiveAuthTests: XCTestCase {
         XCTAssertTrue(logoutButton.waitForExistence(timeout: 5))
         logoutButton.tap()
 
+        // Confirm in the confirmation dialog.
+        let confirmButton = app.descendants(matching: .any)["logoutConfirmButton"].firstMatch
+        XCTAssertTrue(confirmButton.waitForExistence(timeout: 5))
+        confirmButton.tap()
+
         // After logout (single profile) we should land back on the login screen.
         XCTAssertTrue(
             app.buttons["loginButton"].waitForExistence(timeout: 10),

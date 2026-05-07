@@ -76,6 +76,7 @@ private struct HomeViewAccountMenu: View {
 
     @State private var isPresented = false
     @State private var renameTarget: TokenProfile?
+    @State private var pendingDeletion: TokenProfile?
 
     var body: some View {
         Button {
@@ -114,6 +115,7 @@ private struct HomeViewAccountMenu: View {
                 collection: collection,
                 onAddAccount: onAddAccount,
                 renameTarget: $renameTarget,
+                pendingDeletion: $pendingDeletion,
                 dismiss: { isPresented = false }
             )
             .frame(minWidth: 280, idealHeight: 360)
@@ -137,6 +139,37 @@ private struct HomeViewAccountMenu: View {
                 }
             )
         }
+        .confirmationDialog(
+            collection.profiles.count > 1
+                ? "Delete this account?"
+                : "Sign out?",
+            isPresented: Binding(
+                get: { pendingDeletion != nil },
+                set: { if !$0 { pendingDeletion = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: pendingDeletion
+        ) { profile in
+            Button(
+                collection.profiles.count > 1
+                    ? "Delete \"\(profile.name)\""
+                    : "Sign Out",
+                role: .destructive
+            ) {
+                model.logOut(environment: environment)
+                pendingDeletion = nil
+            }
+            .accessibilityIdentifier("logoutConfirmButton")
+            Button("Cancel", role: .cancel) {
+                pendingDeletion = nil
+            }
+        } message: { profile in
+            if collection.profiles.count > 1 {
+                Text("\(profile.name)'s stored \(environment == .owner ? "Owners" : "Fleet") API token will be removed from this device. You can sign in again at any time.")
+            } else {
+                Text("Your stored \(environment == .owner ? "Owners" : "Fleet") API token will be removed from this device. You can sign in again at any time.")
+            }
+        }
     }
 }
 
@@ -152,6 +185,7 @@ private struct HomeViewAccountMenuContent: View {
     let collection: TokenProfileCollection
     var onAddAccount: (() -> Void)?
     @Binding var renameTarget: TokenProfile?
+    @Binding var pendingDeletion: TokenProfile?
     let dismiss: () -> Void
 
     var body: some View {
@@ -205,16 +239,16 @@ private struct HomeViewAccountMenuContent: View {
                     }
                     if collection.profiles.count > 1 {
                         Button(role: .destructive) {
+                            pendingDeletion = active
                             dismiss()
-                            model.logOut(environment: environment)
                         } label: {
                             Label("Delete This Account", systemImage: "trash")
                         }
                         .accessibilityIdentifier("logoutButton")
                     } else {
                         Button(role: .destructive) {
+                            pendingDeletion = active
                             dismiss()
-                            model.logOut(environment: environment)
                         } label: {
                             Label("Logout", systemImage: "rectangle.portrait.and.arrow.right")
                         }
