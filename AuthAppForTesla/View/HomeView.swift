@@ -24,7 +24,7 @@ struct HomeView: View {
                     .padding(AppSpacing.cardInner)
                     .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
 
-                    VStack(spacing: AppSpacing.sm) {
+                    VStack(spacing: AppSpacing.md) {
                         let token = loginEnvironment == .owner ? model.tokenV3 : model.tokenV4
                         HomeViewToken(
                             title: "Refresh Token (Recommended)",
@@ -43,13 +43,11 @@ struct HomeView: View {
                             loginEnvironment: loginEnvironment,
                             showDetails: showDetails
                         )
-                        .opacity(0.5)
                         Divider()
                         Toggle("Show token details", isOn: $showDetails)
-                            .font(.headline)
-                            .padding(.horizontal, AppSpacing.md)
+                            .font(.subheadline)
                     }
-                    .padding(.vertical, AppSpacing.cardInner)
+                    .padding(AppSpacing.cardInner)
                     .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
 
                     HomeViewRefreshTokens(model: model)
