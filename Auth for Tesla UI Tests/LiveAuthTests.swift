@@ -229,6 +229,123 @@ final class LiveAuthTests: XCTestCase {
         attach(app, named: "06_after_logout")
     }
 
+    /// Repro test: backgrounding the app while the AuthWebView is open
+    /// (e.g. to hop to a password manager) currently nukes the OAuth
+    /// flow — when the user comes back, SwiftUI rebuilds the login
+    /// view, the AuthWebView sheet is dismissed, the in-progress
+    /// codeVerifier @State is lost, and the user is back at "Sign in
+    /// with Tesla" having to start over.
+    ///
+    /// Drive the flow up to the password screen, then press the home
+    /// button and re-activate. If the password field is still on
+    /// screen we kept state. If we're back at the app's login screen
+    /// (no webview, the loginButton is tappable again), the bug is
+    /// reproduced.
+    @MainActor
+    func testLive_03_BackgroundDuringAuthPreservesState() throws {
+        let app = launchClean()
+
+        // ── 1. Drive the OAuth flow up to the password screen ────────
+        selectTab(app: app, name: "Owners API")
+        let loginButton = app.buttons["loginButton"]
+        XCTAssertTrue(
+            loginButton.waitForExistence(timeout: 10),
+            "Expected the Owners API login view"
+        )
+        loginButton.tap()
+        sleep(2)
+
+        let webView = app.webViews.firstMatch
+        XCTAssertTrue(
+            webView.waitForExistence(timeout: 30),
+            "Expected the Tesla OAuth web view to appear"
+        )
+
+        // Wait for and fill the email field.
+        let emailField = webView.textFields.firstMatch
+        XCTAssertTrue(
+            emailField.waitForExistence(timeout: 60),
+            "Tesla auth page text fields never appeared"
+        )
+        emailField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        sleep(1)
+        emailField.typeText(liveDemoUsername)
+        sleep(1)
+
+        // Tap Next.
+        let nextButton = webView.buttons.matching(
+            NSPredicate(format: "label IN { 'Next', 'Continue', 'Sign In', 'Sign in' }")
+        ).firstMatch
+        if nextButton.waitForExistence(timeout: 5) {
+            nextButton.tap()
+        } else {
+            emailField.typeText("\n")
+        }
+
+        // Wait for the password field — this is the moment the user
+        // would hop to their password manager.
+        let passwordField = webView.secureTextFields.firstMatch
+        XCTAssertTrue(
+            passwordField.waitForExistence(timeout: 30),
+            "Tesla auth password field never appeared after tapping Next"
+        )
+        attach(app, named: "before_background_password_screen")
+
+        // ── 2. Background and foreground the app ─────────────────────
+        XCUIDevice.shared.press(.home)
+        sleep(2)
+        attach(app, named: "after_home_press")
+
+        app.activate()
+        sleep(3)
+        attach(app, named: "after_reactivate")
+
+        // ── 3. Assert SwiftUI parent didn't rebuild ──────────────────
+        // The bug: parent view rebuilds → @State authURL/codeVerifier
+        // resets → sheet dismisses (or AuthWebView struct gets a new
+        // identity and remounts the WKWebView, which loads Tesla's
+        // OAuth URL fresh → email-entry page).
+        //
+        // Two signals to assert:
+        //   1. The app's "Sign in with Tesla" button is NOT hittable —
+        //      if it were, the sheet has dismissed and the login view
+        //      is showing again. (Just .exists is unreliable: SwiftUI
+        //      keeps the underlying view in the accessibility tree
+        //      while a sheet is presented over it; isHittable filters
+        //      that out.)
+        //   2. The password field IS still hittable — i.e. Tesla's
+        //      auth WebView is still on the same step we left it on,
+        //      not the email-entry page that a fresh load would show.
+        let webViewAfter = app.webViews.firstMatch
+        let passwordFieldAfter = webViewAfter.secureTextFields.firstMatch
+        let emailFieldAfter = webViewAfter.textFields.firstMatch
+        let loginButtonAfter = app.buttons["loginButton"]
+
+        let summary = """
+        After backgrounding and foregrounding:
+          loginButton hittable:  \(loginButtonAfter.isHittable)
+          loginButton exists:    \(loginButtonAfter.exists)
+          web view exists:       \(webViewAfter.exists)
+          password field hittable: \(passwordFieldAfter.isHittable)
+          password field exists: \(passwordFieldAfter.exists)
+          email field hittable:  \(emailFieldAfter.isHittable)
+          email field exists:    \(emailFieldAfter.exists)
+        """
+        let summaryAttachment = XCTAttachment(string: summary)
+        summaryAttachment.name = "state_summary"
+        summaryAttachment.lifetime = .keepAlways
+        add(summaryAttachment)
+
+        XCTAssertFalse(
+            loginButtonAfter.isHittable,
+            "BUG REPRO: backgrounding the app dismissed the auth sheet and reset us back to the login screen (Sign in with Tesla button is now hittable)"
+        )
+        XCTAssertTrue(
+            passwordFieldAfter.isHittable,
+            "Expected the Tesla password field to still be the active step after backgrounding (if email field is showing instead, the WebView reloaded the OAuth URL from scratch)"
+        )
+    }
+
     // MARK: - Helpers
 
     /// Launches the app with `live-test-clear-state` so the keychain

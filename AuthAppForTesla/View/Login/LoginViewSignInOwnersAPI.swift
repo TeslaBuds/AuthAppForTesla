@@ -15,9 +15,11 @@ struct LoginViewSignInOwnersAPI: View {
     /// When `true`, a successful sign-in creates a brand-new profile
     /// instead of replacing the active profile's token.
     var addAsNewProfile: Bool = false
+    /// Region picker selection. Local @State is fine — once the user
+    /// taps "Sign in with Tesla" the value is captured into the
+    /// model's in-flight OAuth snapshot, so a parent rebuild after
+    /// the sheet opens can't lose it.
     @State private var region: TokenRegion = .global
-    @State private var authURL: URL?
-    @State private var codeVerifier: String?
 
     var body: some View {
         VStack {
@@ -41,9 +43,9 @@ struct LoginViewSignInOwnersAPI: View {
         }
         .padding(.horizontal, 35)
         .padding(.vertical, 20)
-        .sheet(item: $authURL) { url in
-            AuthWebView(url: url, redirectUrl: kTeslaRedirectUri) { result in
-                handleAuthResult(result)
+        .sheet(item: $model.ownersAuth) { auth in
+            AuthWebView(url: auth.url, redirectUrl: kTeslaRedirectUri) { result in
+                handleAuthResult(result, auth: auth)
             }
         }
     }
@@ -57,12 +59,16 @@ struct LoginViewSignInOwnersAPI: View {
                 return
             }
 
-            codeVerifier = oauthInfo.codeVerifier
-            authURL = oauthInfo.url
+            model.ownersAuth = OwnersAuthInFlight(
+                url: oauthInfo.url,
+                codeVerifier: oauthInfo.codeVerifier,
+                region: region,
+                addAsNewProfile: addAsNewProfile
+            )
         }
     }
 
-    private func handleAuthResult(_ result: Result<URL, Error>) {
+    private func handleAuthResult(_ result: Result<URL, Error>, auth: OwnersAuthInFlight) {
         switch result {
         case .success(let url):
             logOAuth("redirect URL: \(url.absoluteString)")
@@ -70,34 +76,31 @@ struct LoginViewSignInOwnersAPI: View {
             logOAuth("query items: \(String(describing: urlComponents?.queryItems))")
             guard let code = urlComponents?.queryItems?.first(where: { $0.name == "code" })?.value else {
                 logOAuth("no code in redirect — query was: \(String(describing: urlComponents?.query))")
-                authURL = nil
+                model.ownersAuth = nil
                 model.showToast(.error("Sign-in failed: no authorization code received."))
                 return
             }
             logOAuth("extracted code prefix: \(String(code.prefix(20)))… length=\(code.count)")
-            guard let verifier = codeVerifier else {
-                logOAuth("codeVerifier was nil at handleAuthResult time")
-                authURL = nil
-                model.showToast(.error("Sign-in failed: missing code verifier."))
-                return
-            }
-            logOAuth("codeVerifier length=\(verifier.count) prefix=\(String(verifier.prefix(10)))…")
-            let capturedRegion = region
-            let capturedAddAsNew = addAsNewProfile
+            logOAuth("codeVerifier length=\(auth.codeVerifier.count) prefix=\(String(auth.codeVerifier.prefix(10)))…")
             Task {
-                let token = await AuthController.shared.exchangeCodeV3(code, codeVerifier: verifier, region: capturedRegion, addAsNewProfile: capturedAddAsNew)
+                let token = await AuthController.shared.exchangeCodeV3(
+                    code,
+                    codeVerifier: auth.codeVerifier,
+                    region: auth.region,
+                    addAsNewProfile: auth.addAsNewProfile
+                )
                 logOAuth("exchangeCodeV3 returned \(token == nil ? "nil" : "token \(String(token!.access_token.prefix(20)))…")")
                 if token != nil {
                     await model.loadTokens()
                 } else {
                     model.showToast(.error("Sign-in failed: could not exchange authorization code."))
                 }
-                authURL = nil
+                model.ownersAuth = nil
             }
         case .failure(let error):
             logOAuth("auth result failure: \(error)")
             model.showToast(.error("Sign-in failed: \(error.localizedDescription)"))
-            authURL = nil
+            model.ownersAuth = nil
         }
     }
 

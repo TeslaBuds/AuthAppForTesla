@@ -12,11 +12,13 @@ struct LoginViewSignInFleetAPI: View {
     /// When `true`, a successful sign-in creates a brand-new profile
     /// instead of replacing the active profile's token.
     var addAsNewProfile: Bool = false
+    /// Local UI state for the form. Captured into the model's
+    /// in-flight OAuth snapshot when "Sign in with Tesla" is tapped,
+    /// so a parent view rebuild after the sheet opens can't lose them.
     @State private var region: TokenRegion = .global
     @State private var clientId = ""
     @State private var clientSecret = ""
     @State private var redirectUri = ""
-    @State private var authURL: URL?
 
     var body: some View {
         VStack {
@@ -59,9 +61,9 @@ struct LoginViewSignInFleetAPI: View {
             clientSecret = await AuthController.shared.fleetClientSecret
             redirectUri = await AuthController.shared.fleetRedirectUri
         }
-        .sheet(item: $authURL) { url in
-            AuthWebView(url: url, redirectUrl: redirectUri) { result in
-                handleAuthResult(result)
+        .sheet(item: $model.fleetAuth) { auth in
+            AuthWebView(url: auth.url, redirectUrl: auth.redirectUri) { result in
+                handleAuthResult(result, auth: auth)
             }
         }
     }
@@ -83,44 +85,45 @@ struct LoginViewSignInFleetAPI: View {
                 return
             }
 
-            authURL = url
+            model.fleetAuth = FleetAuthInFlight(
+                url: url,
+                region: region,
+                clientId: clientId,
+                clientSecret: clientSecret,
+                redirectUri: redirectUri,
+                addAsNewProfile: addAsNewProfile
+            )
         }
     }
 
-    private func handleAuthResult(_ result: Result<URL, Error>) {
+    private func handleAuthResult(_ result: Result<URL, Error>, auth: FleetAuthInFlight) {
         switch result {
         case .success(let url):
             let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
             guard let code = urlComponents?.queryItems?.first(where: { $0.name == "code" })?.value else {
-                authURL = nil
+                model.fleetAuth = nil
                 model.showToast(.error("Sign-in failed: no authorization code received."))
                 return
             }
-            // Capture values before clearing sheet state
-            let capturedRegion = region
-            let capturedClientId = clientId
-            let capturedSecret = clientSecret
-            let capturedRedirectUri = redirectUri
-            let capturedAddAsNew = addAsNewProfile
             Task {
                 let token = await AuthController.shared.exchangeCodeV4(
                     code,
-                    region: capturedRegion,
-                    fleetClientId: capturedClientId,
-                    fleetSecret: capturedSecret,
-                    fleetRedirectUri: capturedRedirectUri,
-                    addAsNewProfile: capturedAddAsNew
+                    region: auth.region,
+                    fleetClientId: auth.clientId,
+                    fleetSecret: auth.clientSecret,
+                    fleetRedirectUri: auth.redirectUri,
+                    addAsNewProfile: auth.addAsNewProfile
                 )
                 if token != nil {
                     await model.loadTokens()
                 } else {
                     model.showToast(.error("Sign-in failed: could not exchange authorization code."))
                 }
-                authURL = nil
+                model.fleetAuth = nil
             }
         case .failure(let error):
             model.showToast(.error("Sign-in failed: \(error.localizedDescription)"))
-            authURL = nil
+            model.fleetAuth = nil
         }
     }
 }

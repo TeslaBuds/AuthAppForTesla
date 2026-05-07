@@ -26,6 +26,20 @@ class AuthViewModel {
     /// All known Fleet API token profiles.
     var profilesV4: TokenProfileCollection = TokenProfileCollection()
 
+    /// In-flight OAuth state for the Owners API sign-in.
+    ///
+    /// Lives on the model rather than as `@State` on the login view so it
+    /// survives the SwiftUI parent rebuilding while the auth sheet is
+    /// open — e.g. when the user backgrounds the app to grab a password
+    /// from their password manager and comes back. With per-view
+    /// `@State`, the rebuild reset `codeVerifier` to nil and the next
+    /// successful redirect could never be exchanged.
+    var ownersAuth: OwnersAuthInFlight?
+
+    /// In-flight OAuth state for the Fleet API sign-in. Same rationale
+    /// as `ownersAuth`.
+    var fleetAuth: FleetAuthInFlight?
+
     /// The currently visible toast notification, if any.
     var toast: Toast?
 
@@ -131,4 +145,31 @@ class AuthViewModel {
         tokenV4 = token
         return token
     }
+}
+
+/// Snapshot of an Owners API OAuth flow that's currently between
+/// "build authorize URL" and "exchange code for token". Identifiable
+/// so it can drive `.sheet(item:)`; a stable id (UUID per flow) keeps
+/// SwiftUI from recreating the auth sheet's content view if the model
+/// republishes for unrelated reasons.
+struct OwnersAuthInFlight: Identifiable, Equatable {
+    let id = UUID()
+    var url: URL
+    var codeVerifier: String
+    var region: TokenRegion
+    var addAsNewProfile: Bool
+}
+
+/// Snapshot of a Fleet API OAuth flow in flight. Carries the
+/// developer-supplied client credentials so the code exchange can
+/// complete with the same values the URL was built from, even if the
+/// user has navigated away from the login view since.
+struct FleetAuthInFlight: Identifiable, Equatable {
+    let id = UUID()
+    var url: URL
+    var region: TokenRegion
+    var clientId: String
+    var clientSecret: String
+    var redirectUri: String
+    var addAsNewProfile: Bool
 }
