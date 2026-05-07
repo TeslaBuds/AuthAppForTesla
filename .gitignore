@@ -91,3 +91,7 @@ Screenshots/.xcresult*
 
 # Live test artifacts
 Screenshots/.live-test-result*
+
+# Claude Code local-only artifacts
+.feedback-sync.json
+feedback-tasks/
