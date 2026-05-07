@@ -25,9 +25,9 @@ struct ToastView: View {
                 .foregroundStyle(.secondary)
                 .imageScale(.small)
         }
-        .padding()
-        .background(.regularMaterial, in: .rect(cornerRadius: 16))
-        .shadow(radius: 8, y: 4)
+        .padding(.horizontal, 18)
+        .padding(.vertical, 14)
+        .glassEffect(.regular, in: .capsule)
         .padding(.horizontal)
         .gesture(
             DragGesture(minimumDistance: 10)
@@ -59,7 +59,16 @@ struct ToastOverlayModifier: ViewModifier {
                             removal: .move(edge: .bottom).combined(with: .opacity)
                         )
                     )
-                    .padding(.bottom, 24)
+                    // Clear the iOS 26 floating tab bar capsule (~75pt
+                    // tall, ~10pt below safe area, plus the capsule's
+                    // rounded top edge needs a few more points of
+                    // breathing room than just "tab bar height").
+                    // Hardcoding the offset is fine here: the toast is
+                    // only ever shown inside the RootView TabView
+                    // hierarchy on iPhone — on iPad the tab bar is
+                    // top-mounted, where the extra bottom padding
+                    // just gives the toast room to breathe.
+                    .padding(.bottom, 110)
                     .task(id: toast.id) {
                         try? await Task.sleep(for: .seconds(4))
                         withAnimation(.spring) {
@@ -81,11 +90,44 @@ extension View {
     }
 }
 
-#Preview {
-    VStack {
-        Spacer()
+#Preview("Error toast over TabView") {
+    TabView {
+        Tab("Owners API", systemImage: "steeringwheel") {
+            ZStack {
+                LinearGradient(
+                    colors: [.indigo.opacity(0.4), .purple.opacity(0.3)],
+                    startPoint: .top, endPoint: .bottom
+                )
+                .ignoresSafeArea()
+                VStack {
+                    Text("Owners API content")
+                        .font(.title2)
+                    Spacer()
+                }
+                .padding(.top, 80)
+            }
+        }
+        Tab("Fleet API", systemImage: "car.2.fill") { Color.gray }
+        Tab("Tools", systemImage: "wrench.and.screwdriver") { Color.gray }
+        Tab("About", systemImage: "info.circle") { Color.gray }
     }
-    .frame(maxWidth: .infinity, maxHeight: .infinity)
-    .background(.gray.opacity(0.2))
+    .tint(.red)
     .toast(.constant(.error("Failed to refresh token. Please sign in again.")))
+}
+
+#Preview("Success toast over TabView") {
+    TabView {
+        Tab("Owners API", systemImage: "steeringwheel") {
+            ZStack {
+                LinearGradient(
+                    colors: [.indigo.opacity(0.4), .purple.opacity(0.3)],
+                    startPoint: .top, endPoint: .bottom
+                )
+                .ignoresSafeArea()
+            }
+        }
+        Tab("Fleet API", systemImage: "car.2.fill") { Color.gray }
+    }
+    .tint(.red)
+    .toast(.constant(.success("Tokens refreshed successfully.")))
 }
