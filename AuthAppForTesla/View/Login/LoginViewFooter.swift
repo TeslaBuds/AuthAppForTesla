@@ -28,7 +28,6 @@ struct LoginViewFooter: View {
                 .padding(.horizontal, AppSpacing.lg)
                 .foregroundStyle(.secondary)
             Spacer()
-            AppVersionLabel()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
         .padding(AppSpacing.cardInner)

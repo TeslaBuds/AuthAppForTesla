@@ -53,8 +53,6 @@ struct HomeView: View {
                     HomeViewRefreshTokens(model: model)
 
                     TipJarView(scrollPosition: $scrollPosition)
-
-                    AppVersionLabel()
                 }
                 .padding(.horizontal, AppSpacing.screenEdge)
                 .padding(.top, AppSpacing.scrollTop)
