@@ -59,16 +59,17 @@ struct ToastOverlayModifier: ViewModifier {
                             removal: .move(edge: .bottom).combined(with: .opacity)
                         )
                     )
-                    // Clear the iOS 26 floating tab bar capsule (~75pt
-                    // tall, ~10pt below safe area, plus the capsule's
-                    // rounded top edge needs a few more points of
-                    // breathing room than just "tab bar height").
+                    // Clear the iOS 26 floating tab bar capsule by a
+                    // hair: tab bar is ~75pt tall, sits ~10pt below
+                    // the safe area, and the toast itself is ~50pt
+                    // tall, so 75pt of bottom padding leaves a
+                    // ~10pt gap above the tab bar's rounded top.
                     // Hardcoding the offset is fine here: the toast is
                     // only ever shown inside the RootView TabView
                     // hierarchy on iPhone — on iPad the tab bar is
                     // top-mounted, where the extra bottom padding
                     // just gives the toast room to breathe.
-                    .padding(.bottom, 110)
+                    .padding(.bottom, 75)
                     .task(id: toast.id) {
                         try? await Task.sleep(for: .seconds(4))
                         withAnimation(.spring) {

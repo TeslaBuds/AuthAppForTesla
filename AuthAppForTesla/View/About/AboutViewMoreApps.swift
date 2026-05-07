@@ -48,3 +48,15 @@ struct AboutViewMoreApps: View {
 #Preview {
     AboutViewMoreApps()
 }
+
+#Preview("DRS + Friends side-by-side") {
+    IconBackgroundView {
+        ScrollView {
+            VStack(spacing: AppSpacing.cardGap) {
+                AboutViewMoreApps()
+                AboutViewFooter()
+            }
+            .padding(.horizontal, AppSpacing.screenEdge)
+        }
+    }
+}
