@@ -241,6 +241,12 @@ final class LiveAuthTests: XCTestCase {
     /// and re-activates the app, then verifies the typed text is
     /// still in the field. That's the most direct user-facing signal
     /// that the WKWebView survived the rebuild.
+    ///
+    /// Only meaningful on iOS — Mac Catalyst doesn't expose the home
+    /// button press API the same way (and the bug doesn't reproduce
+    /// there because there's no equivalent of "minimize to home" on
+    /// macOS).
+    #if !targetEnvironment(macCatalyst)
     @MainActor
     func testLive_03_BackgroundDuringAuthPreservesState() throws {
         let app = launchClean()
@@ -326,6 +332,7 @@ final class LiveAuthTests: XCTestCase {
             "Tesla email field value changed across background/foreground — the WKWebView was recreated and the user's typed text is gone"
         )
     }
+    #endif
 
     // MARK: - Helpers
 
