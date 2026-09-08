@@ -48,6 +48,30 @@ final class LiveAuthTests: XCTestCase {
 
     // MARK: - Lifecycle
 
+    private var isLaunchingApp = false
+
+    override func record(_ issue: XCTIssue) {
+        guard isLaunchingApp else {
+            super.record(issue)
+            return
+        }
+        var issue = issue
+        let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        screenshot.name = "launch_failure_desktop"
+        screenshot.lifetime = .keepAlways
+        issue.add(screenshot)
+        let context = XCTAttachment(string: """
+        The application did not finish launching/activating. OAuth has not been exercised.
+        Inspect launch_failure_desktop for a locked or protected desktop, system dialog,
+        or another app blocking activation. On Mac, end computer-control sessions and
+        make the desktop available before running XCUITest; do not run CUA concurrently.
+        """)
+        context.name = "launch_failure_context"
+        context.lifetime = .keepAlways
+        issue.add(context)
+        super.record(issue)
+    }
+
     override func setUpWithError() throws {
         continueAfterFailure = false
 
@@ -126,7 +150,7 @@ final class LiveAuthTests: XCTestCase {
         attach(app, named: "01_after_signin")
 
         // ── 2. Refresh tokens ──────────────────────────────────────
-        refreshButton.tap()
+        refreshButton.clickOrTap()
         // The toast appears for a couple of seconds — give it room.
         let refreshedToast = app.staticTexts.matching(
             NSPredicate(format: "label CONTAINS[c] 'refreshed successfully'")
@@ -139,14 +163,14 @@ final class LiveAuthTests: XCTestCase {
 
         // ── 3. Tools → Test Your Token (real API call) ─────────────
         selectTab(app: app, name: "Tools")
-        app.buttons["Test Your Token"].firstMatch.tap()
+        app.buttons["Test Your Token"].firstMatch.clickOrTap()
         XCTAssertTrue(
             app.navigationBars["Test Token"].waitForExistence(timeout: 10),
             "Expected to land on the Test Token screen"
         )
         let runTestsButton = app.buttons["runTestsButton"]
         XCTAssertTrue(runTestsButton.waitForExistence(timeout: 5))
-        runTestsButton.tap()
+        runTestsButton.clickOrTap()
         // The /api/1/users/me success row contains the demo account's
         // email — wait for it as proof that the live API call worked.
         let userMeRow = app.staticTexts.matching(
@@ -161,7 +185,7 @@ final class LiveAuthTests: XCTestCase {
         navigateBack(app: app)
 
         // ── 4. JWT Inspector with the stored token ─────────────────
-        app.buttons["JWT Inspector"].firstMatch.tap()
+        app.buttons["JWT Inspector"].firstMatch.clickOrTap()
         XCTAssertTrue(
             app.navigationBars["JWT Inspector"].waitForExistence(timeout: 10)
         )
@@ -169,13 +193,13 @@ final class LiveAuthTests: XCTestCase {
             NSPredicate(format: "label CONTAINS[c] 'Use Stored Token'")
         ).firstMatch
         if useStoredMenu.waitForExistence(timeout: 5) {
-            useStoredMenu.tap()
+            useStoredMenu.clickOrTap()
             // Pick the Owners API access token entry.
             let accessTokenItem = app.buttons.matching(
                 NSPredicate(format: "label CONTAINS[c] 'Owners API – Access'")
             ).firstMatch
             if accessTokenItem.waitForExistence(timeout: 5) {
-                accessTokenItem.tap()
+                accessTokenItem.clickOrTap()
             }
         }
         // Real Tesla tokens have an `iss` claim — the inspector renders
@@ -191,7 +215,7 @@ final class LiveAuthTests: XCTestCase {
         navigateBack(app: app)
 
         // ── 5. Snippet Exporter ────────────────────────────────────
-        app.buttons["Snippet Exporter"].firstMatch.tap()
+        app.buttons["Snippet Exporter"].firstMatch.clickOrTap()
         XCTAssertTrue(
             app.navigationBars["Snippet Exporter"].waitForExistence(timeout: 10)
         )
@@ -211,15 +235,15 @@ final class LiveAuthTests: XCTestCase {
         selectTab(app: app, name: "Owners API")
         let accountMenu = app.descendants(matching: .any)["homeMenu"].firstMatch
         XCTAssertTrue(accountMenu.waitForExistence(timeout: 5))
-        accountMenu.tap()
+        accountMenu.clickOrTap()
         let logoutButton = app.descendants(matching: .any)["logoutButton"].firstMatch
         XCTAssertTrue(logoutButton.waitForExistence(timeout: 5))
-        logoutButton.tap()
+        logoutButton.clickOrTap()
 
         // Confirm in the confirmation dialog.
         let confirmButton = app.descendants(matching: .any)["logoutConfirmButton"].firstMatch
         XCTAssertTrue(confirmButton.waitForExistence(timeout: 5))
-        confirmButton.tap()
+        confirmButton.clickOrTap()
 
         // After logout (single profile) we should land back on the login screen.
         XCTAssertTrue(
@@ -258,7 +282,7 @@ final class LiveAuthTests: XCTestCase {
             loginButton.waitForExistence(timeout: 10),
             "Expected the Owners API login view"
         )
-        loginButton.tap()
+        loginButton.clickOrTap()
         sleep(2)
 
         let webView = app.webViews.firstMatch
@@ -272,7 +296,7 @@ final class LiveAuthTests: XCTestCase {
             emailField.waitForExistence(timeout: 60),
             "Tesla auth page text fields never appeared"
         )
-        emailField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+        emailField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).clickOrTap()
         sleep(1)
         emailField.typeText(liveDemoUsername)
         sleep(1)
@@ -341,6 +365,8 @@ final class LiveAuthTests: XCTestCase {
     private func launchClean() -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["live-test-clear-state"]
+        isLaunchingApp = true
+        defer { isLaunchingApp = false }
         app.launch()
         return app
     }
@@ -359,8 +385,28 @@ final class LiveAuthTests: XCTestCase {
             "Expected the Owners API login view"
         )
         attach(app, named: "signin_01_login_view")
-        loginButton.tap()
-        sleep(2)
+        loginButton.clickOrTap()
+
+        // Prove the event reached the app before diagnosing OAuth. A protected
+        // Mac desktop can expose the login button to accessibility while
+        // preventing XCTest's synthesized input from reaching it (#40).
+        let enteredSignIn = app.descendants(matching: .any)
+            .matching(identifier: "liveTestLog")
+            .matching(NSPredicate(format: "label CONTAINS %@", "authenticateV3: entered"))
+            .firstMatch
+        guard enteredSignIn.waitForExistence(timeout: 10) else {
+            let desktop = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            desktop.name = "signin_input_failure_desktop"
+            desktop.lifetime = .keepAlways
+            add(desktop)
+            attachLiveTestLog(app: app, named: "signin_input_failure_log")
+            XCTFail("""
+                Sign-in input did not reach the app: the login button handler never ran. OAuth has not been exercised.
+                Inspect signin_input_failure_desktop for a protected/locked desktop or blocked input;
+                end computer-control sessions before running Mac XCUITest.
+                """)
+            return
+        }
         attach(app, named: "signin_02_after_login_tap")
 
         // The AuthWebView sheet appears with a WKWebView hosting
@@ -373,7 +419,11 @@ final class LiveAuthTests: XCTestCase {
             attachment.name = "signin_03_hierarchy"
             attachment.lifetime = .keepAlways
             add(attachment)
-            XCTFail("Expected the Tesla OAuth web view to appear")
+            attachLiveTestLog(app: app, named: "signin_03_oauth_log")
+            XCTFail("""
+                The sign-in handler ran, but the Tesla OAuth web view did not appear. Inspect signin_03_oauth_log
+                to distinguish URL/session creation from sheet presentation failure.
+                """)
             return
         }
         attach(app, named: "signin_03_webview_loaded")
@@ -396,10 +446,10 @@ final class LiveAuthTests: XCTestCase {
             return
         }
 
-        // Coordinate-tap the center of the field — element.tap() on a
+        // Coordinate-tap the center of the field — element.clickOrTap() on a
         // WKWebView text field sometimes registers without focusing it.
         let coord = firstField.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-        coord.tap()
+        coord.clickOrTap()
         sleep(1)
         attach(app, named: "DEBUG_d_after_field_tap")
         firstField.typeText(liveDemoUsername)
@@ -419,7 +469,7 @@ final class LiveAuthTests: XCTestCase {
             NSPredicate(format: "label IN { 'Next', 'Continue', 'Sign In', 'Sign in' }")
         ).firstMatch
         if nextButton.waitForExistence(timeout: 5) {
-            nextButton.tap()
+            nextButton.clickOrTap()
         } else {
             // Some Tesla auth pages put the submit on a non-button element.
             // Fall back to keyboard return.
@@ -442,7 +492,7 @@ final class LiveAuthTests: XCTestCase {
             return
         }
 
-        passwordField.tap()
+        passwordField.clickOrTap()
         passwordField.typeText(liveDemoPassword)
         attach(app, named: "DEBUG_j_password_typed")
 
@@ -450,7 +500,7 @@ final class LiveAuthTests: XCTestCase {
             NSPredicate(format: "label IN { 'Sign In', 'Sign in', 'Continue', 'Submit' }")
         ).firstMatch
         if signInButton.waitForExistence(timeout: 5) {
-            signInButton.tap()
+            signInButton.clickOrTap()
         } else {
             passwordField.typeText("\n")
         }
@@ -514,7 +564,7 @@ final class LiveAuthTests: XCTestCase {
                 .first(where: { $0.exists })
             else { break }
 
-            skipElement.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            skipElement.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).clickOrTap()
             skipsTapped += 1
             attach(app, named: "DEBUG_m_after_skip_tap_\(attempt)")
             // Let Tesla render whatever comes next before looking again.
@@ -588,7 +638,7 @@ final class LiveAuthTests: XCTestCase {
                 NSPredicate(format: "label CONTAINS[c] %@ OR placeholderValue CONTAINS[c] %@", placeholder, placeholder)
             ).firstMatch
             if candidate.waitForExistence(timeout: 5) {
-                candidate.tap()
+                candidate.clickOrTap()
                 candidate.typeText(text)
                 return
             }
@@ -600,7 +650,7 @@ final class LiveAuthTests: XCTestCase {
             fallback.waitForExistence(timeout: 10),
             "Could not find any \(kind) in the Tesla auth web view"
         )
-        fallback.tap()
+        fallback.clickOrTap()
         fallback.typeText(text)
     }
 
@@ -610,7 +660,7 @@ final class LiveAuthTests: XCTestCase {
                 NSPredicate(format: "label ==[c] %@", label)
             ).firstMatch
             if candidate.waitForExistence(timeout: 5) {
-                candidate.tap()
+                candidate.clickOrTap()
                 return
             }
         }
@@ -632,14 +682,14 @@ final class LiveAuthTests: XCTestCase {
             tab.waitForExistence(timeout: 5),
             "Tab '\(name)' not found. Elements on screen:\n\(app.debugDescription)"
         )
-        tab.tap()
+        tab.clickOrTap()
     }
 
     private func navigateBack(app: XCUIApplication) {
         // SwiftUI back button — accessible via the navigation bar.
         let backButton = app.navigationBars.buttons.firstMatch
         if backButton.waitForExistence(timeout: 3) {
-            backButton.tap()
+            backButton.clickOrTap()
         }
     }
 

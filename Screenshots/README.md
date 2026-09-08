@@ -70,6 +70,26 @@ The wrapper delegates to `DRSFramer/scripts/capture.sh`, which:
    attachments` and stages them into `Screenshots/output/<device>/`.
 6. Tears down the temporary simulators on exit (including Ctrl-C).
 
+## Live authentication on Mac Catalyst
+
+Run `./Screenshots/live-tests.sh Mac testLive_01_FreshSignIn` against an
+available, unlocked Mac desktop. End computer-control sessions before starting
+XCUITest and do not use CUA while the test runs. A protective screen such as
+“ChatGPT is Using Your Mac” can leave the app discoverable through accessibility
+while blocking the test's input. That is an automation failure, not evidence
+that Tesla OAuth or the app's keychain is broken.
+
+Live-test interactions use `clickOrTap()` for both elements and coordinates:
+Mac Catalyst receives mouse clicks, while iOS receives touch taps. Keep new
+interactions on that helper; a Catalyst `tap()` can return without invoking the
+button action, even when its window is visible.
+
+The live test attaches a desktop screenshot if launch/activation fails. After
+clicking Sign in, it first requires the app's handler-entry diagnostic. If that
+is missing, inspect `signin_input_failure_desktop`; OAuth has not been exercised.
+Only after handler entry does the test check for the web view, attaching
+`signin_03_oauth_log` if URL/session creation or sheet presentation fails.
+
 ## Adding a new screenshot
 
 1. **Add a test method** in `Auth for Tesla UI Tests/ScreenshotTests.swift`:
