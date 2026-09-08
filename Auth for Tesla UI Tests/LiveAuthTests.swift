@@ -464,32 +464,75 @@ final class LiveAuthTests: XCTestCase {
         // in the WKWebView accessibility tree (not a real link/button
         // element), so we have to coordinate-tap whichever element type
         // exposes its frame.
-        let skipCandidates: [XCUIElement] = [
-            webView.links.matching(NSPredicate(format: "label CONTAINS[c] 'Skip'")).firstMatch,
-            webView.buttons.matching(NSPredicate(format: "label CONTAINS[c] 'Skip'")).firstMatch,
-            webView.staticTexts.matching(NSPredicate(format: "label CONTAINS[c] 'Skip and Continue'")).firstMatch,
-            webView.otherElements.matching(NSPredicate(format: "label CONTAINS[c] 'Skip and Continue'")).firstMatch
+        // Tesla localises this page from the client's region, so the
+        // label is NOT reliably English — a run from Denmark gets
+        // "Spring over og fortsæt". The email and password steps above
+        // survive that because they fall back to a keyboard return;
+        // this step has no such fallback, so it is the one that breaks
+        // when the page comes back in another language.
+        //
+        // Match the known localisations exactly rather than substring-
+        // matching "Skip", which would otherwise hit Tesla's "Skip to
+        // main content" accessibility link first.
+        let skipLabels = [
+            "Skip and Continue",       // en
+            "Spring over og fortsæt"   // da
+        ]
+        let skipPredicate = NSPredicate(format: "label IN %@", skipLabels)
+
+        // Which element type Tesla exposes the link as is not stable
+        // across locales or page revisions — it has been plain static
+        // text in the past, and on the Danish page it is not a static
+        // text at all. Search every collection that could hold it
+        // rather than betting on one.
+        let skipQueries: [(String, XCUIElementQuery)] = [
+            ("buttons", webView.buttons),
+            ("links", webView.links),
+            ("staticTexts", webView.staticTexts),
+            ("otherElements", webView.otherElements)
         ]
 
         // Wait briefly for the 2FA page to actually render before
         // searching — Tesla's transition from password to 2FA is fast
         // but not instant.
         _ = webView.staticTexts.matching(
-            NSPredicate(format: "label == 'Skip and Continue'")
+            NSPredicate(format: "label BEGINSWITH[c] 'Indtast kode' OR label BEGINSWITH[c] 'Enter Code'")
         ).firstMatch.waitForExistence(timeout: 10)
         attach(app, named: "DEBUG_m_2fa_page_loaded")
 
-        // Match exact label — "Skip and Continue" — not just "Skip",
-        // otherwise we hit Tesla's accessibility "Skip to main
-        // content" link first.
-        let skipText = webView.staticTexts.matching(
-            NSPredicate(format: "label == 'Skip and Continue'")
-        ).firstMatch
-        if skipText.exists {
-            let coord = skipText.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-            coord.tap()
-            attach(app, named: "DEBUG_m_after_skip_tap")
-        } else {
+        // Tesla stacks more than one of these interstitials: the 2FA
+        // code page, and then a passkey-enrolment prompt ("Konfigurer
+        // en adgangsnøgle" / "Set up a passkey") that it started
+        // showing in 2026. Both carry the SAME skip label, so clear
+        // them in a loop instead of assuming a single gate — that
+        // assumption is what left the flow parked on the passkey page
+        // with the sheet still open.
+        var skipsTapped = 0
+        for attempt in 1...4 {
+            guard let skipElement = skipQueries.lazy
+                .map({ $0.1.matching(skipPredicate).firstMatch })
+                .first(where: { $0.exists })
+            else { break }
+
+            skipElement.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            skipsTapped += 1
+            attach(app, named: "DEBUG_m_after_skip_tap_\(attempt)")
+            // Let Tesla render whatever comes next before looking again.
+            sleep(3)
+        }
+
+        if skipsTapped == 0 {
+            // Dump every collection so the next locale (or the next
+            // time Tesla changes the element type) is a one-line fix
+            // rather than another full run to find out.
+            let dump = skipQueries.map { name, query in
+                "── \(name) ──\n" + query.allElementsBoundByIndex
+                    .map(\.label).filter { !$0.isEmpty }.joined(separator: "\n")
+            }.joined(separator: "\n\n")
+            let attachment = XCTAttachment(string: "2FA page elements:\n\n" + dump)
+            attachment.name = "DEBUG_m_no_skip_text_labels"
+            attachment.lifetime = .keepAlways
+            add(attachment)
             attach(app, named: "DEBUG_m_no_skip_text")
         }
         // Capture more frequently to see exactly what Tesla does after
@@ -574,13 +617,22 @@ final class LiveAuthTests: XCTestCase {
         XCTFail("Could not find any submit button in the Tesla auth web view (looked for: \(labels.joined(separator: ", ")))")
     }
 
+    /// Selects one of the four top-level tabs.
+    ///
+    /// On iOS the `TabView` renders a bottom tab bar whose items are
+    /// plain buttons. On Mac Catalyst SwiftUI hoists the same tabs into
+    /// the window title bar, where they are exposed as radio buttons
+    /// inside a segmented control rather than as `.button` — the same
+    /// shape-shift the account menu already accounts for in
+    /// `ScreenshotTests` ("exposed as a popUpButton rather than a
+    /// button"). Querying across every element type covers both.
     private func selectTab(app: XCUIApplication, name: String) {
-        let button = app.buttons[name].firstMatch
+        let tab = app.descendants(matching: .any)[name].firstMatch
         XCTAssertTrue(
-            button.waitForExistence(timeout: 5),
-            "Tab '\(name)' not found"
+            tab.waitForExistence(timeout: 5),
+            "Tab '\(name)' not found. Elements on screen:\n\(app.debugDescription)"
         )
-        button.tap()
+        tab.tap()
     }
 
     private func navigateBack(app: XCUIApplication) {
