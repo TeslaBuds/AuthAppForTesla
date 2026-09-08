@@ -51,18 +51,28 @@ struct LoginViewSignInOwnersAPI: View {
     }
 
     private func authenticateV3() {
+        logOAuth("authenticateV3: entered")
         Task {
+            logOAuth("authenticateV3: task started")
             guard let oauthInfo = await AuthController.shared.buildOAuthURLV3(
                 region: region,
                 redirectUrl: kTeslaRedirectUri
             ) else {
+                // Previously a bare `return`: no toast, no log. That is
+                // why a failure here presents as the app hanging on the
+                // login screen forever rather than reporting anything —
+                // which is exactly what Mac App Review saw in 2022.
+                logOAuth("authenticateV3: buildOAuthURLV3 returned nil")
+                model.showToast(.error("Could not build authorization URL."))
                 return
             }
+            logOAuth("authenticateV3: built URL host=\(oauthInfo.url.host() ?? "nil")")
 
             let session = TeslaAuthSession(
                 url: oauthInfo.url,
                 redirectUrl: kTeslaRedirectUri
             )
+            logOAuth("authenticateV3: TeslaAuthSession created")
 
             model.ownersAuth = OwnersAuthInFlight(
                 url: oauthInfo.url,
@@ -71,6 +81,7 @@ struct LoginViewSignInOwnersAPI: View {
                 addAsNewProfile: addAsNewProfile,
                 session: session
             )
+            logOAuth("authenticateV3: ownersAuth set — sheet should present now")
         }
     }
 
