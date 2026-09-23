@@ -140,7 +140,7 @@ struct RootView: View {
     private static func jwtInspectorInitialInput() -> String {
         #if DEBUG
         if ScreenshotScenario.current == .jwtInspector {
-            return ScreenshotHarness.sampleOwnersToken
+            return ScreenshotHarness.currentOwnersToken
         }
         #endif
         return ""

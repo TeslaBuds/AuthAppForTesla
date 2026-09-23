@@ -77,9 +77,10 @@ enum ScreenshotFixtures {
         )
     }
 
-    static func makeFleetToken(prefix: String = "eu") -> Token {
+    static func makeFleetToken(access: String = sampleFleetToken,
+                               prefix: String = "eu") -> Token {
         Token(
-            access_token: sampleFleetToken,
+            access_token: access,
             token_type: "bearer",
             expires_in: 28800,
             refresh_token: "\(prefix)_sample_fleet_refresh_token_screenshot_fixture",
@@ -116,6 +117,40 @@ enum ScreenshotHarness {
     /// `ScreenshotHarness.sampleOwnersToken` keep working without
     /// changes after the rename to `ScreenshotFixtures`.
     static var sampleOwnersToken: String { ScreenshotFixtures.sampleOwnersToken }
+
+    /// How long the seeded tokens have left, matching the `expires_at`
+    /// that `ScreenshotFixtures.makeOwnersToken` stamps on them.
+    private static let fixtureLifetimeRemaining: TimeInterval = 7140
+
+    /// The sample Owners token re-dated so it is currently valid. Used
+    /// by the JWT Inspector screenshot so its status card agrees with
+    /// the "Valid for 1 hr, 59 min" badge on the home screen.
+    static var currentOwnersToken: String { redated(ScreenshotFixtures.sampleOwnersToken) }
+
+    /// Rewrites the `iat`/`exp` claims of a fixture JWT so it reads as
+    /// issued six hours ago and expiring alongside the seeded
+    /// `expires_at`. Header and the literal `.signature` segment are
+    /// kept untouched, so `ScreenshotFixtures.isFixture` still
+    /// recognises the result. Claims the template lacks stay absent.
+    static func redated(_ template: String) -> String {
+        let parts = template.split(separator: ".", omittingEmptySubsequences: false).map(String.init)
+        guard parts.count == 3,
+              let data = base64UrlDecode(parts[1]),
+              var payload = (try? JSONSerialization.jsonObject(with: data)) as? [String: Any]
+        else { return template }
+
+        let expiry = Date().addingTimeInterval(fixtureLifetimeRemaining).timeIntervalSince1970
+        if payload["exp"] != nil { payload["exp"] = Int(expiry) }
+        if payload["iat"] != nil { payload["iat"] = Int(expiry) - 28800 }
+
+        guard let encoded = try? JSONSerialization.data(withJSONObject: payload, options: [.sortedKeys])
+        else { return template }
+        let segment = encoded.base64EncodedString()
+            .replacing("+", with: "-")
+            .replacing("/", with: "_")
+            .replacing("=", with: "")
+        return [parts[0], segment, parts[2]].joined(separator: ".")
+    }
 
     /// Pick the initial tab the app should land on for the active scenario.
     static func initialTab() -> AppTab {
@@ -155,7 +190,7 @@ enum ScreenshotHarness {
     }
 
     private static func seedSingle(model: AuthViewModel) {
-        let owners = ScreenshotFixtures.makeOwnersToken()
+        let owners = ScreenshotFixtures.makeOwnersToken(access: currentOwnersToken)
         let ownersProfile = TokenProfile(name: "Personal", token: owners)
         model.profilesV3 = TokenProfileCollection(
             profiles: [ownersProfile],
@@ -163,7 +198,7 @@ enum ScreenshotHarness {
         )
         model.tokenV3 = owners
 
-        let fleet = ScreenshotFixtures.makeFleetToken()
+        let fleet = ScreenshotFixtures.makeFleetToken(access: redated(ScreenshotFixtures.sampleFleetToken))
         let fleetProfile = TokenProfile(name: "Production", token: fleet)
         model.profilesV4 = TokenProfileCollection(
             profiles: [fleetProfile],
@@ -174,12 +209,12 @@ enum ScreenshotHarness {
 
     private static func seedMultiProfile(model: AuthViewModel) {
         // Owners — three profiles to show the switcher.
-        let personal = TokenProfile(name: "Personal", token: ScreenshotFixtures.makeOwnersToken())
+        let personal = TokenProfile(name: "Personal", token: ScreenshotFixtures.makeOwnersToken(access: currentOwnersToken))
         let work = TokenProfile(
             name: "Work",
             token: ScreenshotFixtures.makeOwnersToken(access: ScreenshotFixtures.sampleOwnersTokenWork)
         )
-        let test = TokenProfile(name: "Test", token: ScreenshotFixtures.makeOwnersToken())
+        let test = TokenProfile(name: "Test", token: ScreenshotFixtures.makeOwnersToken(access: currentOwnersToken))
 
         model.profilesV3 = TokenProfileCollection(
             profiles: [personal, work, test],

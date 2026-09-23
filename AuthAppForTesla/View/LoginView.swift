@@ -19,7 +19,9 @@ struct LoginView: View {
                     LoginViewHeader()
                     LoginViewFooter(model: model, loginEnvironment: loginEnvironment)
                         .fixedSize(horizontal: false, vertical: true)
-                    TipJarView(scrollPosition: $scrollPosition)
+                    if !TipJarView.isSuppressed {
+                        TipJarView(scrollPosition: $scrollPosition)
+                    }
                 }
                 .padding(.horizontal, AppSpacing.screenEdge)
                 .padding(.top, AppSpacing.scrollTop)

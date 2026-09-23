@@ -52,7 +52,9 @@ struct HomeView: View {
 
                     HomeViewRefreshTokens(model: model)
 
-                    TipJarView(scrollPosition: $scrollPosition)
+                    if !TipJarView.isSuppressed {
+                        TipJarView(scrollPosition: $scrollPosition)
+                    }
                 }
                 .padding(.horizontal, AppSpacing.screenEdge)
                 .padding(.top, AppSpacing.scrollTop)

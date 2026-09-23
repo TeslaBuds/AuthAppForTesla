@@ -9,12 +9,12 @@
   },
   "version": {
     "copyright": "Dansk Rumskrot ApS",
-    "description": "Auth for Tesla is the fastest way to get a working Tesla API token — and the easiest place to inspect, test, and reuse it. Sign in once with your Tesla account, and your access and refresh tokens are ready to copy into Shortcuts, third-party tools, scripts, or anything else that talks to Tesla's API.\n\nA TOKEN TOOL, NOT A TESLA CLIENT\nAuth for Tesla doesn't drive your car, drain your battery, or pretend to be the Tesla app. It does one job extremely well: hand you a valid OAuth token and help you make sure it works.\n\nBOTH TESLA APIS\n• Owners API (v3) — the standard token used by most Tesla-compatible apps and Shortcuts.\n• Fleet API (v4) — Tesla's modern, officially supported API for developers with a partner account.\n\nMULTIPLE ACCOUNTS\nKeep personal, work, and test accounts side by side. Switch between them with one tap, rename them, and add new ones without losing the others.\n\nDEVELOPER TOOLS BUILT IN\n• JWT Inspector — paste any token (or pick a stored one) and see the decoded header, payload, scopes, expiry, and a clear valid/expired status. No more flipping to jwt.io.\n• Snippet Exporter — generate ready-to-paste cURL, HTTPie, Swift, or Python snippets for the active token, complete with bearer header.\n• Test Your Token — run a few read-only diagnostic calls against the Tesla API to confirm your token actually works end to end, plus a local scopes inspection.\n\nTOKEN HEALTH AT A GLANCE\nEvery profile shows a live countdown to expiry, the time of the last successful refresh, and the detected region (NA, EU, AP, ME, CN) so you always know what you're talking to.\n\nSIRI & SHORTCUTS\nAll four token actions — Get and Refresh for both Owners and Fleet API — appear automatically in the Shortcuts app and work hands-free with Siri. Build automations that always have a fresh token.\n\nPRIVATE BY DESIGN\nYour Tesla username and password are entered directly in a secure in-app browser — they never pass through this app or any developer-run server. Tokens are stored encrypted in your iCloud Keychain and sync privately across your own devices. No analytics, no tracking, no third-party SDKs.\n\nOPEN SOURCE\nEvery line of code is publicly available and auditable at github.com/TeslaBuds/AuthAppForTesla.\n\nDisclaimer: This app is not affiliated with or endorsed by Tesla, Inc. Use at your own risk. No guarantee of proper function is given. You are solely responsible for any changes to your vehicle caused by the use of this app.\n\nMade in Denmark.",
-    "promotionalText": "Sign in once — get a Tesla API token in seconds. JWT inspector, snippet exporter, test panel, multiple accounts, plus sign-in that survives a password-manager hop.",
-    "keywords": "tesla,token,oauth,jwt,api,shortcuts,siri,developer,fleet,owners,bearer,authentication",
+    "description": "Auth for Tesla gets you a working Tesla API token in seconds — then helps you check it, prove it, and put it to work. Sign in once with your Tesla account and your refresh and access tokens are one tap from the clipboard, ready for Shortcuts, scripts, home-automation tools, or your own app.\n\nA TOKEN TOOL, NOT A CAR APP\nAuth for Tesla doesn't drive your car, wake it up, or try to replace the Tesla app. It does one job well: hand you a valid OAuth token and make it easy to use.\n\nONE TAP TO COPY\n• Refresh token and access token side by side, each copied with a single tap.\n• A live \"Valid for…\" countdown on the access token, and a clear \"Long-lived\" badge on the refresh token.\n• Refresh both with one button — or with ⌘R on Mac.\n• Turn on token details for issuer, audiences, scopes, region, and expiry at a glance.\n\nYOUR PASSWORD STAYS WITH TESLA\nYou sign in on Tesla's own website in a secure in-app browser. Your username and password never pass through this app or any developer-run server. Multi-factor sign-in works as usual, and sign-in survives a hop to your password manager.\n\nPROVE IT WORKS\nTest Your Token runs a few read-only calls against the Owners or Fleet API — your account, your vehicles, your scopes — so you know the token works end to end before you paste it anywhere.\n\nDEVELOPER TOOLS BUILT IN\n• JWT Inspector — paste any token, or pick a stored one, and see the decoded header, payload, scopes, expiry, and a clear Valid/Expired status.\n• Snippet Exporter — copy the active token as ready-to-run cURL, HTTPie, Swift, or Python, bearer header included.\n\nOWNERS API AND FLEET API\n• Owners API — the token most Tesla-compatible apps and Shortcuts ask for.\n• Fleet API — Tesla's official API for developers with a partner account, with the region (North America, Europe, Asia Pacific, Middle East, China) detected for you.\n\nEVERY ACCOUNT, ONE TAP APART\nKeep personal, work, and test accounts side by side for each API. Switch, rename, and add accounts without signing in again.\n\nSIRI & SHORTCUTS\nGet and Refresh actions for both APIs appear automatically in the Shortcuts app and work with Siri, and each can target a specific account. Build automations that always have a fresh token.\n\nIPHONE, IPAD AND MAC\nThe same tools on every device, in a Liquid Glass design.\n\nPRIVATE BY DESIGN\nTokens are stored encrypted in your iCloud Keychain and sync only across your own devices. No analytics, no tracking, no third-party SDKs.\n\nOPEN SOURCE\nEvery line of code is public and auditable at github.com/TeslaBuds/AuthAppForTesla.\n\nDisclaimer: Auth for Tesla is an independent app. It is not affiliated with, endorsed by, or sponsored by Tesla, Inc. Use at your own risk. No guarantee of proper function is given. You are solely responsible for any changes to your vehicle caused by the use of this app.\n\nMade in Denmark.",
+    "promotionalText": "Sign in once and get a working Tesla API token in seconds. See it's valid, prove it with live calls, decode it, and paste it into code or Shortcuts.",
+    "keywords": "token,oauth,jwt,api,fleet,owners,shortcuts,siri,developer,bearer,refresh,curl,authentication,tesla",
     "marketingUrl": "https://danskrumskrot.com",
     "supportUrl": "https://github.com/TeslaBuds/AuthAppForTesla",
-    "whatsNew": "Auth for Tesla 3.0.1 turns the app into a real developer cockpit for Tesla tokens.\n\nNEW — Tools tab\n• JWT Inspector — paste or pick any token and see decoded header, payload, scopes, and a valid/expired status. No more jwt.io detours.\n• Snippet Exporter — copy your active token as ready-to-run cURL, HTTPie, Swift URLRequest, or Python requests.\n• Test Your Token — run real, read-only Owners or Fleet API diagnostic calls to confirm end-to-end that your token works, including a scopes inspection.\n\nNEW — Multiple accounts\n• Keep personal, work, and test profiles side by side per API.\n• One-tap switching, rename and add accounts at any time.\n• Logout / 'Delete This Account' now confirms before wiping the token, so a misfired tap won't cost you a re-sign-in.\n• Logout deletes only the active profile and falls through to the next.\n\nNEW — Token cards with live status\n• The Access Token card shows a live 'Valid for X' countdown badge that flips to red 'Expired' when it lapses.\n• The Refresh Token card gets a quiet 'Long-lived' badge so you can tell the two apart at a glance.\n• 'Show token details' opens a clean tabular breakdown of issuer, audiences, scopes, region, locale, and expiry.\n• Auto-detected region (NA, EU, AP, ME, CN) on every Fleet token, so you know exactly which Tesla endpoint you're talking to.\n\nDESIGN — Liquid Glass throughout\n• Every screen rebuilt around iOS 26's Liquid Glass — glass cards, capsule buttons, consistent corner radii and rhythm across home, Tools, About, and Login.\n• Toast notifications are proper glass capsules now, lifted clear of the floating tab bar.\n• Fleet API form fields are subtle glass capsules instead of hard-black rounded rectangles.\n• Account menu is a real glass button with a proper hit target, not just a tappable icon.\n\nSIRI & SHORTCUTS\n• All four token actions (Get / Refresh for both APIs) appear automatically in Shortcuts.\n• Each intent now accepts an optional Account parameter so a Shortcut can target a specific stored profile.\n• Fixes a long-standing bug where 'Refresh Fleet API Token' would refresh the Owners token by mistake when both were signed in.\n\nUNDER THE HOOD\n• Sign-in now survives a hop to your password manager — the auth web view stays put with whatever you'd typed, instead of reloading back to the email step.\n• Token storage refactored around named profiles with seamless migration of any existing single-token install.\n• Lots of small UX polish across the home views, Tools detail screens, and login flow."
+    "whatsNew": "Auth for Tesla 3.0.1 turns the app into a real developer cockpit for Tesla tokens.\n\nNEW — Tools tab\n• JWT Inspector — paste or pick any token and see decoded header, payload, scopes, and a valid/expired status. No more jwt.io detours.\n• Snippet Exporter — copy your active token as ready-to-run cURL, HTTPie, Swift URLRequest, or Python requests.\n• Test Your Token — run real, read-only Owners or Fleet API diagnostic calls to confirm end-to-end that your token works, including a scopes inspection.\n\nNEW — Multiple accounts\n• Keep personal, work, and test profiles side by side per API.\n• One-tap switching, rename and add accounts at any time.\n• Logout / 'Delete This Account' now confirms before wiping the token, so a misfired tap won't force a re-sign-in.\n• Logout deletes only the active profile and falls through to the next.\n\nNEW — Token cards with live status\n• The Access Token card shows a live 'Valid for X' countdown badge that flips to red 'Expired' when it lapses.\n• The Refresh Token card gets a quiet 'Long-lived' badge so you can tell the two apart at a glance.\n• 'Show token details' opens a clean tabular breakdown of issuer, audiences, scopes, region, locale, and expiry.\n• Auto-detected region (NA, EU, AP, ME, CN) on every Fleet token, so you know exactly which Tesla endpoint you're talking to.\n\nDESIGN — Liquid Glass throughout\n• Every screen rebuilt around iOS 26's Liquid Glass — glass cards, capsule buttons, consistent corner radii and rhythm across home, Tools, About, and Login.\n• Toast notifications are proper glass capsules now, lifted clear of the floating tab bar.\n• Fleet API form fields are subtle glass capsules instead of hard-black rounded rectangles.\n• Account menu is a real glass button with a proper hit target, not just a tappable icon.\n\nSIRI & SHORTCUTS\n• All four token actions (Get / Refresh for both APIs) appear automatically in Shortcuts.\n• Each intent now accepts an optional Account parameter so a Shortcut can target a specific stored profile.\n• Fixes a long-standing bug where 'Refresh Fleet API Token' would refresh the Owners token by mistake when both were signed in.\n\nUNDER THE HOOD\n• Sign-in now survives a hop to your password manager — the auth web view stays put with whatever you'd typed, instead of reloading back to the email step.\n• Token storage refactored around named profiles with seamless migration of any existing single-token install.\n• Lots of small UX polish across the home views, Tools detail screens, and login flow."
   },
   "iap": {
     "products": [
@@ -48,168 +48,168 @@
     {
       "key": "01_owners_home",
       "headline": "Tesla API Tokens, in Seconds",
-      "subtitle": "Sign in once — your access and refresh tokens are always one tap from the clipboard",
+      "subtitle": "Sign in once, then copy your refresh or access token with a single tap",
       "platform": "iPhone",
       "sortOrder": 0
     },
     {
       "key": "02_owners_login",
       "headline": "Your Password Stays with Tesla",
-      "subtitle": "Sign in happens entirely inside Tesla's own secure web view — never through this app",
+      "subtitle": "You sign in on Tesla's own website — never through this app",
       "platform": "iPhone",
       "sortOrder": 1
     },
     {
       "key": "03_test_token",
-      "headline": "Verify It Actually Works",
-      "subtitle": "Run real read-only Owners or Fleet API calls and see scopes, vehicles, and account info at a glance",
+      "headline": "Prove Your Token Works",
+      "subtitle": "Live read-only calls confirm your account, vehicles and scopes",
       "platform": "iPhone",
       "sortOrder": 2
     },
     {
       "key": "04_jwt_inspector",
-      "headline": "Decode Any JWT, Instantly",
-      "subtitle": "Header, payload, scopes, and expiry — no more jwt.io detours just to read a token",
+      "headline": "Decode Any JWT",
+      "subtitle": "Header, payload, scopes and expiry — no more jwt.io detours",
       "platform": "iPhone",
       "sortOrder": 3
     },
     {
       "key": "05_snippet_exporter",
-      "headline": "Drop Into Any Codebase",
-      "subtitle": "Copy your token as ready-to-run cURL, HTTPie, Swift URLRequest, or Python requests",
+      "headline": "Paste Straight Into Code",
+      "subtitle": "Ready-to-run cURL, HTTPie, Swift and Python, bearer header included",
       "platform": "iPhone",
       "sortOrder": 4
     },
     {
       "key": "06_multi_account",
-      "headline": "Personal, Work, and Test — Side by Side",
-      "subtitle": "Multiple accounts per API with one-tap switching, rename, and add — no more signing in twice",
+      "headline": "Every Account, One Tap Apart",
+      "subtitle": "Keep personal, work and test accounts side by side",
       "platform": "iPhone",
       "sortOrder": 5
     },
     {
       "key": "07_fleet_home",
       "headline": "Built for the Fleet API Too",
-      "subtitle": "Region auto-detect, scope inspection, and live expiry for Tesla's modern partner API",
+      "subtitle": "Region detected, with a live countdown to expiry",
       "platform": "iPhone",
       "sortOrder": 6
     },
     {
       "key": "08_about",
       "headline": "Made for Siri and Shortcuts",
-      "subtitle": "Four built-in actions — Get and Refresh for both APIs — appear automatically in Shortcuts",
+      "subtitle": "Get and Refresh actions for both APIs keep automations topped up",
       "platform": "iPhone",
       "sortOrder": 7
     },
     {
       "key": "01_owners_home",
       "headline": "Tesla API Tokens, in Seconds",
-      "subtitle": "Sign in once — your access and refresh tokens are always one tap from the clipboard",
+      "subtitle": "Sign in once, then copy your refresh or access token with a single tap",
       "platform": "iPad",
       "sortOrder": 0
     },
     {
       "key": "02_owners_login",
       "headline": "Your Password Stays with Tesla",
-      "subtitle": "Sign in happens entirely inside Tesla's own secure web view — never through this app",
+      "subtitle": "You sign in on Tesla's own website — never through this app",
       "platform": "iPad",
       "sortOrder": 1
     },
     {
       "key": "03_test_token",
-      "headline": "Verify It Actually Works",
-      "subtitle": "Run real read-only Owners or Fleet API calls and see scopes, vehicles, and account info at a glance",
+      "headline": "Prove Your Token Works",
+      "subtitle": "Live read-only calls confirm your account, vehicles and scopes",
       "platform": "iPad",
       "sortOrder": 2
     },
     {
       "key": "04_jwt_inspector",
-      "headline": "Decode Any JWT, Instantly",
-      "subtitle": "Header, payload, scopes, and expiry — on a roomier canvas",
+      "headline": "Decode Any JWT",
+      "subtitle": "Header, payload, scopes and expiry — no more jwt.io detours",
       "platform": "iPad",
       "sortOrder": 3
     },
     {
       "key": "05_snippet_exporter",
-      "headline": "Drop Into Any Codebase",
-      "subtitle": "Copy your token as ready-to-run cURL, HTTPie, Swift URLRequest, or Python requests",
+      "headline": "Paste Straight Into Code",
+      "subtitle": "Ready-to-run cURL, HTTPie, Swift and Python, bearer header included",
       "platform": "iPad",
       "sortOrder": 4
     },
     {
       "key": "06_multi_account",
-      "headline": "Personal, Work, and Test — Side by Side",
-      "subtitle": "Multiple accounts per API with one-tap switching, rename, and add — no more signing in twice",
+      "headline": "Every Account, One Tap Apart",
+      "subtitle": "Keep personal, work and test accounts side by side",
       "platform": "iPad",
       "sortOrder": 5
     },
     {
       "key": "07_fleet_home",
       "headline": "Built for the Fleet API Too",
-      "subtitle": "Region auto-detect, scope inspection, and live expiry for Tesla's modern partner API",
+      "subtitle": "Region detected, with a live countdown to expiry",
       "platform": "iPad",
       "sortOrder": 6
     },
     {
       "key": "08_about",
       "headline": "Made for Siri and Shortcuts",
-      "subtitle": "Four built-in actions — Get and Refresh for both APIs — appear automatically in Shortcuts",
+      "subtitle": "Get and Refresh actions for both APIs keep automations topped up",
       "platform": "iPad",
       "sortOrder": 7
     },
     {
       "key": "01_owners_home",
       "headline": "Tesla API Tokens, in Seconds",
-      "subtitle": "Sign in once — your access and refresh tokens are always one tap from the clipboard",
+      "subtitle": "Sign in once, then copy your refresh or access token with a single tap",
       "platform": "mac",
       "sortOrder": 0
     },
     {
       "key": "02_owners_login",
       "headline": "Your Password Stays with Tesla",
-      "subtitle": "Sign in happens entirely inside Tesla's own secure web view — never through this app",
+      "subtitle": "You sign in on Tesla's own website — never through this app",
       "platform": "mac",
       "sortOrder": 1
     },
     {
       "key": "03_test_token",
-      "headline": "Verify It Actually Works",
-      "subtitle": "Run real read-only Owners or Fleet API calls and see scopes, vehicles, and account info at a glance",
+      "headline": "Prove Your Token Works",
+      "subtitle": "Live read-only calls confirm your account, vehicles and scopes",
       "platform": "mac",
       "sortOrder": 2
     },
     {
       "key": "04_jwt_inspector",
-      "headline": "Decode Any JWT, Instantly",
-      "subtitle": "Header, payload, scopes, and expiry — without leaving your Mac",
+      "headline": "Decode Any JWT",
+      "subtitle": "Header, payload, scopes and expiry — no more jwt.io detours",
       "platform": "mac",
       "sortOrder": 3
     },
     {
       "key": "05_snippet_exporter",
-      "headline": "Drop Into Any Codebase",
-      "subtitle": "Copy your token as ready-to-run cURL, HTTPie, Swift URLRequest, or Python requests",
+      "headline": "Paste Straight Into Code",
+      "subtitle": "Ready-to-run cURL, HTTPie, Swift and Python, bearer header included",
       "platform": "mac",
       "sortOrder": 4
     },
     {
       "key": "06_multi_account",
-      "headline": "Personal, Work, and Test — Side by Side",
-      "subtitle": "Multiple accounts per API with one-tap switching, rename, and add — no more signing in twice",
+      "headline": "Every Account, One Tap Apart",
+      "subtitle": "Keep personal, work and test accounts side by side",
       "platform": "mac",
       "sortOrder": 5
     },
     {
       "key": "07_fleet_home",
       "headline": "Built for the Fleet API Too",
-      "subtitle": "Region auto-detect, scope inspection, and live expiry for Tesla's modern partner API",
+      "subtitle": "Region detected, with a live countdown to expiry",
       "platform": "mac",
       "sortOrder": 6
     },
     {
       "key": "08_about",
       "headline": "Made for Siri and Shortcuts",
-      "subtitle": "Four built-in actions — Get and Refresh for both APIs — appear automatically in Shortcuts",
+      "subtitle": "Get and Refresh actions for both APIs keep automations topped up",
       "platform": "mac",
       "sortOrder": 7
     }
@@ -217,8 +217,12 @@
   "capture": {
     "schemeIOS": "AuthAppForTesla",
     "uiTestTarget": "Auth for Tesla UI Tests/ScreenshotTests",
-    "iPhoneSimulators": ["iPhone 17 Pro Max"],
-    "iPadSimulators": ["iPad Pro 13-inch (M5)"],
+    "iPhoneSimulators": [
+      "iPhone 17 Pro Max"
+    ],
+    "iPadSimulators": [
+      "iPad Pro 13-inch (M5)"
+    ],
     "macCatalyst": true
   }
 }

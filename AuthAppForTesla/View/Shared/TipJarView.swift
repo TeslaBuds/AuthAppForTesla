@@ -49,6 +49,17 @@ struct TipJarView: View {
     /// Stable identity for scroll targeting.
     static let scrollID = "tipJar"
 
+    /// True while the App Store screenshot harness is driving the app.
+    /// Marketing screenshots must not show the tip prompt, so call
+    /// sites skip the view entirely when this is set.
+    static var isSuppressed: Bool {
+        #if DEBUG
+        ScreenshotScenario.isActive
+        #else
+        false
+        #endif
+    }
+
     private var tipHeader: some View {
         Button {
             isExpanded.toggle()

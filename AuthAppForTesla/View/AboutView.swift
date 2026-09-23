@@ -18,7 +18,9 @@ struct AboutView: View {
                     AboutViewShortcuts()
                     AboutViewMoreApps()
                     AboutViewFooter()
-                    TipJarView(scrollPosition: $scrollPosition)
+                    if !TipJarView.isSuppressed {
+                        TipJarView(scrollPosition: $scrollPosition)
+                    }
                 }
                 .padding(.horizontal, AppSpacing.screenEdge)
                 .padding(.top, AppSpacing.scrollTop)

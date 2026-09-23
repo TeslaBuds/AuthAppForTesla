@@ -14,15 +14,15 @@ struct LoginViewFooter: View {
     var body: some View {
         VStack(spacing: AppSpacing.sm) {
             Spacer()
-            Text("Login to Tesla to generate Tokens")
+            Text("Sign in to generate tokens")
                 .font(.title2)
-            Text("In order to generate tokens, you have to login with your Tesla account.")
+            Text("Sign in with your Tesla account to get a refresh token and an access token.")
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, AppSpacing.md)
             LoginViewSignIn(model: model, loginEnvironment: loginEnvironment)
                 .padding(.vertical, AppSpacing.sm)
-            Text("You will be presented with a web browser where you can enter your Tesla credentials into the Tesla website. If you have MFA configured you will be asked to enter a valid MFA code.")
+            Text("You sign in on Tesla’s own website in a secure browser — your password never passes through this app. If you use MFA, you’ll be asked for your code there too.")
                 .font(.caption)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, AppSpacing.lg)
