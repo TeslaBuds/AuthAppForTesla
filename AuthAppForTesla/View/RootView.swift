@@ -47,44 +47,55 @@ enum AppTab: Hashable {
 struct RootView: View {
     @Bindable var model: AuthViewModel
     @State private var selection: AppTab
-    @State private var navigationPath: NavigationPath
+    /// Each tab owns its own navigation stack, so a screen pushed in one
+    /// section (for example Tools → Test Token) never covers another
+    /// section. A single stack wrapped around the whole TabView made the
+    /// About tab look unresponsive on Mac and iPad while a Tools screen was
+    /// pushed on top of it (#42).
+    @State private var toolsPath: NavigationPath
     @State private var showOnboarding = false
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
 
     init(model: AuthViewModel, initialTab: AppTab = .owners) {
         self.model = model
         _selection = State(initialValue: initialTab)
-        _navigationPath = State(initialValue: Self.initialNavigationPath())
+        _toolsPath = State(initialValue: Self.initialToolsPath())
     }
 
     var body: some View {
-        NavigationStack(path: $navigationPath) {
-            TabView(selection: $selection) {
-                Tab("Owners API", systemImage: "steeringwheel", value: .owners) {
+        TabView(selection: $selection) {
+            Tab("Owners API", systemImage: "steeringwheel", value: .owners) {
+                NavigationStack {
                     OwnersAPIView(model: model)
                 }
-                Tab("Fleet API", systemImage: "car.2.fill", value: .fleet) {
+            }
+            Tab("Fleet API", systemImage: "car.2.fill", value: .fleet) {
+                NavigationStack {
                     FleetAPIView(model: model)
                 }
-                Tab("Tools", systemImage: "wrench.and.screwdriver", value: .tools) {
+            }
+            Tab("Tools", systemImage: "wrench.and.screwdriver", value: .tools) {
+                NavigationStack(path: $toolsPath) {
                     ToolsView(model: model)
+                        .navigationDestination(for: ToolsDestination.self) { destination in
+                            switch destination {
+                            case .jwtInspector:
+                                JWTInspectorView(model: model, initialInput: Self.jwtInspectorInitialInput())
+                            case .snippetExporter:
+                                SnippetExporterView(model: model)
+                            case .testToken:
+                                TestTokenView(model: model)
+                            }
+                        }
                 }
-                Tab("About", systemImage: "info.circle", value: .about) {
+            }
+            Tab("About", systemImage: "info.circle", value: .about) {
+                NavigationStack {
                     AboutView()
                 }
             }
-            .tint(Color("TeslaRed"))
-            .navigationDestination(for: ToolsDestination.self) { destination in
-                switch destination {
-                case .jwtInspector:
-                    JWTInspectorView(model: model, initialInput: Self.jwtInspectorInitialInput())
-                case .snippetExporter:
-                    SnippetExporterView(model: model)
-                case .testToken:
-                    TestTokenView(model: model)
-                }
-            }
         }
+        .tint(Color("TeslaRed"))
         .overlay(alignment: .topLeading) {
             #if DEBUG
             // Hidden mirror of LiveTestLog for the live UI test. The
@@ -120,9 +131,9 @@ struct RootView: View {
         }
     }
 
-    /// Builds the initial NavigationPath for screenshot scenarios that
-    /// want to land on a specific Tools sub-screen.
-    private static func initialNavigationPath() -> NavigationPath {
+    /// Builds the initial Tools NavigationPath for screenshot scenarios
+    /// that want to land on a specific Tools sub-screen.
+    private static func initialToolsPath() -> NavigationPath {
         var path = NavigationPath()
         #if DEBUG
         switch ScreenshotScenario.current {
