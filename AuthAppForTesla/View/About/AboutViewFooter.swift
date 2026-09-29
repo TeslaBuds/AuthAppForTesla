@@ -46,6 +46,8 @@ struct Friend {
     let appId: String?
     let appUrl: String?
     let icon: String
+    /// Optional one-line description shown under the name.
+    var tagline: String? = nil
 }
 
 #Preview {

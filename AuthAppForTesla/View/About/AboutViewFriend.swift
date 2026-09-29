@@ -13,6 +13,7 @@ struct AboutViewFriend: View {
     let appId: String?
     let appUrl: String?
     let icon: String
+    var tagline: String? = nil
 
     @Environment(\.openURL) private var openURL
     @State private var safariURL: URL?
@@ -30,9 +31,18 @@ struct AboutViewFriend: View {
                     .clipShape(.rect(cornerRadius: AppCornerRadius.small))
                 Text(name)
                     .font(.subheadline)
+                if let tagline {
+                    Text(tagline)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(name)
+        .accessibilityHint(tagline ?? "")
         .padding(AppSpacing.sm)
         .shadow(radius: AppTheme.shadowRadius)
         .sheet(isPresented: $showSafari) {

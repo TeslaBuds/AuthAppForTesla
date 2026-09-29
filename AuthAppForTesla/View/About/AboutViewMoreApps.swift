@@ -13,11 +13,22 @@ struct AboutViewMoreApps: View {
         GridItem(.fixed(150), spacing: AppSpacing.sm),
     ]
 
+    /// Every Dansk Rumskrot app that is live on the App Store (checked
+    /// against the public App Store lookup on 29 Sep 2026, #43). Apps still
+    /// in review are left out until they ship. No prices here, by design.
     private let apps: [Friend] = [
-        Friend(name: "ManaScope", appId: "6760581915", appUrl: nil, icon: "ManaScope"),
-        Friend(name: "PairPanic", appId: "6761368630", appUrl: nil, icon: "PairPanic"),
-        Friend(name: "Rumskrot Remote", appId: "6761122209", appUrl: nil, icon: "RumskrotRemote"),
-        Friend(name: "Rumskrot Terminal", appId: "6761121988", appUrl: nil, icon: "RumskrotTerminal"),
+        Friend(name: "Caravan Leveler", appId: "1537330412", appUrl: nil, icon: "CaravanLeveler",
+               tagline: "Level your caravan or camper"),
+        Friend(name: "ManaScope", appId: "6760581915", appUrl: nil, icon: "ManaScope",
+               tagline: "Scan and collect Magic cards"),
+        Friend(name: "PairPanic", appId: "6761368630", appUrl: nil, icon: "PairPanic",
+               tagline: "A fast symbol-matching game"),
+        Friend(name: "Rumskrot Beacon", appId: "6766202612", appUrl: nil, icon: "RumskrotBeacon",
+               tagline: "Find where your network breaks"),
+        Friend(name: "Rumskrot Remote", appId: "6761122209", appUrl: nil, icon: "RumskrotRemote",
+               tagline: "Your Mac's screen, anywhere"),
+        Friend(name: "Rumskrot Terminal", appId: "6761121988", appUrl: nil, icon: "RumskrotTerminal",
+               tagline: "An SSH terminal for your servers"),
     ]
 
     var body: some View {
@@ -30,8 +41,8 @@ struct AboutViewMoreApps: View {
                 spacing: 0
             ) {
                 ForEach(apps, id: \.name) { app in
-                    AboutViewFriend(name: app.name, appId: app.appId, appUrl: app.appUrl, icon: app.icon)
-                        .frame(height: 140, alignment: .top)
+                    AboutViewFriend(name: app.name, appId: app.appId, appUrl: app.appUrl, icon: app.icon, tagline: app.tagline)
+                        .frame(minHeight: 170, alignment: .top)
                         .multilineTextAlignment(.center)
                 }
             }

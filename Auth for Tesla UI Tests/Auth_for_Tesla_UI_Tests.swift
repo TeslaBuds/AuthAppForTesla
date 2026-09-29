@@ -33,16 +33,20 @@ final class AboutFriendLinkTests: XCTestCase {
 
         let moreHeading = app.staticTexts["More from Dansk Rumskrot"].firstMatch
         let friendsHeading = app.staticTexts["Friends of the App"].firstMatch
-        let manaScope = app.buttons["ManaScope"].firstMatch
-        for _ in 0..<8 where !(manaScope.exists && manaScope.isHittable) {
+        let lastTile = app.buttons["Rumskrot Terminal"].firstMatch
+        // The last tile of the section: the grid is lazy, so a first-row
+        // tile can be scrolled past and unloaded before it is checked.
+        for _ in 0..<16 where !(lastTile.exists && lastTile.isHittable) {
             #if targetEnvironment(macCatalyst)
-            app.scrollViews.firstMatch.scroll(byDeltaX: 0, deltaY: -300)
+            app.scrollViews.firstMatch.scroll(byDeltaX: 0, deltaY: -150)
             #else
-            app.swipeUp()
+            let window = app.windows.firstMatch
+            window.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7))
+                .press(forDuration: 0.05, thenDragTo: window.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)))
             #endif
         }
         XCTAssertTrue(moreHeading.exists, "More from Dansk Rumskrot section missing")
-        XCTAssertTrue(manaScope.waitForExistence(timeout: 5), "ManaScope tile missing")
+        XCTAssertTrue(lastTile.waitForExistence(timeout: 5), "Rumskrot Terminal tile missing")
         for _ in 0..<4 where !friendsHeading.exists {
             #if targetEnvironment(macCatalyst)
             app.scrollViews.firstMatch.scroll(byDeltaX: 0, deltaY: -300)
@@ -53,10 +57,10 @@ final class AboutFriendLinkTests: XCTestCase {
         XCTAssertTrue(friendsHeading.exists, "Friends of the App section missing")
         attach(app, "about_cross_promotion")
 
-        manaScope.clickOrTap()
+        lastTile.clickOrTap()
         sleep(4)
         let handoff = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
-        handoff.name = "after_tapping_ManaScope"
+        handoff.name = "after_tapping_a_More_from_tile"
         handoff.lifetime = .keepAlways
         add(handoff)
 
