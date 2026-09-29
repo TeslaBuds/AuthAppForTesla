@@ -21,7 +21,6 @@ struct AboutViewMoreApps: View {
     ]
 
     var body: some View {
-#if !targetEnvironment(macCatalyst)
         VStack(spacing: AppSpacing.sm) {
             Text("More from Dansk Rumskrot")
                 .font(.title)
@@ -39,9 +38,6 @@ struct AboutViewMoreApps: View {
         }
         .padding(AppSpacing.cardInner)
         .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
-#else
-        EmptyView()
-#endif
     }
 }
 

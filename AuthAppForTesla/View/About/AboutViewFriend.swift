@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SafariServices
-import StoreKit
 
 struct AboutViewFriend: View {
     let name: String
@@ -15,15 +14,13 @@ struct AboutViewFriend: View {
     let appUrl: String?
     let icon: String
 
+    @Environment(\.openURL) private var openURL
+    @State private var safariURL: URL?
     @State private var showSafari = false
 
     var body: some View {
         Button {
-            if let appId {
-                presentStoreProduct(appID: appId)
-            } else if appUrl != nil {
-                showSafari = true
-            }
+            open()
         } label: {
             VStack(spacing: AppSpacing.sm) {
                 Image(icon)
@@ -39,32 +36,53 @@ struct AboutViewFriend: View {
         .padding(AppSpacing.sm)
         .shadow(radius: AppTheme.shadowRadius)
         .sheet(isPresented: $showSafari) {
-            if let appUrl, let url = URL(string: appUrl) {
-                SafariView(url: url)
+            if let safariURL {
+                SafariView(url: safariURL)
                     .ignoresSafeArea()
             }
         }
     }
 
-    /// Presents an `SKStoreProductViewController` modally from UIKit,
-    /// bypassing SwiftUI's sheet presentation which is incompatible with this controller.
-    private func presentStoreProduct(appID: String) {
-        guard let windowScene = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene }).first,
-              let rootVC = windowScene.keyWindow?.rootViewController else {
-            return
+    /// App Store links go through `openURL`, which hands off to the App Store
+    /// (Mac App Store on Mac). This replaces the old `SKStoreProductViewController`
+    /// presentation, which threw on teardown (#32) and was gated off on Mac (#38).
+    /// Plain web links open in an in-app Safari sheet on iOS and in the default
+    /// browser on Mac, where `SFSafariViewController` is not available.
+    private func open() {
+        guard let destination = FriendLink(appId: appId, appUrl: appUrl) else { return }
+        switch destination {
+        case .appStore(let url):
+            openURL(url)
+        case .web(let url):
+#if targetEnvironment(macCatalyst)
+            openURL(url)
+#else
+            safariURL = url
+            showSafari = true
+#endif
         }
-        // Walk to the topmost presented controller so we present on top of everything.
-        var topVC = rootVC
-        while let presented = topVC.presentedViewController {
-            topVC = presented
-        }
-        let storeVC = SKStoreProductViewController()
-        storeVC.loadProduct(withParameters: [SKStoreProductParameterITunesItemIdentifier: appID]) { _, _ in }
-        topVC.present(storeVC, animated: true)
     }
 }
 
+/// Where tapping a friend tile should take the user.
+enum FriendLink: Equatable {
+    case appStore(URL)
+    case web(URL)
+
+    /// Prefers the App Store product page when an App Store ID is known,
+    /// otherwise the web URL. Returns `nil` when neither yields a valid URL.
+    init?(appId: String?, appUrl: String?) {
+        if let appId, !appId.isEmpty, let url = URL(string: "https://apps.apple.com/app/id\(appId)") {
+            self = .appStore(url)
+        } else if let appUrl, let url = URL(string: appUrl), url.scheme != nil {
+            self = .web(url)
+        } else {
+            return nil
+        }
+    }
+}
+
+#if !targetEnvironment(macCatalyst)
 /// Wraps `SFSafariViewController` for presenting in-app Safari browsing.
 private struct SafariView: UIViewControllerRepresentable {
     let url: URL
@@ -76,7 +94,13 @@ private struct SafariView: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {
     }
 }
+#else
+private struct SafariView: View {
+    let url: URL
+    var body: some View { EmptyView() }
+}
+#endif
 
 #Preview {
-    AboutViewFriend(name: "TeSlate", appId: nil, appUrl: "infinytum.co", icon: "TeSlate")
+    AboutViewFriend(name: "TeSlate", appId: "1532406445", appUrl: nil, icon: "TeSlate")
 }

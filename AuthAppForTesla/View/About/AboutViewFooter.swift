@@ -21,7 +21,6 @@ struct AboutViewFooter: View {
     ]
 
     var body: some View {
-#if !targetEnvironment(macCatalyst)
         VStack(spacing: AppSpacing.sm) {
             Text("Friends of the App")
                 .font(.title)
@@ -39,9 +38,6 @@ struct AboutViewFooter: View {
         }
         .padding(AppSpacing.cardInner)
         .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
-#else
-        EmptyView()
-#endif
     }
 }
 

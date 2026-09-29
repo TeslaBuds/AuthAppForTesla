@@ -358,6 +358,73 @@ final class LiveAuthTests: XCTestCase {
     }
     #endif
 
+    /// #1: open sign-in, dismiss it without authenticating, then sign in
+    /// for real. Tokens must be generated on the second attempt.
+    @MainActor
+    func testLive_04_CancelledSignInThenSignInSucceeds() throws {
+        let app = launchClean()
+
+        selectTab(app: app, name: "Owners API")
+        let loginButton = app.buttons["loginButton"]
+        XCTAssertTrue(loginButton.waitForExistence(timeout: 10), "Expected the Owners API login view")
+        loginButton.clickOrTap()
+
+        XCTAssertTrue(app.webViews.firstMatch.waitForExistence(timeout: 30), "Expected the Tesla OAuth web view")
+        attach(app, named: "issue1_01_first_attempt_open")
+        let cancel = app.buttons["Cancel"].firstMatch
+        XCTAssertTrue(cancel.waitForExistence(timeout: 10), "Expected a Cancel button on the auth sheet")
+        cancel.clickOrTap()
+        XCTAssertTrue(loginButton.waitForExistence(timeout: 10), "Expected to be back on the login view after Cancel")
+        sleep(1)
+        attach(app, named: "issue1_02_after_cancel")
+
+        signInWithDemoAccount(app: app)
+        XCTAssertTrue(
+            app.buttons["refreshTokensButton"].waitForExistence(timeout: 60),
+            "Expected tokens after signing in again following a cancelled attempt"
+        )
+        attach(app, named: "issue1_03_tokens_after_second_attempt")
+    }
+
+    /// #30: an invalid Fleet API redirect URI must leave a way back. The
+    /// auth sheet's Cancel returns to the form, which stays editable.
+    @MainActor
+    func testLive_05_FleetInvalidRedirectCanCancel() throws {
+        let app = launchClean()
+
+        selectTab(app: app, name: "Fleet API")
+        let loginButton = app.buttons["loginButtonv4"]
+        XCTAssertTrue(loginButton.waitForExistence(timeout: 10), "Expected the Fleet API login view")
+
+        let clientId = app.textFields["Client ID"].firstMatch
+        XCTAssertTrue(clientId.waitForExistence(timeout: 5))
+        clientId.clickOrTap()
+        clientId.typeText("invalid-client-id")
+        let redirect = app.textFields["Redirect URI"].firstMatch
+        redirect.clickOrTap()
+        redirect.typeText("https://invalid.example/callback")
+        attach(app, named: "issue30_01_form_filled")
+
+        loginButton.clickOrTap()
+        XCTAssertTrue(app.webViews.firstMatch.waitForExistence(timeout: 30), "Expected the Tesla OAuth web view")
+        sleep(8)
+        attach(app, named: "issue30_02_tesla_error_page")
+
+        let cancel = app.buttons["Cancel"].firstMatch
+        XCTAssertTrue(cancel.waitForExistence(timeout: 10), "Expected a Cancel button on the auth sheet")
+        XCTAssertTrue(cancel.isHittable, "Cancel must be reachable over Tesla's error page")
+        cancel.clickOrTap()
+
+        XCTAssertTrue(loginButton.waitForExistence(timeout: 10), "Expected to be back on the Fleet form after Cancel")
+        let redirectAfter = app.textFields["Redirect URI"].firstMatch
+        XCTAssertTrue(redirectAfter.waitForExistence(timeout: 5))
+        XCTAssertTrue(redirectAfter.isEnabled, "Redirect URI must stay editable after cancelling")
+        redirectAfter.clickOrTap()
+        redirectAfter.typeText("/fixed")
+        XCTAssertTrue(((redirectAfter.value as? String) ?? "").contains("fixed"), "Expected the edit to land in the Redirect URI field, got \(redirectAfter.value ?? "nil")")
+        attach(app, named: "issue30_03_back_on_form_edited")
+    }
+
     // MARK: - Helpers
 
     /// Launches the app with `live-test-clear-state` so the keychain

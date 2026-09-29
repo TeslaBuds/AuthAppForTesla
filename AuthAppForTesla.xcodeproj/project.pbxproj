@@ -19,14 +19,14 @@
 		20CDC55E25E1D3B800E895C8 /* AboutViewFriend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20CDC55D25E1D3B800E895C8 /* AboutViewFriend.swift */; };
 		20F8775825E2D9DA00953E51 /* HomeViewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775725E2D9DA00953E51 /* HomeViewHeader.swift */; };
 		20F8775A25E2DA4300953E51 /* HomeViewToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775925E2DA4300953E51 /* HomeViewToken.swift */; };
-		EAFF12000000000000A50587 /* TokenDetailRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF12000000000000A50586 /* TokenDetailRow.swift */; };
 		20F8775C25E2DA5300953E51 /* HomeViewRefreshTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775B25E2DA5300953E51 /* HomeViewRefreshTokens.swift */; };
 		20F8775F25E2F67800953E51 /* LicenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8775E25E2F67800953E51 /* LicenseView.swift */; };
 		20F8776125E2F73800953E51 /* LicenseViewEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20F8776025E2F73800953E51 /* LicenseViewEntry.swift */; };
+		C4E0A2D682FD41AFB5D11655 /* LiveTestLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692739F5613469097CA1786 /* LiveTestLog.swift */; };
+		D13185A79914463F9079DD04 /* TokenProfileAppEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EFE42CE20749B385AE6DBE /* TokenProfileAppEntities.swift */; };
 		EA1A333D272D88A100B66EB0 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EA1A3340272D88A100B66EB0 /* InfoPlist.strings */; };
 		EA563F692F5D8C0500A50586 /* AuthWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA563F682F5D8C0500A50586 /* AuthWebView.swift */; };
 		EA5641EE2F5DD84200A50586 /* AppVersionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5641ED2F5DD84200A50586 /* AppVersionLabel.swift */; };
-		EAFF11000000000000A50586 /* AppSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF11000000000000A50585 /* AppSpacing.swift */; };
 		EA5641FA2F5DDF8F00A50586 /* TipJarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5641F92F5DDF8F00A50586 /* TipJarManager.swift */; };
 		EA5641FC2F5DDFA200A50586 /* TipJarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5641FB2F5DDFA200A50586 /* TipJarView.swift */; };
 		EA5641FE2F5DDFCF00A50586 /* TipJarProducts.storekit in Resources */ = {isa = PBXBuildFile; fileRef = EA5641FD2F5DDFCF00A50586 /* TipJarProducts.storekit */; };
@@ -36,7 +36,6 @@
 		EA56435A2F5F2F7D00A50586 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5643592F5F2F7D00A50586 /* OnboardingView.swift */; };
 		EA56435F2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA56435E2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift */; };
 		EA5643642F5F2FDA00A50586 /* AboutViewShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5643632F5F2FDA00A50586 /* AboutViewShortcuts.swift */; };
-		EAFF00000000000000A50587 /* AboutViewMoreApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF00000000000000A50586 /* AboutViewMoreApps.swift */; };
 		EA5644B62F5F7FE100A50586 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EA5644B52F5F7FE100A50586 /* PrivacyInfo.xcprivacy */; };
 		EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */; };
 		EA63697425CAB11D000216BF /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA63697325CAB11D000216BF /* RootView.swift */; };
@@ -77,9 +76,10 @@
 		EAC032E72F868CBD00A29E67 /* PreviewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC032E62F868CBD00A29E67 /* PreviewModelFactory.swift */; };
 		EAC033392F86937100A29E67 /* ScreenshotScenario.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC033382F86937100A29E67 /* ScreenshotScenario.swift */; };
 		EAC0333B2F8693CA00A29E67 /* ScreenshotHarness.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC0333A2F8693CA00A29E67 /* ScreenshotHarness.swift */; };
-		C4E0A2D682FD41AFB5D11655 /* LiveTestLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1692739F5613469097CA1786 /* LiveTestLog.swift */; };
 		EAE6FCA52B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6FCA42B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift */; };
-		D13185A79914463F9079DD04 /* TokenProfileAppEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63EFE42CE20749B385AE6DBE /* TokenProfileAppEntities.swift */; };
+		EAFF00000000000000A50587 /* AboutViewMoreApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF00000000000000A50586 /* AboutViewMoreApps.swift */; };
+		EAFF11000000000000A50586 /* AppSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF11000000000000A50585 /* AppSpacing.swift */; };
+		EAFF12000000000000A50587 /* TokenDetailRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF12000000000000A50586 /* TokenDetailRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +100,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1692739F5613469097CA1786 /* LiveTestLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveTestLog.swift; sourceTree = "<group>"; };
 		20007B9A25E15E6B00958060 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		20CDC54625E1B52500E895C8 /* IconBackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconBackgroundView.swift; sourceTree = "<group>"; };
 		20CDC54825E1C1AB00E895C8 /* LoginViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewHeader.swift; sourceTree = "<group>"; };
@@ -112,16 +113,15 @@
 		20CDC55D25E1D3B800E895C8 /* AboutViewFriend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewFriend.swift; sourceTree = "<group>"; };
 		20F8775725E2D9DA00953E51 /* HomeViewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewHeader.swift; sourceTree = "<group>"; };
 		20F8775925E2DA4300953E51 /* HomeViewToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewToken.swift; sourceTree = "<group>"; };
-		EAFF12000000000000A50586 /* TokenDetailRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenDetailRow.swift; sourceTree = "<group>"; };
 		20F8775B25E2DA5300953E51 /* HomeViewRefreshTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewRefreshTokens.swift; sourceTree = "<group>"; };
 		20F8775E25E2F67800953E51 /* LicenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseView.swift; sourceTree = "<group>"; };
 		20F8776025E2F73800953E51 /* LicenseViewEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseViewEntry.swift; sourceTree = "<group>"; };
+		63EFE42CE20749B385AE6DBE /* TokenProfileAppEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProfileAppEntities.swift; sourceTree = "<group>"; };
 		EA1A333F272D88A100B66EB0 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA563F682F5D8C0500A50586 /* AuthWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthWebView.swift; sourceTree = "<group>"; };
 		EA5640852F5D996D00A50586 /* Auth for Tesla Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Auth for Tesla Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA5640922F5D998300A50586 /* Auth for Tesla UI Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Auth for Tesla UI Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA5641ED2F5DD84200A50586 /* AppVersionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppVersionLabel.swift; sourceTree = "<group>"; };
-		EAFF11000000000000A50585 /* AppSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSpacing.swift; sourceTree = "<group>"; };
 		EA5641F92F5DDF8F00A50586 /* TipJarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarManager.swift; sourceTree = "<group>"; };
 		EA5641FB2F5DDFA200A50586 /* TipJarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TipJarView.swift; sourceTree = "<group>"; };
 		EA5641FD2F5DDFCF00A50586 /* TipJarProducts.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = TipJarProducts.storekit; sourceTree = "<group>"; };
@@ -131,7 +131,6 @@
 		EA5643592F5F2F7D00A50586 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		EA56435E2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeslaAppShortcutsProvider.swift; sourceTree = "<group>"; };
 		EA5643632F5F2FDA00A50586 /* AboutViewShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewShortcuts.swift; sourceTree = "<group>"; };
-		EAFF00000000000000A50586 /* AboutViewMoreApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewMoreApps.swift; sourceTree = "<group>"; };
 		EA5644B52F5F7FE100A50586 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EA63696E25CAB11D000216BF /* AuthAppForTesla.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AuthAppForTesla.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAppForTeslaApp.swift; sourceTree = "<group>"; };
@@ -176,9 +175,10 @@
 		EAC032E62F868CBD00A29E67 /* PreviewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewModelFactory.swift; sourceTree = "<group>"; };
 		EAC033382F86937100A29E67 /* ScreenshotScenario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotScenario.swift; sourceTree = "<group>"; };
 		EAC0333A2F8693CA00A29E67 /* ScreenshotHarness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotHarness.swift; sourceTree = "<group>"; };
-		1692739F5613469097CA1786 /* LiveTestLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveTestLog.swift; sourceTree = "<group>"; };
 		EAE6FCA42B5D4A0B0011C3F0 /* RefreshFleetAPIToken.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshFleetAPIToken.swift; sourceTree = "<group>"; };
-		63EFE42CE20749B385AE6DBE /* TokenProfileAppEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenProfileAppEntities.swift; sourceTree = "<group>"; };
+		EAFF00000000000000A50586 /* AboutViewMoreApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewMoreApps.swift; sourceTree = "<group>"; };
+		EAFF11000000000000A50585 /* AppSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSpacing.swift; sourceTree = "<group>"; };
+		EAFF12000000000000A50586 /* TokenDetailRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenDetailRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
