@@ -26,7 +26,9 @@ enum ScreenshotScenario: String {
     /// Detects whichever screenshot scenario was passed via CLI arguments.
     static var current: ScreenshotScenario? {
         let args = Set(CommandLine.arguments)
-        for scenario in allCases where args.contains(scenario.rawValue) {
+        // The Mac passes them with a leading "-": AppKit opens a bare
+        // launch argument as a document, which suppresses the window.
+        for scenario in allCases where args.contains(scenario.rawValue) || args.contains("-" + scenario.rawValue) {
             return scenario
         }
         return nil
@@ -34,7 +36,7 @@ enum ScreenshotScenario: String {
 
     /// Whether the screenshot harness is active at all.
     static var isActive: Bool {
-        CommandLine.arguments.contains("enable-testing")
+        CommandLine.arguments.contains("enable-testing") || CommandLine.arguments.contains("-enable-testing")
     }
 }
 

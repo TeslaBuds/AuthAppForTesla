@@ -14,6 +14,13 @@ enum TokenType {
 }
 
 struct HomeViewToken: View {
+    /// "Tap" on a touch screen, "Click" with a pointer.
+    #if os(macOS)
+    static let copyHint: LocalizedStringKey = "Click to copy"
+    #else
+    static let copyHint: LocalizedStringKey = "Tap to copy"
+    #endif
+
     let title: String
     let description: String
     let token: Token?
@@ -80,7 +87,7 @@ struct HomeViewToken: View {
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     }
-                    Label("Tap to copy", systemImage: "doc.on.doc")
+                    Label(Self.copyHint, systemImage: "doc.on.doc")
                         .font(.caption)
                         .foregroundStyle(.tertiary)
                         .frame(maxWidth: .infinity, alignment: .trailing)

@@ -98,6 +98,7 @@ private struct SnippetOptionsCard: View {
                     Text("Fleet API").tag(LoginEnvironment.fleet)
                 }
                 .pickerStyle(.segmented)
+                .labelsHidden()
             }
 
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
@@ -109,6 +110,7 @@ private struct SnippetOptionsCard: View {
                     }
                 }
                 .pickerStyle(.segmented)
+                .labelsHidden()
             }
         }
         .glassCard()

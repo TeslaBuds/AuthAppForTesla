@@ -31,6 +31,7 @@ struct LoginViewSignInOwnersAPI: View {
                 }
             }
             .pickerStyle(.segmented)
+            .labelsHidden()
             Button("Sign in with Tesla") {
                 if !addAsNewProfile {
                     model.logOut(environment: .owner)

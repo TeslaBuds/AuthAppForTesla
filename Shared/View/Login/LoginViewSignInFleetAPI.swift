@@ -47,6 +47,7 @@ struct LoginViewSignInFleetAPI: View {
                 }
             }
             .pickerStyle(.segmented)
+            .labelsHidden()
 
             Button("Sign in with Tesla") {
                 if !addAsNewProfile {

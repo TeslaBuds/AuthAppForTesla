@@ -110,6 +110,7 @@ private struct TestTokenEnvironmentCard: View {
                 Text("Fleet API").tag(LoginEnvironment.fleet)
             }
             .pickerStyle(.segmented)
+            .labelsHidden()
         }
         .glassCard()
     }

@@ -1,0 +1,31 @@
+{
+  "comment": "One row per user-meaningful feature, per platform: \"shipped\", \"planned #<issue>\" or \"exempt: <reason>\". scripts/check-parity.sh fails when an App Intent or App Shortcuts provider has no row, when a shipped row's code is not compiled on that platform, or when a planned/exempt row's code is (AuthAppForTesla#44).",
+  "platforms": {
+    "ios": ["AuthAppForTesla", "Shared"],
+    "macos": ["AuthAppForTeslaMac", "Shared"]
+  },
+  "features": [
+    {"id": "intent.get-owners-token", "code": "GetOwnersAPIToken", "ios": "shipped", "macos": "shipped"},
+    {"id": "intent.get-fleet-token", "code": "GetFleetAPIToken", "ios": "shipped", "macos": "shipped"},
+    {"id": "intent.refresh-owners-token", "code": "RefreshOwnersAPIToken", "ios": "shipped", "macos": "shipped"},
+    {"id": "intent.refresh-fleet-token", "code": "RefreshFleetAPIToken", "ios": "shipped", "macos": "shipped"},
+    {"id": "intent.owners-token-expiration", "code": "GetOwnersAPITokenExpiration", "ios": "shipped", "macos": "shipped"},
+    {"id": "intent.fleet-token-expiration", "code": "GetFleetAPITokenExpiration", "ios": "shipped", "macos": "shipped"},
+    {"id": "shortcuts.provider", "code": "TeslaAppShortcutsProvider", "ios": "shipped", "macos": "shipped"},
+    {"id": "sign-in.owners", "code": "LoginViewSignInOwnersAPI", "ios": "shipped", "macos": "shipped"},
+    {"id": "sign-in.fleet", "code": "LoginViewSignInFleetAPI", "ios": "shipped", "macos": "shipped"},
+    {"id": "accounts.multiple-profiles", "code": "HomeViewHeader", "ios": "shipped", "macos": "shipped"},
+    {"id": "tokens.copy", "code": "TokenClipboard", "ios": "shipped", "macos": "shipped"},
+    {"id": "tokens.refresh-all", "code": "HomeViewRefreshTokens", "ios": "shipped", "macos": "shipped"},
+    {"id": "tokens.sync-wipe-guard", "code": "StoreProblemBanner", "ios": "exempt: iOS keeps its toasts; the guard itself is in TeslaAuthKit on both", "macos": "shipped"},
+    {"id": "tools.test-token", "code": "TestTokenView", "ios": "shipped", "macos": "shipped"},
+    {"id": "tools.jwt-inspector", "code": "JWTInspectorView", "ios": "shipped", "macos": "shipped"},
+    {"id": "tools.snippet-exporter", "code": "SnippetExporterView", "ios": "shipped", "macos": "shipped"},
+    {"id": "onboarding", "code": "OnboardingView", "ios": "shipped", "macos": "shipped"},
+    {"id": "tip-jar", "code": "TipJarView", "ios": "shipped", "macos": "shipped"},
+    {"id": "menu.tokens-commands", "code": "AppCommands", "ios": "shipped", "macos": "shipped"},
+    {"id": "mac.menu-bar-token-menu", "code": "MenuBarTokenMenu", "ios": "exempt: no menu bar on iPhone or iPad", "macos": "shipped"},
+    {"id": "mac.settings-scene", "code": "MacSettingsView", "ios": "exempt: iOS has no Settings scene; its settings live in the tabs", "macos": "shipped"},
+    {"id": "widgets", "code": "TokenWidget", "ios": "planned #45", "macos": "planned #45"}
+  ]
+}

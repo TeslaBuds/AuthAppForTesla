@@ -47,6 +47,8 @@ struct HomeView: View {
                         Divider()
                         Toggle("Show token details", isOn: $showDetails)
                             .font(.subheadline)
+                            .toggleStyle(.switch)
+                            .fullWidthToggle()
                     }
                     .padding(AppSpacing.cardInner)
                     .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))

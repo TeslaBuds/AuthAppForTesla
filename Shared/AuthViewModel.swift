@@ -161,6 +161,20 @@ class AuthViewModel {
         }
     }
 
+    /// Copies one profile's access or refresh token, whichever profile is
+    /// active. Used by the Mac's menu-bar token menu.
+    func copyToken(_ type: TokenType, from profile: TokenProfile) {
+        let name = profile.name.isEmpty ? "the account" : profile.name
+        switch type {
+        case .accessToken:
+            TokenClipboard.copy(profile.token.access_token)
+            showToast(.success("Access token for \(name) copied."))
+        case .refreshToken:
+            TokenClipboard.copy(profile.token.refresh_token)
+            showToast(.success("Refresh token for \(name) copied."))
+        }
+    }
+
     /// Writes a lightweight token summary to the shared App Group UserDefaults
     /// so the WidgetKit extension can read expiry dates without keychain access.
     private func persistTokenSummary() {
