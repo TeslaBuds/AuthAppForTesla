@@ -2,49 +2,34 @@
 //  TokenWidgetProvider.swift
 //  AuthForTeslaWidgets
 //
-//  Add this file to the "AuthForTeslaWidgets" widget extension target.
-//
 
-import WidgetKit
 import Foundation
+import WidgetKit
 
-/// Reads token expiry information from the shared App Group UserDefaults
-/// (written by the main app via AuthViewModel.persistTokenSummary()).
+/// Builds the widget's timeline from the app's token summary.
+///
+/// The app reloads the timelines whenever a token changes. Between reloads,
+/// the timeline carries an entry for each moment a token turns "expiring
+/// soon" or "expired", so the colour changes on time without a refresh.
 struct TokenWidgetProvider: TimelineProvider {
-    private let suiteName = "group.global"
+    var store = TokenSummaryStore()
 
     func placeholder(in context: Context) -> TokenWidgetEntry {
         .placeholder
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (TokenWidgetEntry) -> Void) {
-        completion(makeEntry())
+    func getSnapshot(in context: Context, completion: @escaping @Sendable (TokenWidgetEntry) -> Void) {
+        completion(context.isPreview ? .placeholder : store.entry())
     }
 
-    func getTimeline(in context: Context, completion: @escaping (Timeline<TokenWidgetEntry>) -> Void) {
-        let entry = makeEntry()
-
-        // Refresh shortly after the next token expiry, or in 30 minutes if none.
-        let nextRefresh: Date
-        let expiryDates = [entry.v3ExpiresAt, entry.v4ExpiresAt].compactMap { $0 }
-        if let soonest = expiryDates.min() {
-            nextRefresh = soonest.addingTimeInterval(60)
-        } else {
-            nextRefresh = .now.addingTimeInterval(1800)
-        }
-
-        let timeline = Timeline(entries: [entry], policy: .after(nextRefresh))
-        completion(timeline)
+    func getTimeline(in context: Context, completion: @escaping @Sendable (Timeline<TokenWidgetEntry>) -> Void) {
+        completion(Self.timeline(for: store.entry()))
     }
 
-    private func makeEntry() -> TokenWidgetEntry {
-        let defaults = UserDefaults(suiteName: suiteName)
-        return TokenWidgetEntry(
-            date: .now,
-            v3HasToken: defaults?.bool(forKey: "widget.tokenV3.hasToken") ?? false,
-            v3ExpiresAt: defaults?.object(forKey: "widget.tokenV3.expiresAt") as? Date,
-            v4HasToken: defaults?.bool(forKey: "widget.tokenV4.hasToken") ?? false,
-            v4ExpiresAt: defaults?.object(forKey: "widget.tokenV4.expiresAt") as? Date
-        )
+    /// One entry now, plus one at every later urgency change.
+    static func timeline(for entry: TokenWidgetEntry) -> Timeline<TokenWidgetEntry> {
+        let changes = Set(entry.owners.transitions(after: entry.date) + entry.fleet.transitions(after: entry.date))
+        let entries = [entry] + changes.sorted().map(entry.at)
+        return Timeline(entries: entries, policy: .never)
     }
 }

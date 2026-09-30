@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- The widgets read the token summary the app writes to the group.global
+	     UserDefaults suite (expiry dates and presence flags only). They carry
+	     no keychain-access-groups entitlement and never touch the keychain,
+	     so they cannot alter the synced token list (AuthAppForTesla#45). -->
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.global</string>
+	</array>
+</dict>
+</plist>

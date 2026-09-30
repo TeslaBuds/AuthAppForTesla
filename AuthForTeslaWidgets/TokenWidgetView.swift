@@ -2,149 +2,246 @@
 //  TokenWidgetView.swift
 //  AuthForTeslaWidgets
 //
-//  Add this file to the "AuthForTeslaWidgets" widget extension target.
-//
 
 import SwiftUI
 import WidgetKit
 
-/// The visual layout rendered inside the widget.
+/// The widget's root view: one token on the small widget, both on the medium.
 struct TokenWidgetView: View {
     let entry: TokenWidgetEntry
     @Environment(\.widgetFamily) private var family
 
     var body: some View {
-        switch family {
-        case .systemSmall:
-            smallBody
-        default:
-            mediumBody
+        Group {
+            switch family {
+            case .systemSmall:
+                SmallTokenWidgetView(entry: entry)
+            default:
+                MediumTokenWidgetView(entry: entry)
+            }
+        }
+        .containerBackground(.background, for: .widget)
+    }
+}
+
+/// The two APIs the app signs in to.
+enum TokenAPI: CaseIterable {
+    case owners, fleet
+
+    var title: LocalizedStringKey {
+        switch self {
+        case .owners: "Owners API"
+        case .fleet: "Fleet API"
         }
     }
 
-    // MARK: - Small widget (single token)
+    var systemImage: String {
+        switch self {
+        case .owners: "steeringwheel"
+        case .fleet: "car.2.fill"
+        }
+    }
 
-    private var smallBody: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
+    func status(in entry: TokenWidgetEntry) -> TokenStatus {
+        switch self {
+        case .owners: entry.owners
+        case .fleet: entry.fleet
+        }
+    }
+}
+
+/// Small widget: the app icon and the Owners API token, or the Fleet API
+/// token when only that one is signed in.
+struct SmallTokenWidgetView: View {
+    let entry: TokenWidgetEntry
+
+    private var api: TokenAPI {
+        entry.owners == .signedOut && entry.fleet != .signedOut ? .fleet : .owners
+    }
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            HStack(alignment: .top) {
                 Image("SetupIcon")
                     .resizable()
-                    .frame(width: 22, height: 22)
-                    .clipShape(.rect(cornerRadius: 5))
+                    .scaledToFit()
+                    .frame(width: 28, height: 28)
+                    .clipShape(.rect(cornerRadius: 6))
+                    .accessibilityHidden(true)
                 Spacer()
-                Image(systemName: "steeringwheel")
-                    .imageScale(.small)
-                    .foregroundStyle(.secondary)
+                TokenUrgencySymbol(urgency: api.status(in: entry).urgency(at: entry.date))
             }
-            Spacer()
-            if entry.v3HasToken {
-                expiryLabel(expiresAt: entry.v3ExpiresAt, label: "Owners API")
-            } else {
-                Text("Not signed in")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-            }
+            Spacer(minLength: 0)
+            TokenAPILabel(api: api)
+            TokenExpiryView(status: api.status(in: entry), date: entry.date)
         }
-        .padding()
-        .containerBackground(for: .widget) {
-            Color(.systemBackground)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    }
+}
+
+/// Medium widget: both tokens side by side.
+struct MediumTokenWidgetView: View {
+    let entry: TokenWidgetEntry
+
+    var body: some View {
+        HStack {
+            TokenColumnView(api: .owners, entry: entry)
+            Divider()
+            TokenColumnView(api: .fleet, entry: entry)
         }
     }
+}
 
-    // MARK: - Medium widget (both tokens side by side)
+/// One API's name, urgency symbol and expiry.
+struct TokenColumnView: View {
+    let api: TokenAPI
+    let entry: TokenWidgetEntry
 
-    private var mediumBody: some View {
-        HStack(spacing: 0) {
-            tokenColumn(
-                label: "Owners API",
-                systemImage: "steeringwheel",
-                hasToken: entry.v3HasToken,
-                expiresAt: entry.v3ExpiresAt
-            )
-            Divider().padding(.vertical)
-            tokenColumn(
-                label: "Fleet API",
-                systemImage: "car.2.fill",
-                hasToken: entry.v4HasToken,
-                expiresAt: entry.v4ExpiresAt
-            )
+    var body: some View {
+        let status = api.status(in: entry)
+        VStack(alignment: .leading) {
+            HStack(alignment: .top) {
+                TokenAPILabel(api: api)
+                Spacer(minLength: 0)
+                TokenUrgencySymbol(urgency: status.urgency(at: entry.date))
+            }
+            Spacer(minLength: 0)
+            TokenExpiryView(status: status, date: entry.date)
         }
-        .containerBackground(for: .widget) {
-            Color(.systemBackground)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    }
+}
+
+struct TokenAPILabel: View {
+    let api: TokenAPI
+
+    var body: some View {
+        Label(api.title, systemImage: api.systemImage)
+            .font(.caption)
+            .bold()
+            .lineLimit(1)
+            .minimumScaleFactor(0.8)
+    }
+}
+
+/// The same seal and octagon symbols the app's token badge uses.
+struct TokenUrgencySymbol: View {
+    let urgency: TokenStatus.Urgency
+
+    var body: some View {
+        switch urgency {
+        case .signedOut:
+            Image(systemName: "person.crop.circle.badge.questionmark")
+                .foregroundStyle(.secondary)
+                .accessibilityLabel("Not signed in")
+        case .valid:
+            Image(systemName: "checkmark.seal.fill")
+                .foregroundStyle(.green)
+                .widgetAccentable()
+                .accessibilityLabel("Valid")
+        case .expiringSoon:
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(.orange)
+                .widgetAccentable()
+                .accessibilityLabel("Expiring soon")
+        case .expired:
+            Image(systemName: "xmark.octagon.fill")
+                .foregroundStyle(Color("TeslaRed"))
+                .widgetAccentable()
+                .accessibilityLabel("Expired")
         }
     }
+}
 
-    private func tokenColumn(
-        label: String,
-        systemImage: String,
-        hasToken: Bool,
-        expiresAt: Date?
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Label(label, systemImage: systemImage)
-                .font(.caption)
-                .bold()
-                .foregroundStyle(.primary)
-                .lineLimit(1)
-            Spacer()
-            if hasToken {
-                expiryLabel(expiresAt: expiresAt, label: label)
-            } else {
-                Text("Not signed in")
+/// How long a token has left, or how long ago it expired.
+struct TokenExpiryView: View {
+    let status: TokenStatus
+    let date: Date
+
+    var body: some View {
+        switch (status.urgency(at: date), status.expiresAt) {
+        case (.signedOut, _):
+            Text("Not signed in")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        case (.expired, let expiresAt?):
+            VStack(alignment: .leading) {
+                Text("Expired")
+                    .font(.title3)
+                    .bold()
+                    .foregroundStyle(Color("TeslaRed"))
+                    .widgetAccentable()
+                Text("\(expiresAt, style: .relative) ago")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
             }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-    }
-
-    // MARK: - Expiry label
-
-    @ViewBuilder
-    private func expiryLabel(expiresAt: Date?, label: String) -> some View {
-        if let expiresAt {
-            let isExpired = expiresAt < .now
-            let isExpiringSoon = expiresAt.timeIntervalSinceNow < 3600
-
-            VStack(alignment: .leading, spacing: 2) {
-                Text(isExpired ? "Expired" : "Expires")
+        case (let urgency, let expiresAt?):
+            VStack(alignment: .leading) {
+                Text("Expires in")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
                 Text(expiresAt, style: .relative)
-                    .font(.caption)
+                    .font(.title3)
                     .bold()
-                    .foregroundStyle(
-                        isExpired ? .red :
-                        isExpiringSoon ? .orange : .green
-                    )
+                    .foregroundStyle(urgency == .expiringSoon ? Color.orange : Color.green)
+                    .widgetAccentable()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
             }
-        } else {
-            Text("Active")
-                .font(.caption)
+        case (_, nil):
+            Text("Signed in")
+                .font(.title3)
                 .bold()
                 .foregroundStyle(.green)
+                .widgetAccentable()
         }
     }
 }
 
 // MARK: - Previews
 
-#Preview(as: .systemSmall) {
+private extension TokenWidgetEntry {
+    static let previewMixed = TokenWidgetEntry(
+        date: .now,
+        owners: .signedIn(expiresAt: .now.addingTimeInterval(1_500)),
+        fleet: .signedIn(expiresAt: .now.addingTimeInterval(-3_000))
+    )
+
+    static let previewSignedOut = TokenWidgetEntry(date: .now, owners: .signedOut, fleet: .signedOut)
+}
+
+#Preview("Small", as: .systemSmall) {
     TokenWidget()
 } timeline: {
     TokenWidgetEntry.placeholder
 }
 
-#Preview(as: .systemMedium) {
+#Preview("Medium", as: .systemMedium) {
     TokenWidget()
 } timeline: {
     TokenWidgetEntry.placeholder
-    TokenWidgetEntry(
-        date: .now,
-        v3HasToken: false,
-        v3ExpiresAt: nil,
-        v4HasToken: true,
-        v4ExpiresAt: .now.addingTimeInterval(-60)
-    )
+}
+
+#Preview("Small, expiring soon", as: .systemSmall) {
+    TokenWidget()
+} timeline: {
+    TokenWidgetEntry.previewMixed
+}
+
+#Preview("Medium, expiring and expired", as: .systemMedium) {
+    TokenWidget()
+} timeline: {
+    TokenWidgetEntry.previewMixed
+}
+
+#Preview("Small, signed out", as: .systemSmall) {
+    TokenWidget()
+} timeline: {
+    TokenWidgetEntry.previewSignedOut
+}
+
+#Preview("Medium, signed out", as: .systemMedium) {
+    TokenWidget()
+} timeline: {
+    TokenWidgetEntry.previewSignedOut
 }

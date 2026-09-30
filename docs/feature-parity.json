@@ -1,8 +1,8 @@
 {
   "comment": "One row per user-meaningful feature, per platform: \"shipped\", \"planned #<issue>\" or \"exempt: <reason>\". scripts/check-parity.sh fails when an App Intent or App Shortcuts provider has no row, when a shipped row's code is not compiled on that platform, or when a planned/exempt row's code is (AuthAppForTesla#44).",
   "platforms": {
-    "ios": ["AuthAppForTesla", "Shared"],
-    "macos": ["AuthAppForTeslaMac", "Shared"]
+    "ios": ["AuthAppForTesla", "Shared", "AuthForTeslaWidgets"],
+    "macos": ["AuthAppForTeslaMac", "Shared", "AuthForTeslaWidgets"]
   },
   "features": [
     {"id": "intent.get-owners-token", "code": "GetOwnersAPIToken", "ios": "shipped", "macos": "shipped"},
@@ -26,6 +26,6 @@
     {"id": "menu.tokens-commands", "code": "AppCommands", "ios": "shipped", "macos": "shipped"},
     {"id": "mac.menu-bar-token-menu", "code": "MenuBarTokenMenu", "ios": "exempt: no menu bar on iPhone or iPad", "macos": "shipped"},
     {"id": "mac.settings-scene", "code": "MacSettingsView", "ios": "exempt: iOS has no Settings scene; its settings live in the tabs", "macos": "shipped"},
-    {"id": "widgets", "code": "TokenWidget", "ios": "planned #45", "macos": "planned #45"}
+    {"id": "widgets", "code": "TokenWidget", "ios": "shipped", "macos": "shipped"}
   ]
 }

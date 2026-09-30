@@ -71,7 +71,8 @@ notification when a refresh fails so the user finds out *before* their
 2am Shortcut breaks.
 
 ### F. Lock Screen / StandBy widgets
-The app already ships widgets. Add a Lock Screen accessory showing "Token
+The app ships Home Screen and desktop widgets (small and medium, token
+expiry for both APIs; #45). Add a Lock Screen accessory showing "Token
 expires in 14m" with a tap-to-refresh deep link. Pairs nicely with
 StandBy on iPhone, and would be a small but very visible upgrade.
 
