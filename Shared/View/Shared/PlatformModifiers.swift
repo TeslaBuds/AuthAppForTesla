@@ -46,14 +46,4 @@ extension View {
         self
         #endif
     }
-
-    /// A switch with its label on the leading edge and the switch on the
-    /// trailing edge, as iOS lays out every toggle.
-    func fullWidthToggle() -> some View {
-        #if os(macOS)
-        frame(maxWidth: .infinity, alignment: .leading)
-        #else
-        self
-        #endif
-    }
 }

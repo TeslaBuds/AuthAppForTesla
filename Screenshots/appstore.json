@@ -223,6 +223,7 @@
     "iPadSimulators": [
       "iPad Pro 13-inch (M5)"
     ],
-    "macCatalyst": true
+    "macCatalyst": false,
+    "macNativeCapture": "Screenshots/capture-mac.sh (native Mac app's own capture harness, #44)"
   }
 }

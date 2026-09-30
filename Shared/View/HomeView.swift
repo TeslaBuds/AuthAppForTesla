@@ -45,10 +45,21 @@ struct HomeView: View {
                             showDetails: showDetails
                         )
                         Divider()
+                        #if os(macOS)
+                        // A Mac switch sits beside its label; iOS puts it
+                        // on the trailing edge, as here.
+                        HStack {
+                            Text("Show token details")
+                            Spacer()
+                            Toggle("Show token details", isOn: $showDetails)
+                                .toggleStyle(.switch)
+                                .labelsHidden()
+                        }
+                        .font(.subheadline)
+                        #else
                         Toggle("Show token details", isOn: $showDetails)
                             .font(.subheadline)
-                            .toggleStyle(.switch)
-                            .fullWidthToggle()
+                        #endif
                     }
                     .padding(AppSpacing.cardInner)
                     .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
