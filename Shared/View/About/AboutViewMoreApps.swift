@@ -9,10 +9,8 @@ import TeslaAuthKit
 /// Cross-promotes other Dansk Rumskrot apps. Mirrors the Friends grid
 /// but uses our own apps and our own copy.
 struct AboutViewMoreApps: View {
-    private var columns: [GridItem] = [
-        GridItem(.fixed(150), spacing: AppSpacing.sm),
-        GridItem(.fixed(150), spacing: AppSpacing.sm),
-    ]
+    /// Stable identity for scroll targeting.
+    static let scrollID = "moreApps"
 
     /// Every Dansk Rumskrot app that is live on the App Store (checked
     /// against the public App Store lookup on 29 Sep 2026, #43). Apps still
@@ -36,14 +34,9 @@ struct AboutViewMoreApps: View {
         VStack(spacing: AppSpacing.sm) {
             Text("More from Dansk Rumskrot")
                 .font(.title)
-            LazyVGrid(
-                columns: columns,
-                alignment: .center,
-                spacing: 0
-            ) {
+            AboutTileGrid(itemCount: apps.count) {
                 ForEach(apps, id: \.name) { app in
                     AboutViewFriend(name: app.name, appId: app.appId, appUrl: app.appUrl, icon: app.icon, tagline: app.tagline)
-                        .frame(minHeight: 170, alignment: .top)
                         .multilineTextAlignment(.center)
                 }
             }

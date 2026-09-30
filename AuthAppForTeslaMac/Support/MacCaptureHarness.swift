@@ -17,6 +17,14 @@ enum MacCaptureHarness {
         return args[index + 1]
     }
 
+    /// `-mac-capture-size 1600x1000` overrides the default 1100×820 window,
+    /// so a layout can be checked at narrow, medium and wide widths.
+    static var captureSize: CGSize {
+        let parts = argument(after: "-mac-capture-size")?.split(separator: "x").compactMap { Double($0) } ?? []
+        guard parts.count == 2 else { return CGSize(width: 1100, height: 820) }
+        return CGSize(width: parts[0], height: parts[1])
+    }
+
     static func runIfRequested(model: AuthViewModel) async {
         guard let name = argument(after: "-mac-capture") else { return }
         FileHandle.standardError.write(Data("CAPTURE START \(name)\n".utf8))
@@ -28,7 +36,7 @@ enum MacCaptureHarness {
         if let window {
             window.makeKeyAndOrderFront(nil)
             var frame = window.frame
-            frame.size = CGSize(width: 1100, height: 820)
+            frame.size = captureSize
             window.setFrame(frame, display: true, animate: false)
             window.center()
         }
