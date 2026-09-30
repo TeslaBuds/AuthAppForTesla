@@ -35,15 +35,11 @@ actor AuthController {
         // Delete the active profile (and its mirrored legacy entry).
         let collection = await TokenProfileStore.shared.load(environment: environment)
         if let active = collection.activeProfile {
-            await TokenProfileStore.shared.delete(id: active.id, environment: environment)
+            _ = try? await TokenProfileStore.shared.delete(id: active.id, environment: environment)
         } else {
-            // Fallback: clean any stale legacy keychain entry directly.
-            switch environment {
-            case .owner:
-                KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-            case .fleet:
-                KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-            }
+            // Fallback: clean any stale legacy keychain entry — through
+            // the store, which refuses when the synced items are unreadable.
+            try? await TokenProfileStore.shared.clearLegacyMirror(environment: environment)
         }
     }
 
@@ -51,7 +47,7 @@ actor AuthController {
     {
         // Persist via the profile store so the active profile + legacy
         // keychain mirror are updated together.
-        await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
+        _ = try? await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
     }
 
     // MARK: - Profile management
@@ -60,21 +56,27 @@ actor AuthController {
         await TokenProfileStore.shared.load(environment: environment)
     }
 
-    func setActiveProfile(id: UUID, environment: LoginEnvironment) async {
-        await TokenProfileStore.shared.setActive(id: id, environment: environment)
+    /// The stored profiles, telling an unreadable store apart from an
+    /// empty one (the sync-wipe guard, #44).
+    func loadProfileState(environment: LoginEnvironment) async -> TokenProfileLoadState {
+        await TokenProfileStore.shared.loadState(environment: environment)
     }
 
-    func renameProfile(id: UUID, to name: String, environment: LoginEnvironment) async {
-        await TokenProfileStore.shared.rename(id: id, to: name, environment: environment)
+    func setActiveProfile(id: UUID, environment: LoginEnvironment) async throws(TokenStoreError) {
+        try await TokenProfileStore.shared.setActive(id: id, environment: environment)
     }
 
-    func deleteProfile(id: UUID, environment: LoginEnvironment) async {
-        await TokenProfileStore.shared.delete(id: id, environment: environment)
+    func renameProfile(id: UUID, to name: String, environment: LoginEnvironment) async throws(TokenStoreError) {
+        try await TokenProfileStore.shared.rename(id: id, to: name, environment: environment)
     }
 
-    func addProfile(name: String, token: Token, environment: LoginEnvironment, makeActive: Bool = true) async {
+    func deleteProfile(id: UUID, environment: LoginEnvironment) async throws(TokenStoreError) {
+        try await TokenProfileStore.shared.delete(id: id, environment: environment)
+    }
+
+    func addProfile(name: String, token: Token, environment: LoginEnvironment, makeActive: Bool = true) async throws(TokenStoreError) {
         let profile = TokenProfile(name: name, token: token)
-        await TokenProfileStore.shared.upsert(profile: profile, environment: environment, makeActive: makeActive)
+        try await TokenProfileStore.shared.upsert(profile: profile, environment: environment, makeActive: makeActive)
     }
 
     func suggestedProfileName(environment: LoginEnvironment) async -> String {
@@ -89,14 +91,13 @@ actor AuthController {
         for env in [LoginEnvironment.owner, LoginEnvironment.fleet] {
             let collection = await TokenProfileStore.shared.load(environment: env)
             for profile in collection.profiles {
-                await TokenProfileStore.shared.delete(id: profile.id, environment: env)
+                _ = try? await TokenProfileStore.shared.delete(id: profile.id, environment: env)
             }
+            // Belt and braces — clear any legacy mirror entry the store
+            // didn't already wipe (e.g. from a build that pre-dated profile
+            // storage entirely).
+            try? await TokenProfileStore.shared.clearLegacyMirror(environment: env)
         }
-        // Belt and braces — clear any legacy mirror entries the store
-        // didn't already wipe (e.g. from a build that pre-dated profile
-        // storage entirely).
-        KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-        KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
     }
     
     var v3Token: Token? {
@@ -129,7 +130,7 @@ actor AuthController {
             {
                 let refreshedToken = await oauthRenew(token.refresh_token, token.region ?? .global)
                 if let refreshedToken {
-                    await TokenProfileStore.shared.updateActiveToken(refreshedToken, environment: .owner)
+                    _ = try? await TokenProfileStore.shared.updateActiveToken(refreshedToken, environment: .owner)
                 } else {
                     return nil
                 }
@@ -175,9 +176,9 @@ actor AuthController {
                 token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
                 if let token {
                     if let targetProfileId {
-                        await TokenProfileStore.shared.updateProfileToken(id: targetProfileId, token: token, environment: .owner)
+                        _ = try? await TokenProfileStore.shared.updateProfileToken(id: targetProfileId, token: token, environment: .owner)
                     } else {
-                        await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
+                        _ = try? await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
                     }
                 }
             }
@@ -187,12 +188,12 @@ actor AuthController {
                 if retries < 3 {
                     return await oauthRenew(refreshToken, region, targetProfileId: targetProfileId, retries: retries + 1)
                 }
-                KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                try? await TokenProfileStore.shared.clearLegacyMirror(environment: .owner)
             } else if error.statusCode == 401 {
                 if retries < 3 {
                     return await oauthRenew(refreshToken, region, targetProfileId: targetProfileId, retries: retries + 1)
                 }
-                KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                try? await TokenProfileStore.shared.clearLegacyMirror(environment: .owner)
             } else if error.statusCode == 848 {
                 // Mystical SSL error
                 if retries < 3 {
@@ -279,9 +280,9 @@ actor AuthController {
                     if addAsNewProfile {
                         let name = await TokenProfileStore.shared.suggestedName(for: .owner)
                         let profile = TokenProfile(name: name, token: token)
-                        await TokenProfileStore.shared.upsert(profile: profile, environment: .owner, makeActive: true)
+                        _ = try? await TokenProfileStore.shared.upsert(profile: profile, environment: .owner, makeActive: true)
                     } else {
-                        await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
+                        _ = try? await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
                     }
                 }
             } else {
@@ -297,12 +298,12 @@ actor AuthController {
                 if retries < 3 {
                     return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)
                 }
-                KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                try? await TokenProfileStore.shared.clearLegacyMirror(environment: .owner)
             } else if error.statusCode == 401 {
                 if retries < 3 {
                     return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)
                 }
-                KeychainWrapper.global.removeObject(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
+                try? await TokenProfileStore.shared.clearLegacyMirror(environment: .owner)
             } else if error.statusCode == 848 {
                 // Mystical SSL error
                 if retries < 3 {

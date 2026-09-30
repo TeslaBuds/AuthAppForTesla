@@ -43,6 +43,11 @@ class AuthViewModel {
     /// The currently visible toast notification, if any.
     var toast: Toast?
 
+    /// Set when the synced token items could not be read. The app then
+    /// shows what it can but changes nothing, so a device without access
+    /// never overwrites the lists on the person's other devices (#44).
+    var storeProblem: TokenStoreError?
+
     init() {
         // Tokens are loaded asynchronously after init via loadTokens()
     }
@@ -61,13 +66,30 @@ class AuthViewModel {
 
     /// Reloads both profile collections from the underlying store.
     func loadProfiles() async {
-        profilesV3 = await AuthController.shared.loadProfiles(environment: .owner)
-        profilesV4 = await AuthController.shared.loadProfiles(environment: .fleet)
+        let owners = await AuthController.shared.loadProfileState(environment: .owner)
+        let fleet = await AuthController.shared.loadProfileState(environment: .fleet)
+        profilesV3 = owners.collection
+        profilesV4 = fleet.collection
+        storeProblem = [owners, fleet].lazy.compactMap { state -> TokenStoreError? in
+            if case .unavailable(let error) = state { return error }
+            return nil
+        }.first
+    }
+
+    /// Shows why a profile change was refused.
+    private func report(_ error: TokenStoreError) {
+        storeProblem = error
+        showToast(.error(error.message))
     }
 
     /// Activates a different profile and reloads the active token mirror.
     func switchProfile(id: UUID, environment: LoginEnvironment) async {
-        await AuthController.shared.setActiveProfile(id: id, environment: environment)
+        do {
+            try await AuthController.shared.setActiveProfile(id: id, environment: environment)
+        } catch {
+            report(error)
+            return
+        }
         await loadProfiles()
         tokenV3 = await AuthController.shared.v3Token
         tokenV4 = await AuthController.shared.v4Token
@@ -79,12 +101,20 @@ class AuthViewModel {
     }
 
     func renameProfile(id: UUID, to name: String, environment: LoginEnvironment) async {
-        await AuthController.shared.renameProfile(id: id, to: name, environment: environment)
+        do {
+            try await AuthController.shared.renameProfile(id: id, to: name, environment: environment)
+        } catch {
+            report(error)
+        }
         await loadProfiles()
     }
 
     func deleteProfile(id: UUID, environment: LoginEnvironment) async {
-        await AuthController.shared.deleteProfile(id: id, environment: environment)
+        do {
+            try await AuthController.shared.deleteProfile(id: id, environment: environment)
+        } catch {
+            report(error)
+        }
         await loadProfiles()
         tokenV3 = await AuthController.shared.v3Token
         tokenV4 = await AuthController.shared.v4Token

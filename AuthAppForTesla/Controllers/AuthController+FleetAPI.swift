@@ -24,6 +24,11 @@ extension AuthController {
     }
 
     public func storeFleetConnection(clientId: String, clientSecret: String, redirectUri: String) {
+        // The sync-wipe guard (#44): never write synced items this device
+        // could not read.
+        for key in [kFleetClientID, kFleetClientSecret, kFleetRedirectUri] {
+            if case .failed = KeychainWrapper.global.readResult(forKey: key, withAccessibility: .afterFirstUnlock) { return }
+        }
         KeychainWrapper.global.set(clientId, forKey: kFleetClientID, withAccessibility: .afterFirstUnlock)
         KeychainWrapper.global.set(clientSecret, forKey: kFleetClientSecret, withAccessibility: .afterFirstUnlock)
         KeychainWrapper.global.set(redirectUri, forKey: kFleetRedirectUri, withAccessibility: .afterFirstUnlock)
@@ -86,9 +91,9 @@ extension AuthController {
                     if addAsNewProfile {
                         let name = await TokenProfileStore.shared.suggestedName(for: .fleet)
                         let profile = TokenProfile(name: name, token: token)
-                        await TokenProfileStore.shared.upsert(profile: profile, environment: .fleet, makeActive: true)
+                        _ = try? await TokenProfileStore.shared.upsert(profile: profile, environment: .fleet, makeActive: true)
                     } else {
-                        await TokenProfileStore.shared.updateActiveToken(token, environment: .fleet)
+                        _ = try? await TokenProfileStore.shared.updateActiveToken(token, environment: .fleet)
                     }
                 }
             }
@@ -98,12 +103,12 @@ extension AuthController {
                 if retries < 3 {
                     return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, addAsNewProfile: addAsNewProfile, retries: retries + 1)
                 }
-                KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+                try? await TokenProfileStore.shared.clearLegacyMirror(environment: .fleet)
             } else if error.statusCode == 401 {
                 if retries < 3 {
                     return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, addAsNewProfile: addAsNewProfile, retries: retries + 1)
                 }
-                KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+                try? await TokenProfileStore.shared.clearLegacyMirror(environment: .fleet)
             } else if error.statusCode == 848 {
                 // Mystical SSL error
                 if retries < 3 {
@@ -152,9 +157,9 @@ extension AuthController {
                 token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
                 if let token {
                     if let targetProfileId {
-                        await TokenProfileStore.shared.updateProfileToken(id: targetProfileId, token: token, environment: .fleet)
+                        _ = try? await TokenProfileStore.shared.updateProfileToken(id: targetProfileId, token: token, environment: .fleet)
                     } else {
-                        await TokenProfileStore.shared.updateActiveToken(token, environment: .fleet)
+                        _ = try? await TokenProfileStore.shared.updateActiveToken(token, environment: .fleet)
                     }
                 }
             }
@@ -164,12 +169,12 @@ extension AuthController {
                 if retries < 3 {
                     return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, targetProfileId: targetProfileId, retries: retries + 1)
                 }
-                KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+                try? await TokenProfileStore.shared.clearLegacyMirror(environment: .fleet)
             } else if error.statusCode == 401 {
                 if retries < 3 {
                     return await oauthRenewV4(refreshToken, region, fleetClientId: fleetClientId, targetProfileId: targetProfileId, retries: retries + 1)
                 }
-                KeychainWrapper.global.removeObject(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
+                try? await TokenProfileStore.shared.clearLegacyMirror(environment: .fleet)
             } else if error.statusCode == 848 {
                 // Mystical SSL error
                 if retries < 3 {
@@ -226,7 +231,7 @@ extension AuthController {
 
                 let refreshedToken = await oauthRenewV4(token.refresh_token, token.region ?? .global, fleetClientId: fleetClientId)
                 if let refreshedToken {
-                    await TokenProfileStore.shared.updateActiveToken(refreshedToken, environment: .fleet)
+                    _ = try? await TokenProfileStore.shared.updateActiveToken(refreshedToken, environment: .fleet)
                 } else {
                     return nil
                 }

@@ -469,6 +469,66 @@ open class KeychainWrapper {
             keychainQueryDictionary[SecAttrSynchronizable] = kCFBooleanTrue
         }
 
+        #if os(macOS)
+        // The native Mac app must use the data-protection keychain: the
+        // legacy file keychain ignores access groups, so `group.global`
+        // would silently mean nothing. Synchronizable items already live
+        // there; this states the intent explicitly (AuthAppForTesla#44).
+        keychainQueryDictionary[kSecUseDataProtectionKeychain as String] = kCFBooleanTrue
+        #endif
+
         return keychainQueryDictionary
     }
+
+    // MARK: - Status-reporting primitives (the sync-wipe guard, #44)
+
+    /// Reads one item and says *why* when there is no data: a missing item
+    /// and a keychain that refused the read are different answers, and only
+    /// the first may ever lead to a write.
+    open func readResult(forKey key: String, withAccessibility accessibility: KeychainItemAccessibility? = nil) -> KeychainReadResult {
+        var query = setupKeychainQueryDictionary(forKey: key, withAccessibility: accessibility)
+        query[SecMatchLimit] = kSecMatchLimitOne
+        query[SecReturnData] = kCFBooleanTrue
+        var result: AnyObject?
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        switch status {
+        case errSecSuccess:
+            guard let data = result as? Data else { return .failed(errSecDecode) }
+            return .found(data)
+        case errSecItemNotFound:
+            return .notFound
+        default:
+            return .failed(status)
+        }
+    }
+
+    /// Adds an item that must not exist yet. Never overwrites: an existing
+    /// item comes back as `errSecDuplicateItem`.
+    open func addOnly(_ value: Data, forKey key: String, withAccessibility accessibility: KeychainItemAccessibility) -> OSStatus {
+        var query = setupKeychainQueryDictionary(forKey: key, withAccessibility: accessibility)
+        query[SecValueData] = value
+        query[SecAttrAccessible] = accessibility.keychainAttrValue
+        return SecItemAdd(query as CFDictionary, nil)
+    }
+
+    /// Replaces the data of an item that must already exist.
+    open func updateOnly(_ value: Data, forKey key: String, withAccessibility accessibility: KeychainItemAccessibility) -> OSStatus {
+        let query = setupKeychainQueryDictionary(forKey: key, withAccessibility: accessibility)
+        return SecItemUpdate(query as CFDictionary, [SecValueData: value] as CFDictionary)
+    }
+
+    /// Deletes an item and reports the keychain's own status.
+    open func removeReturningStatus(forKey key: String, withAccessibility accessibility: KeychainItemAccessibility) -> OSStatus {
+        let query = setupKeychainQueryDictionary(forKey: key, withAccessibility: accessibility)
+        return SecItemDelete(query as CFDictionary)
+    }
+}
+
+/// What a keychain read found. `failed` covers every refusal — a missing
+/// entitlement (`errSecMissingEntitlement`), a locked keychain, no user
+/// interaction allowed — and must never be treated as "empty".
+public enum KeychainReadResult: Equatable, Sendable {
+    case found(Data)
+    case notFound
+    case failed(OSStatus)
 }
