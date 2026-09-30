@@ -43,5 +43,23 @@ struct TeslaAppShortcutsProvider: AppShortcutsProvider {
             shortTitle: "Refresh Fleet API Token",
             systemImageName: "arrow.clockwise"
         )
+        AppShortcut(
+            intent: GetOwnersAPITokenExpiration(),
+            phrases: [
+                "When does my \(.applicationName) Owners API token expire",
+                "Get Owners API token expiration from \(.applicationName)"
+            ],
+            shortTitle: "Owners API Token Expiration",
+            systemImageName: "clock"
+        )
+        AppShortcut(
+            intent: GetFleetAPITokenExpiration(),
+            phrases: [
+                "When does my \(.applicationName) Fleet API token expire",
+                "Get Fleet API token expiration from \(.applicationName)"
+            ],
+            shortTitle: "Fleet API Token Expiration",
+            systemImageName: "clock"
+        )
     }
 }

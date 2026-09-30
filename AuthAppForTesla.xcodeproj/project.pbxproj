@@ -55,6 +55,10 @@
 		EAA8D9DB306C8C9D0058B17E /* AppTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA8D9DA306C8C9D0058B17E /* AppTab.swift */; };
 		EAA8D9DF306C8CB90058B17E /* AppCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA8D9DE306C8CB90058B17E /* AppCommands.swift */; };
 		EAA8D9E1306C8D5E0058B17E /* MacMenuConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA8D9E0306C8D5E0058B17E /* MacMenuConfigurator.swift */; };
+		EAA8D9E5306C8EAF0058B17E /* StoredTokenReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA8D9E4306C8EAF0058B17E /* StoredTokenReader.swift */; };
+		EAA8D9E7306C8EAF0058B17E /* TokenExpirationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA8D9E6306C8EAF0058B17E /* TokenExpirationIntent.swift */; };
+		EAA8D9E9306C8EAF0058B17E /* GetOwnersAPITokenExpiration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA8D9E8306C8EAF0058B17E /* GetOwnersAPITokenExpiration.swift */; };
+		EAA8D9EB306C8EB00058B17E /* GetFleetAPITokenExpiration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA8D9EA306C8EB00058B17E /* GetFleetAPITokenExpiration.swift */; };
 		EAAB1D082B5A676700AC5271 /* NetworkController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D072B5A676700AC5271 /* NetworkController.swift */; };
 		EAAB1D0B2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D0A2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift */; };
 		EAAB1D0E2B5A84D000AC5271 /* FleetAPIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAAB1D0D2B5A84D000AC5271 /* FleetAPIView.swift */; };
@@ -158,6 +162,10 @@
 		EAA8D9DA306C8C9D0058B17E /* AppTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTab.swift; sourceTree = "<group>"; };
 		EAA8D9DE306C8CB90058B17E /* AppCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCommands.swift; sourceTree = "<group>"; };
 		EAA8D9E0306C8D5E0058B17E /* MacMenuConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMenuConfigurator.swift; sourceTree = "<group>"; };
+		EAA8D9E4306C8EAF0058B17E /* StoredTokenReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoredTokenReader.swift; sourceTree = "<group>"; };
+		EAA8D9E6306C8EAF0058B17E /* TokenExpirationIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TokenExpirationIntent.swift; sourceTree = "<group>"; };
+		EAA8D9E8306C8EAF0058B17E /* GetOwnersAPITokenExpiration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetOwnersAPITokenExpiration.swift; sourceTree = "<group>"; };
+		EAA8D9EA306C8EB00058B17E /* GetFleetAPITokenExpiration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetFleetAPITokenExpiration.swift; sourceTree = "<group>"; };
 		EAAB1D072B5A676700AC5271 /* NetworkController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkController.swift; sourceTree = "<group>"; };
 		EAAB1D0A2B5A7E0B00AC5271 /* AuthController+FleetAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AuthController+FleetAPI.swift"; sourceTree = "<group>"; };
 		EAAB1D0D2B5A84D000AC5271 /* FleetAPIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FleetAPIView.swift; sourceTree = "<group>"; };
@@ -401,6 +409,7 @@
 				EAC032D42F86885D00A29E67 /* TestAPIController.swift */,
 				EAC032DC2F8688D300A29E67 /* TokenProfileStore.swift */,
 				EAA8D9E0306C8D5E0058B17E /* MacMenuConfigurator.swift */,
+				EAA8D9E4306C8EAF0058B17E /* StoredTokenReader.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -415,6 +424,9 @@
 				EAAB1D192B5AA6D200AC5271 /* TokenResponseAppEntity.swift */,
 				63EFE42CE20749B385AE6DBE /* TokenProfileAppEntities.swift */,
 				EA56435E2F5F2FCC00A50586 /* TeslaAppShortcutsProvider.swift */,
+				EAA8D9E6306C8EAF0058B17E /* TokenExpirationIntent.swift */,
+				EAA8D9E8306C8EAF0058B17E /* GetOwnersAPITokenExpiration.swift */,
+				EAA8D9EA306C8EB00058B17E /* GetFleetAPITokenExpiration.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -612,10 +624,12 @@
 				EAAB1D1C2B5AA6D200AC5271 /* RefreshOwnersAPIToken.swift in Sources */,
 				EAA8D9E1306C8D5E0058B17E /* MacMenuConfigurator.swift in Sources */,
 				EA63698C25CAB620000216BF /* Consts.swift in Sources */,
+				EAA8D9E7306C8EAF0058B17E /* TokenExpirationIntent.swift in Sources */,
 				EAAB1D082B5A676700AC5271 /* NetworkController.swift in Sources */,
 				EAC033392F86937100A29E67 /* ScreenshotScenario.swift in Sources */,
 				EA563F692F5D8C0500A50586 /* AuthWebView.swift in Sources */,
 				EAC032C92F8687C000A29E67 /* JWTInspectorView.swift in Sources */,
+				EAA8D9EB306C8EB00058B17E /* GetFleetAPITokenExpiration.swift in Sources */,
 				EA5641EE2F5DD84200A50586 /* AppVersionLabel.swift in Sources */,
 				EAFF11000000000000A50586 /* AppSpacing.swift in Sources */,
 				EAA8D9D9306C8C970058B17E /* TokenClipboard.swift in Sources */,
@@ -643,9 +657,11 @@
 				EAAB1D142B5A893B00AC5271 /* LoginViewSignInFleetAPI.swift in Sources */,
 				EAAB1D0E2B5A84D000AC5271 /* FleetAPIView.swift in Sources */,
 				EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */,
+				EAA8D9E5306C8EAF0058B17E /* StoredTokenReader.swift in Sources */,
 				EAC032D32F86882300A29E67 /* HomeViewTokenHealth.swift in Sources */,
 				EAC032C52F86877A00A29E67 /* JWTDecoder.swift in Sources */,
 				EAAB1D1D2B5AA6D200AC5271 /* TokenResponseAppEntity.swift in Sources */,
+				EAA8D9E9306C8EAF0058B17E /* GetOwnersAPITokenExpiration.swift in Sources */,
 				D13185A79914463F9079DD04 /* TokenProfileAppEntities.swift in Sources */,
 				EA78814E2B6592DF00E14E3C /* HomeViewAccessToken.swift in Sources */,
 				EA63699E25CABA68000216BF /* KeychainItemAccessibility.swift in Sources */,

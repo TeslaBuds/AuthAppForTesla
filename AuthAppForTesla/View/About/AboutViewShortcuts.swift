@@ -35,6 +35,16 @@ struct AboutViewShortcuts: View {
             title: "Refresh Fleet API Token",
             description: "Force-refreshes both Owners and Fleet API tokens.",
             systemImage: "arrow.clockwise"
+        ),
+        ShortcutItem(
+            title: "Get Owners API Token Expiration",
+            description: "Returns when the current Owners API access token expires, without refreshing it.",
+            systemImage: "clock"
+        ),
+        ShortcutItem(
+            title: "Get Fleet API Token Expiration",
+            description: "Returns when the current Fleet API access token expires, without refreshing it.",
+            systemImage: "clock"
         )
     ]
 
