@@ -24,6 +24,8 @@ struct AboutViewMoreApps: View {
                tagline: "A fast symbol-matching game"),
         Friend(name: "Rumskrot Beacon", appId: "6766202612", appUrl: nil, icon: "RumskrotBeacon",
                tagline: "Find where your network breaks"),
+        Friend(name: "Rumskrot Pulse", appId: "6766450592", appUrl: nil, icon: "RumskrotPulse",
+               tagline: "Bluetooth LE debugger"),
         Friend(name: "Rumskrot Remote", appId: "6761122209", appUrl: nil, icon: "RumskrotRemote",
                tagline: "Your Mac's screen, anywhere"),
         Friend(name: "Rumskrot Terminal", appId: "6761121988", appUrl: nil, icon: "RumskrotTerminal",

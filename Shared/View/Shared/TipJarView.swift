@@ -80,7 +80,7 @@ struct TipJarView: View {
                         Text("Enjoying Auth for Tesla?")
                             .font(.subheadline)
                             .bold()
-                        Text("Show some love for years of free updates")
+                        Text("Show some love for years of updates")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
