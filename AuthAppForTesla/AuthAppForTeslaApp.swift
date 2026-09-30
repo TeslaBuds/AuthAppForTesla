@@ -10,6 +10,9 @@ import SwiftUI
 @main
 struct AuthAppForTeslaApp: App {
     @State private var model = AuthViewModel()
+    #if targetEnvironment(macCatalyst)
+    @UIApplicationDelegateAdaptor private var menuConfigurator: MacMenuConfigurator
+    #endif
 
     init() {
         #if DEBUG
@@ -67,12 +70,7 @@ struct AuthAppForTeslaApp: App {
         .defaultSize(width: 940, height: 1080)
         .windowResizability(.contentSize)
         .commands {
-            CommandGroup(after: .sidebar) {
-                Button("Refresh All Tokens", systemImage: "arrow.clockwise") {
-                    model.refreshAll()
-                }
-                .keyboardShortcut("r", modifiers: .command)
-            }
+            AppCommands(model: model)
         }
     }
 

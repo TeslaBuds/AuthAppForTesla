@@ -104,6 +104,32 @@ class AuthViewModel {
         }
     }
 
+    /// The active token for an API, as currently shown in the UI.
+    func token(for environment: LoginEnvironment) -> Token? {
+        switch environment {
+        case .owner: tokenV3
+        case .fleet: tokenV4
+        }
+    }
+
+    /// Copies the active access or refresh token for an API to the
+    /// clipboard and confirms it with a toast. Used by the Mac menu
+    /// bar's copy commands.
+    func copyToken(_ type: TokenType, environment: LoginEnvironment) {
+        guard let token = token(for: environment) else {
+            showToast(.error("There is no token to copy. Please sign in first."))
+            return
+        }
+        switch type {
+        case .accessToken:
+            TokenClipboard.copy(token.access_token)
+            showToast(.success("Access token copied."))
+        case .refreshToken:
+            TokenClipboard.copy(token.refresh_token)
+            showToast(.success("Refresh token copied."))
+        }
+    }
+
     /// Writes a lightweight token summary to the shared App Group UserDefaults
     /// so the WidgetKit extension can read expiry dates without keychain access.
     private func persistTokenSummary() {

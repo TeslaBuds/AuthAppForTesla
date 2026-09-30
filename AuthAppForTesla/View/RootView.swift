@@ -36,14 +36,6 @@ extension View {
     }
 }
 
-/// Tab selection backed by an enum for type safety.
-enum AppTab: Hashable {
-    case owners
-    case fleet
-    case tools
-    case about
-}
-
 struct RootView: View {
     @Bindable var model: AuthViewModel
     @State private var selection: AppTab
@@ -64,17 +56,17 @@ struct RootView: View {
 
     var body: some View {
         TabView(selection: $selection) {
-            Tab("Owners API", systemImage: "steeringwheel", value: .owners) {
+            Tab(AppTab.owners.title, systemImage: AppTab.owners.systemImage, value: .owners) {
                 NavigationStack {
                     OwnersAPIView(model: model)
                 }
             }
-            Tab("Fleet API", systemImage: "car.2.fill", value: .fleet) {
+            Tab(AppTab.fleet.title, systemImage: AppTab.fleet.systemImage, value: .fleet) {
                 NavigationStack {
                     FleetAPIView(model: model)
                 }
             }
-            Tab("Tools", systemImage: "wrench.and.screwdriver", value: .tools) {
+            Tab(AppTab.tools.title, systemImage: AppTab.tools.systemImage, value: .tools) {
                 NavigationStack(path: $toolsPath) {
                     ToolsView(model: model)
                         .navigationDestination(for: ToolsDestination.self) { destination in
@@ -89,13 +81,16 @@ struct RootView: View {
                         }
                 }
             }
-            Tab("About", systemImage: "info.circle", value: .about) {
+            Tab(AppTab.about.title, systemImage: AppTab.about.systemImage, value: .about) {
                 NavigationStack {
                     AboutView()
                 }
             }
         }
         .tint(Color("TeslaRed"))
+        // Lets the Mac menu bar's ⌘1–⌘4 and copy commands act on the
+        // frontmost window's tab.
+        .focusedSceneValue(\.selectedTab, $selection)
         .overlay(alignment: .topLeading) {
             #if DEBUG
             // Hidden mirror of LiveTestLog for the live UI test. The

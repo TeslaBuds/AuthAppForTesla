@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import UniformTypeIdentifiers
 
 enum TokenType {
     case accessToken
@@ -32,10 +31,7 @@ struct HomeViewToken: View {
     /// so it is automatically cleared, reducing clipboard privacy exposure.
     private func copyTokenToClipboard() {
         guard let tokenString else { return }
-        UIPasteboard.general.setItems(
-            [[UTType.utf8PlainText.identifier: tokenString]],
-            options: [.expirationDate: Date(timeIntervalSinceNow: 3600)]
-        )
+        TokenClipboard.copy(tokenString)
         animateCheck()
     }
 
