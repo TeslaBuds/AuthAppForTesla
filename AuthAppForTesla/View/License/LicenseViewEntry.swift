@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 struct LicenseViewEntry: View {
     var author: String

@@ -8,7 +8,7 @@
 
 import Foundation
 import Testing
-@testable import AuthAppForTesla
+@testable import TeslaAuthKit
 
 @Suite("Token expiration lookup")
 struct TokenExpirationTests {

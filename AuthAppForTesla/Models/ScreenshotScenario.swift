@@ -10,6 +10,7 @@
 
 #if DEBUG
 import Foundation
+import TeslaAuthKit
 
 enum ScreenshotScenario: String {
     case ownersHome   = "screenshot-owners-home"

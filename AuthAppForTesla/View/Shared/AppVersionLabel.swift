@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 /// Displays the app version and build number in a consistent format across all views.
 struct AppVersionLabel: View {

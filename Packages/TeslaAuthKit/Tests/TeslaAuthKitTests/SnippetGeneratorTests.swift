@@ -5,7 +5,7 @@
 
 import Testing
 import Foundation
-@testable import AuthAppForTesla
+@testable import TeslaAuthKit
 
 @Suite("SnippetGenerator")
 struct SnippetGeneratorTests {

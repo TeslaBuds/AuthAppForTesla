@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 /// A container that places a decorative key/shield pattern behind its content.
 /// The pattern fills the entire background so glass effects have content to distort.

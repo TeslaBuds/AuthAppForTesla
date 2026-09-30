@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 @MainActor
 @Observable

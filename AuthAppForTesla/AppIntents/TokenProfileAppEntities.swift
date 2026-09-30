@@ -13,6 +13,7 @@
 //
 
 import Foundation
+import TeslaAuthKit
 import AppIntents
 
 // MARK: - Owners

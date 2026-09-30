@@ -14,11 +14,11 @@ import Foundation
 /// A best-guess region for a stored token. The `code` is the granular
 /// 2-letter Fleet region prefix (e.g. "eu", "na") when known; the `region`
 /// is the coarse global/china classification used to pick the auth host.
-struct DetectedTokenRegion: Equatable {
-    let region: TokenRegion
-    let code: String?
+public struct DetectedTokenRegion: Equatable {
+    public let region: TokenRegion
+    public let code: String?
 
-    var displayName: String {
+    public var displayName: String {
         if let code, let pretty = Self.fleetRegionDisplayNames[code.lowercased()] {
             return pretty
         }
@@ -38,7 +38,7 @@ extension Token {
     /// Resolves the region for a token, preferring the explicit region
     /// stored at sign-in time and falling back to the Fleet refresh-token
     /// prefix when no region was recorded.
-    func detectedRegion(for environment: LoginEnvironment) -> DetectedTokenRegion {
+    public func detectedRegion(for environment: LoginEnvironment) -> DetectedTokenRegion {
         switch environment {
         case .owner:
             return DetectedTokenRegion(region: region ?? .global, code: nil)

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import TeslaAuthKit
 import os
 
 private let aftOAuthLogger = Logger(subsystem: "dk.kimhansen.AuthAppForTesla", category: "oauth")
@@ -368,28 +369,5 @@ actor AuthController {
                 URLQueryItem(name: CodingKeys.prompt.rawValue, value: prompt)
             ]
         }
-    }
-}
-
-extension String {
-    var codeVerifier: String {
-        let verifier = "\(Date.now.ISO8601Format())\(Date.now.ISO8601Format())\(Date.now.ISO8601Format())"
-            .data(using: .utf8)!.base64EncodedString()
-            .replacing("+", with: "-")
-            .replacing("/", with: "_")
-            .replacing("=", with: "")
-            .trimmingCharacters(in: .whitespaces)
-            .prefix(43)
-        return String(verifier)
-    }
-
-    var challenge: String {
-        let data = Data(utf8)
-        let hash = SHA256.hash(data: data)
-        let base64 = Data(hash).base64EncodedString()
-        return base64
-            .replacing("+", with: "-")
-            .replacing("/", with: "_")
-            .replacing("=", with: "")
     }
 }

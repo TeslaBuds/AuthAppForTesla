@@ -13,6 +13,7 @@
 
 #if DEBUG
 import Foundation
+import TeslaAuthKit
 import Observation
 
 @Observable

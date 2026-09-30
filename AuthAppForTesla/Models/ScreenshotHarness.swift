@@ -18,6 +18,7 @@
 //
 
 import Foundation
+import TeslaAuthKit
 
 /// Token fixtures used by the screenshot harness. These constants are
 /// NOT gated by `#if DEBUG` because the production cleanup migration

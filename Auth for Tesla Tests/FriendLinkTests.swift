@@ -4,6 +4,7 @@
 //
 
 import Testing
+import TeslaAuthKit
 import Foundation
 @testable import AuthAppForTesla
 

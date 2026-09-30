@@ -6,18 +6,7 @@
 //
 
 import SwiftUI
-
-let kTeslaClientID = "81527cff06843c8634fdc09e8ac0abefb46ac849f38fe1e431c2ef2106796384"
-let kTeslaSecret = "c7257eb71a564034f9419ee651c7d0e5f7aa6bfbd18bafb5c5c033b093bb2fa3"
-let kTokenV3 = "dk.kimhansen.TeslaAuth.TokenV3"
-let kTokenV4 = "dk.kimhansen.TeslaAuth.TokenV4"
-let kXTeslaUserAgent = "TeslaApp/4.12.0/AuthAppForTesla"
-let kUserAgent = "AuthAppForTesla"
-let kTeslaRedirectUri = "tesla://auth/callback"
-
-let kFleetClientID = "dk.kimhansen.TeslaAuth.FleetClientID"
-let kFleetClientSecret = "dk.kimhansen.TeslaAuth.FleetClientSecret"
-let kFleetRedirectUri = "dk.kimhansen.TeslaAuth.FleetRedirectUri"
+import TeslaAuthKit
 
 /// Shared design constants for consistent styling across the app.
 enum AppTheme {

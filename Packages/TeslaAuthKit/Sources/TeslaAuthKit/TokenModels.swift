@@ -7,22 +7,30 @@
 
 import Foundation
 
-enum TokenRegion: String, Codable, CaseIterable, Identifiable {
+public enum TokenRegion: String, Codable, CaseIterable, Identifiable {
     case global, china
     
-    var id: String { self.rawValue }
+    public var id: String { self.rawValue }
 }
 
-struct Token: Codable {
-    let access_token: String
-    let token_type: String
-    let expires_in: Int
-    let refresh_token: String
-    var expires_at: Date?
-    var region: TokenRegion?
-    //    let loginEnvironment: LoginEnvironment?
+public struct Token: Codable {
+    public let access_token: String
+    public let token_type: String
+    public let expires_in: Int
+    public let refresh_token: String
+    public var expires_at: Date?
+    public var region: TokenRegion?
+
+    public init(access_token: String, token_type: String, expires_in: Int, refresh_token: String, expires_at: Date? = nil, region: TokenRegion? = nil) {
+        self.access_token = access_token
+        self.token_type = token_type
+        self.expires_in = expires_in
+        self.refresh_token = refresh_token
+        self.expires_at = expires_at
+        self.region = region
+    }
     
-    var accessTokenPayload: AccessToken? {
+    public var accessTokenPayload: AccessToken? {
         let tokenParts = access_token.components(separatedBy: ".")
         guard tokenParts.count > 1,
               let decodedPayload = base64UrlDecode(tokenParts[1]),
@@ -33,7 +41,7 @@ struct Token: Codable {
         return accessToken
     }
     
-    var ownerRefreshTokenPayload: OwnerRefreshToken? {
+    public var ownerRefreshTokenPayload: OwnerRefreshToken? {
         let tokenParts = refresh_token.components(separatedBy: ".")
         guard tokenParts.count > 1,
               let decodedPayload = base64UrlDecode(tokenParts[1]),
@@ -44,7 +52,7 @@ struct Token: Codable {
         return accessToken
     }
     
-    var fleetRefreshTokenPayload: FleetRefreshToken? {
+    public var fleetRefreshTokenPayload: FleetRefreshToken? {
         let tokenParts = refresh_token.components(separatedBy: ".")
         guard tokenParts.count > 1,
               let decodedPayload = base64UrlDecode(tokenParts[1]),
@@ -55,7 +63,7 @@ struct Token: Codable {
         return accessToken
     }
     
-    var fleetRefreshTokenRegion: String? {
+    public var fleetRefreshTokenRegion: String? {
         if refresh_token.count > 3 {
             return String(refresh_token.prefix(2))
         }
@@ -64,28 +72,28 @@ struct Token: Codable {
 }
 
 
-struct RequestEvent : Codable, Identifiable {
-    let id: Date
-    let when: Date
-    let message: String
+public struct RequestEvent : Codable, Identifiable {
+    public let id: Date
+    public let when: Date
+    public let message: String
 }
 
-enum LoginEnvironment: String, Codable, CaseIterable, Identifiable {
+public enum LoginEnvironment: String, Codable, CaseIterable, Identifiable {
     case owner
     case fleet
-    var id: String { self.rawValue }
+    public var id: String { self.rawValue }
 }
 
 // MARK: - Generic RefreshToken
-struct RefreshToken<T: Codable>: Codable {
-    let issuer: String?
-    let scopes: [String]?
-    let audience: String?
-    let subject: String?
-    let data: T?
-    let issuedAt: Int?
+public struct RefreshToken<T: Codable>: Codable {
+    public let issuer: String?
+    public let scopes: [String]?
+    public let audience: String?
+    public let subject: String?
+    public let data: T?
+    public let issuedAt: Int?
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case issuer = "iss"
         case scopes = "scp"
         case audience = "aud"
@@ -94,7 +102,7 @@ struct RefreshToken<T: Codable>: Codable {
         case issuedAt = "iat"
     }
     
-    var issuedAtDate: Date? {
+    public var issuedAtDate: Date? {
         if let issuedAt {
             return Date(timeIntervalSince1970: TimeInterval(issuedAt))// Date().addingTimeInterval(TimeInterval(issuedAt))
         }
@@ -103,43 +111,43 @@ struct RefreshToken<T: Codable>: Codable {
 }
 
 // MARK: - FleetDataClass
-struct FleetDataClass: Codable {
-    let audiences: [String]?
-    let authorizedParty: String?
+public struct FleetDataClass: Codable {
+    public let audiences: [String]?
+    public let authorizedParty: String?
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case audiences = "aud"
         case authorizedParty = "azp"
     }
 }
 
 // MARK: - OwnerDataClass
-struct OwnerDataClass: Codable {
-    let audience: String?
-    let authorizedParty: String?
+public struct OwnerDataClass: Codable {
+    public let audience: String?
+    public let authorizedParty: String?
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case audience = "aud"
         case authorizedParty = "azp"
     }
 }
 
-typealias FleetRefreshToken = RefreshToken<FleetDataClass>
-typealias OwnerRefreshToken = RefreshToken<OwnerDataClass>
+public typealias FleetRefreshToken = RefreshToken<FleetDataClass>
+public typealias OwnerRefreshToken = RefreshToken<OwnerDataClass>
 
 // MARK: - AccessToken
-struct AccessToken: Codable {
-    let issuer: String?
-    let authorizedParty: String?
-    let subject: String?
-    let audiences: [String]?
-    let scopes: [String]?
-    let expiresAt: Int?
-    let issuedAt: Int?
-    let ouCode: String?
-    let locale: String?
+public struct AccessToken: Codable {
+    public let issuer: String?
+    public let authorizedParty: String?
+    public let subject: String?
+    public let audiences: [String]?
+    public let scopes: [String]?
+    public let expiresAt: Int?
+    public let issuedAt: Int?
+    public let ouCode: String?
+    public let locale: String?
     
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case issuer = "iss"
         case authorizedParty = "azp"
         case subject = "sub"
@@ -151,14 +159,14 @@ struct AccessToken: Codable {
         case locale = "locale"
     }
     
-    var expiresAtDate: Date? {
+    public var expiresAtDate: Date? {
         if let expiresAt {
             return Date(timeIntervalSince1970: TimeInterval(expiresAt))// Date().addingTimeInterval(TimeInterval(issuedAt))
         }
         return nil
     }
     
-    var issuedAtDate: Date? {
+    public var issuedAtDate: Date? {
         if let issuedAt {
             return Date(timeIntervalSince1970: TimeInterval(issuedAt))// Date().addingTimeInterval(TimeInterval(issuedAt))
         }

@@ -7,7 +7,7 @@
 
 import Testing
 import Foundation
-@testable import AuthAppForTesla
+@testable import TeslaAuthKit
 
 @Suite("PKCE")
 struct PKCETests {

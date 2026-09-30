@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 @main
 struct AuthAppForTeslaApp: App {

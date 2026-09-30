@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 struct AboutViewFooter: View {
     private var columns: [GridItem] = [

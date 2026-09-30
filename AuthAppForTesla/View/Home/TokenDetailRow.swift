@@ -9,6 +9,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 /// A two-column row: secondary-styled label on the leading edge,
 /// primary-styled value on the trailing edge. Long values wrap and

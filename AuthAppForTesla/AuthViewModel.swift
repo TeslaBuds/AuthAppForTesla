@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import TeslaAuthKit
 import WidgetKit
 
 /// Shared observable model that holds the current authentication state

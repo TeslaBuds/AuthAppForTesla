@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 import os
 
 private let aftOAuthLogger = Logger(subsystem: "dk.kimhansen.AuthAppForTesla", category: "oauth")

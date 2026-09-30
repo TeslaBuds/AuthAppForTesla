@@ -9,15 +9,15 @@
 
 import Foundation
 
-enum SnippetLanguage: String, CaseIterable, Identifiable {
+public enum SnippetLanguage: String, CaseIterable, Identifiable {
     case curl
     case httpie
     case swift
     case python
 
-    var id: String { rawValue }
+    public var id: String { rawValue }
 
-    var displayName: String {
+    public var displayName: String {
         switch self {
         case .curl: "cURL"
         case .httpie: "HTTPie"
@@ -28,10 +28,10 @@ enum SnippetLanguage: String, CaseIterable, Identifiable {
 }
 
 /// Static, pure helpers — easy to unit-test without touching SwiftUI.
-enum SnippetGenerator {
+public enum SnippetGenerator {
     /// A reasonable default endpoint for each API surface, used as a
     /// placeholder when the user hasn't customised one.
-    static func defaultEndpoint(for environment: LoginEnvironment, region: TokenRegion) -> String {
+    public static func defaultEndpoint(for environment: LoginEnvironment, region: TokenRegion) -> String {
         switch environment {
         case .owner:
             switch region {
@@ -45,7 +45,7 @@ enum SnippetGenerator {
         }
     }
 
-    static func snippet(language: SnippetLanguage, url: String, accessToken: String) -> String {
+    public static func snippet(language: SnippetLanguage, url: String, accessToken: String) -> String {
         switch language {
         case .curl:
             return curl(url: url, token: accessToken)

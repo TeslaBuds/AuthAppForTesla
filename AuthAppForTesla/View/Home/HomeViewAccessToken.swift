@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 struct HomeViewAccessToken: View {
     let token: Token?

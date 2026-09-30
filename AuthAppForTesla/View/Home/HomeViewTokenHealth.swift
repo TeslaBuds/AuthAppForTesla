@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 struct HomeViewTokenHealth: View {
     let token: Token

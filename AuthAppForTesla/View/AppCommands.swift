@@ -10,6 +10,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 struct AppCommands: Commands {
     let model: AuthViewModel

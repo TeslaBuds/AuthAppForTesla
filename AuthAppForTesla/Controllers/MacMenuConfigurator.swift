@@ -5,6 +5,7 @@
 
 #if targetEnvironment(macCatalyst)
 import UIKit
+import TeslaAuthKit
 
 /// Catalyst adds Duplicate, Move, Rename… and Export As… to the File menu
 /// of every app. This one has no documents, and SwiftUI's

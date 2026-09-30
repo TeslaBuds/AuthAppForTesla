@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 /// Three-step welcome sheet shown on first launch.
 /// Dismissed by tapping "Get Started" or swiping down.

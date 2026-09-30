@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 struct HomeViewRefreshTokens: View {
     var model: AuthViewModel

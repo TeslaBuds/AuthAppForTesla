@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import TeslaAuthKit
 
 public class Response {
     public var headers: [AnyHashable: Any] {

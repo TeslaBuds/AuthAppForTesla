@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 /// Tab selection backed by an enum for type safety. The order of
 /// `allCases` is the order of the tabs, and drives the ⌘1–⌘4 commands

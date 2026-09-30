@@ -12,6 +12,7 @@
 //
 
 import AppIntents
+import TeslaAuthKit
 import Foundation
 import Testing
 @testable import AuthAppForTesla

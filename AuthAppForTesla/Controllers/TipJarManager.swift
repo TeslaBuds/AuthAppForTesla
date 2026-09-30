@@ -6,6 +6,7 @@
 //
 
 import StoreKit
+import TeslaAuthKit
 
 /// Manages in-app tip jar products and purchases using StoreKit 2.
 @MainActor

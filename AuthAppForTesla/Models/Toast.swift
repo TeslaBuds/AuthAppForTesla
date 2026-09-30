@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 /// A transient notification message shown as a snackbar overlay.
 struct Toast: Identifiable, Equatable {

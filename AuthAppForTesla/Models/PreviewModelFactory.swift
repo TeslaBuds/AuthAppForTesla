@@ -14,6 +14,7 @@
 // elimination strips it from shipping binaries.
 
 import Foundation
+import TeslaAuthKit
 
 @MainActor
 enum PreviewModelFactory {

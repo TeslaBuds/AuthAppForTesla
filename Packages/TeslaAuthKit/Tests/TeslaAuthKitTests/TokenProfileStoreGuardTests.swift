@@ -11,7 +11,7 @@
 import Testing
 import Foundation
 import Security
-@testable import AuthAppForTesla
+@testable import TeslaAuthKit
 
 /// In-memory keychain that records every write and can refuse reads.
 final class RecordingStorage: SyncedItemStorage, @unchecked Sendable {

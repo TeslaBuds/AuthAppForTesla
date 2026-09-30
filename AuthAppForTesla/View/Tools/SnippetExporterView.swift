@@ -8,6 +8,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 import UniformTypeIdentifiers
 
 struct SnippetExporterView: View {

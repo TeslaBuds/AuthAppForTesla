@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 /// Renders a single snackbar notification that can be swiped down to dismiss.
 struct ToastView: View {

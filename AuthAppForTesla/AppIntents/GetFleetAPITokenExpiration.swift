@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import TeslaAuthKit
 import AppIntents
 
 /// Returns when the stored Fleet API access token expires, without

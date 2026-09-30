@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 struct FleetAPIView: View {
     @Bindable var model: AuthViewModel

@@ -10,12 +10,12 @@
 
 import Foundation
 
-enum StoredTokenReader {
+public enum StoredTokenReader {
     /// The stored profiles for an API, exactly as they are in the
     /// keychain. A legacy single-token entry that has not been migrated
     /// yet is reported as one unnamed, active profile — without
     /// migrating it.
-    static func profiles(for environment: LoginEnvironment) -> TokenProfileCollection {
+    public static func profiles(for environment: LoginEnvironment) -> TokenProfileCollection {
         let decoder = JSONDecoder()
         if let data = KeychainWrapper.global.data(forKey: profilesKey(for: environment), withAccessibility: .afterFirstUnlock),
            let collection = try? decoder.decode(TokenProfileCollection.self, from: data) {
@@ -30,7 +30,7 @@ enum StoredTokenReader {
 
     /// The profile a token-reporting intent should look at: the one the
     /// person picked, or the active one when they left it empty.
-    static func profile(in collection: TokenProfileCollection, id: UUID?) -> TokenProfile? {
+    public static func profile(in collection: TokenProfileCollection, id: UUID?) -> TokenProfile? {
         guard let id else { return collection.activeProfile }
         return collection.profiles.first { $0.id == id }
     }
@@ -38,7 +38,7 @@ enum StoredTokenReader {
     /// When a token's access token expires. Uses the expiry recorded when
     /// the token was stored, falling back to the access token's own `exp`
     /// claim for tokens stored without one.
-    static func expirationDate(of token: Token) -> Date? {
+    public static func expirationDate(of token: Token) -> Date? {
         token.expires_at ?? JWTDecoder.decode(token.access_token)?.expiresAt
     }
 

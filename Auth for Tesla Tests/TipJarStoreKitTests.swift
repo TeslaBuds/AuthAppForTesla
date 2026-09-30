@@ -4,6 +4,7 @@
 //
 
 import Testing
+import TeslaAuthKit
 import Foundation
 import StoreKit
 import StoreKitTest

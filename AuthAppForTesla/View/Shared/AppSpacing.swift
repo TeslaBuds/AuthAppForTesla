@@ -15,6 +15,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 /// Numeric spacing tokens. Keep additions on the 4pt grid.
 enum AppSpacing {

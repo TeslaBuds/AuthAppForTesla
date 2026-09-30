@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 struct OwnersAPIView: View {
     @Bindable var model: AuthViewModel

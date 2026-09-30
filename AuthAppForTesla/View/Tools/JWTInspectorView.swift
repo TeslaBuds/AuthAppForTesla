@@ -9,6 +9,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 import UniformTypeIdentifiers
 
 struct JWTInspectorView: View {

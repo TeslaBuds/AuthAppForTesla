@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 struct HomeViewHeader: View {
     @Bindable var model: AuthViewModel

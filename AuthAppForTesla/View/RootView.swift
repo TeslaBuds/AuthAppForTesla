@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 /// Animatable font size modifier using the modern @Animatable macro.
 @Animatable

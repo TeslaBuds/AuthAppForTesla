@@ -31,11 +31,11 @@
 
 import Foundation
 
-let kTokenV3Profiles = "dk.kimhansen.TeslaAuth.TokenV3Profiles"
-let kTokenV4Profiles = "dk.kimhansen.TeslaAuth.TokenV4Profiles"
+public let kTokenV3Profiles = "dk.kimhansen.TeslaAuth.TokenV3Profiles"
+public let kTokenV4Profiles = "dk.kimhansen.TeslaAuth.TokenV4Profiles"
 
 /// Why the profile store refused to change anything.
-enum TokenStoreError: Error, Equatable {
+public enum TokenStoreError: Error, Equatable {
     /// The keychain refused the read, with this status. Nothing was written.
     case unreadable(OSStatus)
     /// The stored list exists but does not decode. Nothing was written.
@@ -50,7 +50,7 @@ enum TokenStoreError: Error, Equatable {
 
 extension TokenStoreError {
     /// What the person is told when a change was refused.
-    var message: String {
+    public var message: String {
         switch self {
         case .unreadable, .undecodable:
             "Your synced tokens can't be read on this device, so nothing was changed."
@@ -66,11 +66,11 @@ extension TokenStoreError {
 
 /// How the stored profiles looked when read, for the UI: an unreadable
 /// store is not the same as a signed-out one.
-enum TokenProfileLoadState {
+public enum TokenProfileLoadState {
     case loaded(TokenProfileCollection)
     case unavailable(TokenStoreError)
 
-    var collection: TokenProfileCollection {
+    public var collection: TokenProfileCollection {
         if case .loaded(let collection) = self { return collection }
         return TokenProfileCollection()
     }
@@ -79,7 +79,7 @@ enum TokenProfileLoadState {
 /// The keychain operations the store needs, each reporting its status.
 /// The live implementation is `KeychainWrapper`; tests substitute fakes
 /// and real keychains with other access groups.
-protocol SyncedItemStorage: Sendable {
+public protocol SyncedItemStorage: Sendable {
     func read(_ key: String) -> KeychainReadResult
     /// Creates an item; `errSecDuplicateItem` when one exists. Never overwrites.
     func add(_ data: Data, forKey key: String) -> OSStatus
@@ -90,34 +90,34 @@ protocol SyncedItemStorage: Sendable {
 
 /// `KeychainWrapper` as the store's storage, with the accessibility every
 /// Auth for Tesla item has always used.
-struct KeychainSyncedItemStorage: SyncedItemStorage, @unchecked Sendable {
-    let keychain: KeychainWrapper
+public struct KeychainSyncedItemStorage: SyncedItemStorage, @unchecked Sendable {
+    public let keychain: KeychainWrapper
 
-    func read(_ key: String) -> KeychainReadResult {
+    public func read(_ key: String) -> KeychainReadResult {
         keychain.readResult(forKey: key, withAccessibility: .afterFirstUnlock)
     }
 
-    func add(_ data: Data, forKey key: String) -> OSStatus {
+    public func add(_ data: Data, forKey key: String) -> OSStatus {
         keychain.addOnly(data, forKey: key, withAccessibility: .afterFirstUnlock)
     }
 
-    func replace(_ data: Data, forKey key: String) -> OSStatus {
+    public func replace(_ data: Data, forKey key: String) -> OSStatus {
         keychain.updateOnly(data, forKey: key, withAccessibility: .afterFirstUnlock)
     }
 
-    func remove(_ key: String) -> OSStatus {
+    public func remove(_ key: String) -> OSStatus {
         keychain.removeReturningStatus(forKey: key, withAccessibility: .afterFirstUnlock)
     }
 }
 
-actor TokenProfileStore {
-    static let shared = TokenProfileStore(storage: KeychainSyncedItemStorage(keychain: .global))
+public actor TokenProfileStore {
+    public static let shared = TokenProfileStore(storage: KeychainSyncedItemStorage(keychain: .global))
 
     private let storage: any SyncedItemStorage
     /// How many times a change is re-applied when the list moved under it.
     private let maxAttempts = 3
 
-    init(storage: any SyncedItemStorage) {
+    public init(storage: any SyncedItemStorage) {
         self.storage = storage
     }
 
@@ -126,14 +126,14 @@ actor TokenProfileStore {
     /// The profile collection for an environment, or an empty one when
     /// the store could not be read. Use `loadState` where the difference
     /// matters to the person.
-    func load(environment: LoginEnvironment) -> TokenProfileCollection {
+    public func load(environment: LoginEnvironment) -> TokenProfileCollection {
         loadState(environment: environment).collection
     }
 
     /// Loads the profile collection, lazily migrating an existing legacy
     /// single-token entry into a "Default" profile on first read — but
     /// only when both reads succeeded.
-    func loadState(environment: LoginEnvironment) -> TokenProfileLoadState {
+    public func loadState(environment: LoginEnvironment) -> TokenProfileLoadState {
         switch basis(for: environment) {
         case .blocked(let error):
             return .unavailable(error)
@@ -153,7 +153,7 @@ actor TokenProfileStore {
 
     /// Adds or updates a profile, optionally promoting it to active.
     @discardableResult
-    func upsert(profile: TokenProfile, environment: LoginEnvironment, makeActive: Bool) throws(TokenStoreError) -> TokenProfileCollection {
+    public func upsert(profile: TokenProfile, environment: LoginEnvironment, makeActive: Bool) throws(TokenStoreError) -> TokenProfileCollection {
         try mutate(environment: environment) { collection in
             collection.upsert(profile)
             if makeActive {
@@ -167,7 +167,7 @@ actor TokenProfileStore {
     /// rather than the active one. If the profile id is unknown the
     /// collection is returned unchanged.
     @discardableResult
-    func updateProfileToken(id: UUID, token: Token, environment: LoginEnvironment) throws(TokenStoreError) -> TokenProfileCollection {
+    public func updateProfileToken(id: UUID, token: Token, environment: LoginEnvironment) throws(TokenStoreError) -> TokenProfileCollection {
         try mutate(environment: environment) { collection in
             guard let index = collection.profiles.firstIndex(where: { $0.id == id }) else { return }
             collection.profiles[index].token = token
@@ -177,7 +177,7 @@ actor TokenProfileStore {
     /// Updates the token for the currently active profile (used by token
     /// refreshes). If no profiles exist, creates a Default one.
     @discardableResult
-    func updateActiveToken(_ token: Token, environment: LoginEnvironment) throws(TokenStoreError) -> TokenProfileCollection {
+    public func updateActiveToken(_ token: Token, environment: LoginEnvironment) throws(TokenStoreError) -> TokenProfileCollection {
         let name = defaultProfileName(for: environment)
         return try mutate(environment: environment) { collection in
             if let activeId = collection.activeProfileId,
@@ -193,7 +193,7 @@ actor TokenProfileStore {
     }
 
     @discardableResult
-    func setActive(id: UUID, environment: LoginEnvironment) throws(TokenStoreError) -> TokenProfileCollection {
+    public func setActive(id: UUID, environment: LoginEnvironment) throws(TokenStoreError) -> TokenProfileCollection {
         try mutate(environment: environment) { collection in
             guard collection.profiles.contains(where: { $0.id == id }) else { return }
             collection.activeProfileId = id
@@ -201,7 +201,7 @@ actor TokenProfileStore {
     }
 
     @discardableResult
-    func rename(id: UUID, to name: String, environment: LoginEnvironment) throws(TokenStoreError) -> TokenProfileCollection {
+    public func rename(id: UUID, to name: String, environment: LoginEnvironment) throws(TokenStoreError) -> TokenProfileCollection {
         try mutate(environment: environment) { collection in
             collection.rename(id: id, to: name)
         }
@@ -210,7 +210,7 @@ actor TokenProfileStore {
     /// Deletes a profile. The only change allowed to leave a list empty,
     /// and only for a list that was read successfully.
     @discardableResult
-    func delete(id: UUID, environment: LoginEnvironment) throws(TokenStoreError) -> TokenProfileCollection {
+    public func delete(id: UUID, environment: LoginEnvironment) throws(TokenStoreError) -> TokenProfileCollection {
         try mutate(environment: environment, allowsEmpty: true) { collection in
             collection.remove(id: id)
         }
@@ -220,7 +220,7 @@ actor TokenProfileStore {
     /// rejected — the long-standing iOS behaviour — but only when the
     /// profile list could be read, so a device that cannot see the synced
     /// items never deletes one.
-    func clearLegacyMirror(environment: LoginEnvironment) throws(TokenStoreError) {
+    public func clearLegacyMirror(environment: LoginEnvironment) throws(TokenStoreError) {
         if case .blocked(let error) = basis(for: environment) { throw error }
         let status = storage.remove(legacyKey(for: environment))
         guard status == errSecSuccess || status == errSecItemNotFound else { throw .writeFailed(status) }
@@ -228,7 +228,7 @@ actor TokenProfileStore {
 
     /// Suggests a sensible name for the next "Add Account" profile, e.g.
     /// "Account 2" / "Account 3" so the user doesn't have to type one.
-    func suggestedName(for environment: LoginEnvironment) -> String {
+    public func suggestedName(for environment: LoginEnvironment) -> String {
         let collection = load(environment: environment)
         let next = collection.profiles.count + 1
         return "Account \(next)"

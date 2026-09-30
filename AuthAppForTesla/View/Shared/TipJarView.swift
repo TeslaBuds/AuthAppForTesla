@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 import StoreKit
 
 /// A compact, unobtrusive tip jar prompt that can be placed on any page.

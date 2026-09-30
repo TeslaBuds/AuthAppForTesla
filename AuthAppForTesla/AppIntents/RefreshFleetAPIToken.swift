@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import TeslaAuthKit
 import AppIntents
 
 struct RefreshFleetAPIToken: AppIntent {

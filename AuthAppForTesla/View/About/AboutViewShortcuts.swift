@@ -4,6 +4,7 @@
 //
 
 import AppIntents
+import TeslaAuthKit
 import SwiftUI
 
 /// A card in the About tab listing the available Siri Shortcuts/App Intents.

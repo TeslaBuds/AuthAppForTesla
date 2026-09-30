@@ -8,6 +8,7 @@
 //
 
 import Foundation
+import TeslaAuthKit
 import AppIntents
 
 enum TokenExpirationIntent {

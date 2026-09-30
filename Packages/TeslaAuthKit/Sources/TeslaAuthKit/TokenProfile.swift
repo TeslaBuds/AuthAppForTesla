@@ -8,12 +8,12 @@
 
 import Foundation
 
-struct TokenProfile: Codable, Identifiable {
-    let id: UUID
-    var name: String
-    var token: Token
+public struct TokenProfile: Codable, Identifiable {
+    public let id: UUID
+    public var name: String
+    public var token: Token
 
-    init(id: UUID = UUID(), name: String, token: Token) {
+    public init(id: UUID = UUID(), name: String, token: Token) {
         self.id = id
         self.name = name
         self.token = token
@@ -23,21 +23,21 @@ struct TokenProfile: Codable, Identifiable {
 /// Persisted shape of the profile store. Holds multiple named profiles
 /// per environment plus a pointer to whichever one the user has chosen
 /// as the active profile.
-struct TokenProfileCollection: Codable {
-    var profiles: [TokenProfile]
-    var activeProfileId: UUID?
+public struct TokenProfileCollection: Codable {
+    public var profiles: [TokenProfile]
+    public var activeProfileId: UUID?
 
-    init(profiles: [TokenProfile] = [], activeProfileId: UUID? = nil) {
+    public init(profiles: [TokenProfile] = [], activeProfileId: UUID? = nil) {
         self.profiles = profiles
         self.activeProfileId = activeProfileId
     }
 
-    var activeProfile: TokenProfile? {
+    public var activeProfile: TokenProfile? {
         guard let activeProfileId else { return profiles.first }
         return profiles.first(where: { $0.id == activeProfileId }) ?? profiles.first
     }
 
-    mutating func upsert(_ profile: TokenProfile) {
+    public mutating func upsert(_ profile: TokenProfile) {
         if let index = profiles.firstIndex(where: { $0.id == profile.id }) {
             profiles[index] = profile
         } else {
@@ -48,14 +48,14 @@ struct TokenProfileCollection: Codable {
         }
     }
 
-    mutating func remove(id: UUID) {
+    public mutating func remove(id: UUID) {
         profiles.removeAll(where: { $0.id == id })
         if activeProfileId == id {
             activeProfileId = profiles.first?.id
         }
     }
 
-    mutating func rename(id: UUID, to name: String) {
+    public mutating func rename(id: UUID, to name: String) {
         guard let index = profiles.firstIndex(where: { $0.id == id }) else { return }
         profiles[index].name = name
     }

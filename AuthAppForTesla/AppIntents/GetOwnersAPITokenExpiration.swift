@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import TeslaAuthKit
 import AppIntents
 
 /// Returns when the stored Owners API access token expires, without

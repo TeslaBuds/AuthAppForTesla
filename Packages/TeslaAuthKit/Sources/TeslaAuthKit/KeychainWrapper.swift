@@ -532,3 +532,11 @@ public enum KeychainReadResult: Equatable, Sendable {
     case notFound
     case failed(OSStatus)
 }
+
+extension KeychainWrapper {
+    /// Every Auth for Tesla credential: service `AuthForTesla`, the
+    /// `group.global` app group as the keychain access group, synchronised
+    /// through iCloud Keychain. Never rename either: every stored item
+    /// lives there, on every device.
+    public static let global = KeychainWrapper(serviceName: "AuthForTesla", accessGroup: "group.global", iCloudSync: true)
+}

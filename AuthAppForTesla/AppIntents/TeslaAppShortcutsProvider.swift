@@ -4,6 +4,7 @@
 //
 
 import AppIntents
+import TeslaAuthKit
 
 /// Registers built-in App Shortcuts so Auth for Tesla's intents appear
 /// automatically in Siri and the Shortcuts app without any user setup.

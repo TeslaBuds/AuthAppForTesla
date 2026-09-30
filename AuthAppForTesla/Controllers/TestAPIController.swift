@@ -9,6 +9,7 @@
 //
 
 import Foundation
+import TeslaAuthKit
 
 /// A single test result row shown in the UI.
 struct TestAPIResult: Identifiable, Equatable {

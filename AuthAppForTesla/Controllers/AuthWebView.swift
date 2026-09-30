@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 import WebKit
 
 /// Owns a long-lived `WKWebView` for an in-flight OAuth flow.

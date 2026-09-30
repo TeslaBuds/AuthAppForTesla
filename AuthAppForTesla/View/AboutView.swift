@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 struct AboutView: View {
     @State private var scrollPosition = ScrollPosition()

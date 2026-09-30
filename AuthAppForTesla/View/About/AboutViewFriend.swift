@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 import SafariServices
 
 struct AboutViewFriend: View {

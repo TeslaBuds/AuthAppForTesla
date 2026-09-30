@@ -9,6 +9,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 struct HomeViewRegionBadge: View {
     let token: Token

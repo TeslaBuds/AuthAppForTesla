@@ -4,6 +4,7 @@
 //
 
 import SwiftUI
+import TeslaAuthKit
 
 /// A single illustrated page in the onboarding flow.
 struct OnboardingPageView: View {

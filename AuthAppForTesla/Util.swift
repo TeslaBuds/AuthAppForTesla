@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import TeslaAuthKit
 import CryptoKit
 import SwiftUI
 
@@ -28,10 +29,6 @@ extension String {
     func base64EncodedString() -> String {
         Data(utf8).base64EncodedString()
     }
-}
-
-extension KeychainWrapper {
-    public static let global = KeychainWrapper(serviceName: "AuthForTesla", accessGroup: "group.global", iCloudSync: true)
 }
 
 extension UserDefaults {
@@ -107,26 +104,4 @@ func downloadLatestExternalApplicationList() async {
     } catch {
         // Download failed silently - the bundled list will be used as fallback
     }
-}
-
-
-
-
-/// Decodes a Base64-URL encoded string to Data.
-func base64UrlDecode(_ value: String) -> Data? {
-    var base64 = value
-        .replacing("-", with: "+")
-        .replacing("_", with: "/")
-    
-    if let data = Data(base64Encoded: base64) {
-        return data
-    } else {
-        let paddingLength = 4 - base64.count % 4
-        if paddingLength < 4 {
-            base64 += String(repeating: "=", count: paddingLength)
-            return Data(base64Encoded: base64)
-        }
-    }
-    
-    return nil
 }
