@@ -1,0 +1,172 @@
+# Mac Catalyst main menu, owners tab in front (before: SwiftUI .commands only)
+Auth for Tesla
+  About Auth for Tesla
+  ---
+  ---
+  Services
+  ---
+  Hide Auth for Tesla [1048576:h]
+  Hide Others [1572864:h]
+  Show All
+  ---
+  Quit Auth for Tesla [1048576:q]
+File
+  New Window [1048576:n]
+  ---
+  ---
+  Close [1048576:w]
+  Close All [1572864:w]
+  ---
+  ---
+  Duplicate [1179648:s]
+  Move
+  Rename…
+  Export As…
+Edit
+  Undo [1048576:z]
+  Redo [1179648:z]
+  ---
+  Cut [1048576:x]
+  Copy [1048576:c]
+  Paste [1048576:v]
+  Paste and Match Style [1703936:v]
+  Delete
+  Select All [1048576:a]
+  ---
+  ---
+  Writing Tools
+    Show Writing Tools
+    ---
+    Proofread
+    Rewrite
+    ---
+    Make Friendly
+    Make Professional
+    Make Concise
+    ---
+    Summarize
+    Create Key Points
+    Make List
+    Make Table
+    ---
+    Compose…
+  ---
+  AutoFill
+    Contact…
+    Passwords…
+    Credit Card…
+  Start Dictation…
+  Start Dictation… [hidden] [8388608:d]
+  Emoji & Symbols [1048576: ]
+  Emoji & Symbols [hidden] [1310720: ]
+  Emoji & Symbols [hidden] [8388608:e]
+View
+  Owners API [1048576:1]
+  Fleet API [1048576:2]
+  Tools [1048576:3]
+  About [1048576:4]
+  ---
+  Enter Full Screen [8388608:f]
+  Enter Full Screen [hidden] [1310720:f]
+Tokens
+  Refresh All Tokens [1048576:r]
+  ---
+  Copy Access Token [1179648:c]
+  Copy Refresh Token [1179648:r]
+Window
+  Minimize [1048576:m]
+  Zoom
+  ---
+  Bring All to Front
+  ---
+  Auth for Tesla
+Help
+  Auth for Tesla Support
+
+# After: with the document menu removed, owners tab
+Auth for Tesla
+  About Auth for Tesla
+  --- [disabled]
+  --- [disabled]
+  Services
+  --- [disabled]
+  Hide Auth for Tesla [1048576:h]
+  Hide Others [1572864:h]
+  Show All
+  --- [disabled]
+  Quit Auth for Tesla [1048576:q]
+File
+  New Window [1048576:n]
+  --- [disabled]
+  --- [disabled]
+  Close [1048576:w]
+  Close All [1572864:w]
+  --- [disabled]
+Edit
+  Undo [1048576:z]
+  Redo [1179648:z]
+  --- [disabled]
+  Cut [1048576:x]
+  Copy [1048576:c]
+  Paste [1048576:v]
+  Paste and Match Style [1703936:v]
+  Delete
+  Select All [1048576:a]
+  --- [disabled]
+  --- [disabled]
+  Writing Tools
+    Show Writing Tools
+    --- [disabled]
+    Proofread
+    Rewrite
+    --- [disabled]
+    Make Friendly
+    Make Professional
+    Make Concise
+    --- [disabled]
+    Summarize
+    Create Key Points
+    Make List
+    Make Table
+    --- [disabled]
+    Compose…
+  --- [disabled]
+  AutoFill
+    Contact…
+    Passwords…
+    Credit Card…
+  Start Dictation…
+  Start Dictation… [hidden] [8388608:d]
+  Emoji & Symbols [1048576: ]
+  Emoji & Symbols [hidden] [1310720: ]
+  Emoji & Symbols [hidden] [8388608:e]
+View
+  Owners API [1048576:1]
+  Fleet API [1048576:2]
+  Tools [1048576:3]
+  About [1048576:4]
+  --- [disabled]
+  Enter Full Screen [8388608:f]
+  Enter Full Screen [hidden] [1310720:f]
+Tokens
+  Refresh All Tokens [1048576:r]
+  --- [disabled]
+  Copy Access Token [1179648:c]
+  Copy Refresh Token [1179648:r]
+Window
+  Minimize [1048576:m]
+  Zoom
+  --- [disabled]
+  Bring All to Front
+  --- [disabled]
+  Auth for Tesla
+Help
+  Auth for Tesla Support
+
+# After: Tools tab in front (copy commands disabled)
+Tokens
+  Refresh All Tokens [1048576:r]
+  --- [disabled]
+  Copy Access Token [disabled] [1179648:c]
+  Copy Refresh Token [disabled] [1179648:r]
+Window
