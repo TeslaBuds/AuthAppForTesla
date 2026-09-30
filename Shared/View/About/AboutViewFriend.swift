@@ -67,7 +67,7 @@ struct AboutViewFriend: View {
         case .appStore(let url):
             openURL(url)
         case .web(let url):
-#if targetEnvironment(macCatalyst) || os(macOS)
+#if os(macOS)
             openURL(url)
 #else
             safariURL = url
@@ -95,7 +95,7 @@ enum FriendLink: Equatable {
     }
 }
 
-#if os(iOS) && !targetEnvironment(macCatalyst)
+#if os(iOS)
 /// Wraps `SFSafariViewController` for presenting in-app Safari browsing.
 private struct SafariView: UIViewControllerRepresentable {
     let url: URL

@@ -18,7 +18,6 @@
 		EA7400112F00000000AF0001 /* AuthAppForTesla.icon in Resources */ = {isa = PBXBuildFile; fileRef = EA86FA1A2F63F2E5009FF55C /* AuthAppForTesla.icon */; };
 		EA7400122F00000000AF0001 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EA1A3340272D88A100B66EB0 /* InfoPlist.strings */; };
 		EA86FA1B2F63F2E5009FF55C /* AuthAppForTesla.icon in Resources */ = {isa = PBXBuildFile; fileRef = EA86FA1A2F63F2E5009FF55C /* AuthAppForTesla.icon */; };
-		EAA8D9E1306C8D5E0058B17E /* MacMenuConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA8D9E0306C8D5E0058B17E /* MacMenuConfigurator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,7 +67,6 @@
 		EA73FFDB306D0E2D00BC6E17 /* AuthAppForTeslaMacUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AuthAppForTeslaMacUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA86FA1A2F63F2E5009FF55C /* AuthAppForTesla.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AuthAppForTesla.icon; sourceTree = "<group>"; };
 		EA9EA7F725DA7E13002FE23E /* AuthAppForTesla.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AuthAppForTesla.entitlements; sourceTree = "<group>"; };
-		EAA8D9E0306C8D5E0058B17E /* MacMenuConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacMenuConfigurator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -162,7 +160,6 @@
 			children = (
 				EA9EA7F725DA7E13002FE23E /* AuthAppForTesla.entitlements */,
 				EA63697325CAB11D000216BF /* RootView.swift */,
-				EAA8D9E0306C8D5E0058B17E /* MacMenuConfigurator.swift */,
 				EA63697125CAB11D000216BF /* AuthAppForTeslaApp.swift */,
 				EA63697A25CAB11D000216BF /* Info.plist */,
 				EA63697725CAB11D000216BF /* Preview Content */,
@@ -454,7 +451,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA63697425CAB11D000216BF /* RootView.swift in Sources */,
-				EAA8D9E1306C8D5E0058B17E /* MacMenuConfigurator.swift in Sources */,
 				EA63697225CAB11D000216BF /* AuthAppForTeslaApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -529,7 +525,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "dk.kimhansen.Auth-for-Tesla-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -555,7 +551,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "dk.kimhansen.Auth-for-Tesla-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -580,7 +576,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "dk.kimhansen.Auth-for-Tesla-UI-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -606,7 +602,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "dk.kimhansen.Auth-for-Tesla-UI-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
@@ -759,10 +755,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.3;
+				MARKETING_VERSION = 3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dk.kimhansen.AuthAppForTesla;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG OAUTHAVAILABLE";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -785,10 +782,11 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.0.3;
+				MARKETING_VERSION = 3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dk.kimhansen.AuthAppForTesla;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = OAUTHAVAILABLE;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -890,7 +888,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dk.kimhansen.AuthAppForTeslaMacTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -915,7 +913,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dk.kimhansen.AuthAppForTeslaMacTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -938,7 +936,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dk.kimhansen.AuthAppForTeslaMacUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -962,7 +960,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = dk.kimhansen.AuthAppForTeslaMacUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;

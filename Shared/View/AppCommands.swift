@@ -2,11 +2,10 @@
 //  AppCommands.swift
 //  AuthAppForTesla
 //
-//  The Mac menu bar. Catalyst's stock menus carry document, sidebar and
-//  window-tab commands this app has nothing behind (#37); they are
-//  replaced here, and the app's own actions get a Tokens menu and
-//  keyboard shortcuts. Every command calls the same model actions as
-//  the touch UI.
+//  The menu bar commands, shared by the iPad's hardware-keyboard menu
+//  and the native Mac app (#44): no document items, a Tokens menu with
+//  keyboard shortcuts, and ⌘1–⌘4 for the four sections. Every command
+//  calls the same model actions as the touch UI.
 //
 
 import SwiftUI

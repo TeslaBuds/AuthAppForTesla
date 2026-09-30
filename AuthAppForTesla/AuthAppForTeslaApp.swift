@@ -11,9 +11,6 @@ import TeslaAuthKit
 @main
 struct AuthAppForTeslaApp: App {
     @State private var model = AuthViewModel()
-    #if targetEnvironment(macCatalyst)
-    @UIApplicationDelegateAdaptor private var menuConfigurator: MacMenuConfigurator
-    #endif
 
     init() {
         #if DEBUG
@@ -32,17 +29,6 @@ struct AuthAppForTeslaApp: App {
     var body: some Scene {
         WindowGroup {
             RootView(model: model, initialTab: initialTab)
-                // On Mac Catalyst the user can resize the window freely,
-                // and SwiftUI happily lets them shrink it down to a few
-                // dozen points wide, at which point the layout collapses
-                // into one-word-per-line. Apply a sane content-driven
-                // minimum so .windowResizability(.contentSize) below
-                // adopts it as the actual window minimum size. The
-                // width is high enough that the four-tab title bar
-                // never collapses into the popup picker.
-                #if targetEnvironment(macCatalyst)
-                .frame(minWidth: 940, minHeight: 760)
-                #endif
                 .task {
                     #if DEBUG
                     if ScreenshotScenario.isActive {
@@ -60,14 +46,9 @@ struct AuthAppForTeslaApp: App {
                     await downloadLatestExternalApplicationList()
                 }
         }
-        // The app is fundamentally a phone-shaped column of token cards.
-        // On Mac Catalyst we want it to open at a comfortable size that
-        // fits the four-tab title bar SwiftUI renders. Catalyst applies
-        // iPad-to-Mac scaling (~0.77x) on top of this value, so 940 here
-        // renders as roughly 720pt of visual width — wide enough that
-        // the tab bar doesn't collapse into a popup picker.
-        // `.contentSize` lets the user resize freely from there but
-        // respects the content minimum frame above.
+        // The size an iPad opens a new window at, as before. The Mac is
+        // the native AuthAppForTeslaMac app since 3.1 (#44), so the old
+        // Catalyst sizing and menu surgery are gone.
         .defaultSize(width: 940, height: 1080)
         .windowResizability(.contentSize)
         .commands {
