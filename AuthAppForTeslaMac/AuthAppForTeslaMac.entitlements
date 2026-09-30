@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:www.watchfortesla.com?mode=developer</string>
+		<string>applinks:www.watchfortesla.com</string>
+	</array>
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+	<!-- group.global is the keychain access group of every synced token
+	     item, exactly as on iOS. Never rename it, never use the Mac-only
+	     <TeamID>.group form: keychain access groups do not accept it
+	     (AuthAppForTesla#44). -->
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.global</string>
+	</array>
+	<key>com.apple.security.network.client</key>
+	<true/>
+</dict>
+</plist>

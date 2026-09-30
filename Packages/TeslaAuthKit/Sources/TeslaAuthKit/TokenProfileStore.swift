@@ -93,6 +93,10 @@ public protocol SyncedItemStorage: Sendable {
 public struct KeychainSyncedItemStorage: SyncedItemStorage, @unchecked Sendable {
     public let keychain: KeychainWrapper
 
+    public init(keychain: KeychainWrapper) {
+        self.keychain = keychain
+    }
+
     public func read(_ key: String) -> KeychainReadResult {
         keychain.readResult(forKey: key, withAccessibility: .afterFirstUnlock)
     }
