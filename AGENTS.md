@@ -102,3 +102,14 @@ If the Xcode MCP is configured, prefer its tools over generic alternatives when 
 - `XcodeListNavigatorIssues` — check for issues visible in the Xcode Issue Navigator
 - `ExecuteSnippet` — test a code snippet in the context of a source file
 - `XcodeRead`, `XcodeWrite`, `XcodeUpdate` — prefer these over generic file tools when working with Xcode project files
+
+## This repo's layout (since 3.1, #44)
+
+- `AuthAppForTesla/` is the iOS and iPadOS shell. `AuthAppForTeslaMac/` is the native macOS app. It uses the same bundle ID and App Store record, and Catalyst is off.
+- `Shared/` is compiled by both app targets. `Packages/TeslaAuthKit` holds the model layer, with no UI. Run `swift test` there on the Mac.
+- Branch on platform with `#if os(macOS)` / `#if os(iOS)` siblings, never `targetEnvironment(macCatalyst)`.
+- **Never write a synced keychain item this device could not read.** All profile writes go through `TokenProfileStore`'s guard.
+  - Any change to storage needs `scripts/keychain-guard-proof.sh`, run through DRSFramer's `gui-run.sh`, to pass. That is the real-keychain, multi-launch proof.
+- Run `scripts/check-parity.sh` after any feature change. Every feature's row in `docs/feature-parity.json` must state both `ios` and `macos`.
+- Mac screenshots come from `Screenshots/capture-mac.sh`, which is the app's own DEBUG capture harness. Pass launch arguments with a leading `-`, because AppKit opens a bare argument as a document.
+- Ship the Mac with `deliver-local.sh --platform macos --scheme AuthAppForTeslaMac`.
