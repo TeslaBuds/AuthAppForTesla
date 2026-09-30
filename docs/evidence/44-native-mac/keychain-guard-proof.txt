@@ -1,0 +1,17 @@
+AFT-PROOF [seed] launch 1 read owners=["Personal", "Work", "Family car"] fleet=["Production", "Staging"]
+AFT-PROOF [seed] read-only census of the real AuthForTesla items in group.global: 6 keys ["dk.kimhansen.TeslaAuth.FleetClientID", "dk.kimhansen.TeslaAuth.FleetClientSecret", "dk.kimhansen.TeslaAuth.FleetRedirectUri", "dk.kimhansen.TeslaAuth.TokenV3", "dk.kimhansen.TeslaAuth.TokenV3Profiles", "dk.kimhansen.TeslaAuth.TokenV4Profiles"]
+AFT-PROOF [seed] seeded + refreshed, fingerprint 5a2f6a149ab3ec13a981ebe8a55566c42cc5e19c3349a73d3ed263dc84fb26e1
+PHASE seed rc=0
+AFT-PROOF [reread] FINGERPRINT 5a2f6a149ab3ec13a981ebe8a55566c42cc5e19c3349a73d3ed263dc84fb26e1
+AFT-PROOF [reread] launch 2 read owners=["Personal", "Work", "Family car"] fleet=["Production", "Staging"]; refreshed token persisted
+PHASE reread rc=0
+launch 2 fingerprint: 5a2f6a149ab3ec13a981ebe8a55566c42cc5e19c3349a73d3ed263dc84fb26e1
+AFT-PROOF [noaccess] production store (read only): unavailable unreadable(-34018)
+AFT-PROOF [noaccess] raw read of the fixture without the entitlement: failed(-34018)
+AFT-PROOF [noaccess] status -34018; every change refused; write attempts: 0
+PHASE noaccess rc=0
+AFT-PROOF [verify] fingerprint now 5a2f6a149ab3ec13a981ebe8a55566c42cc5e19c3349a73d3ed263dc84fb26e1, launch 2 5a2f6a149ab3ec13a981ebe8a55566c42cc5e19c3349a73d3ed263dc84fb26e1
+PHASE verify rc=0
+AFT-PROOF [cleanup] fixture removed
+PHASE cleanup rc=0
+KEYCHAIN GUARD PROOF PASSED
