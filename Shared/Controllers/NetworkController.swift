@@ -69,20 +69,46 @@ public enum DataResult {
         }
     }
 
+    /// A response is a success only when it arrived with a 2xx status.
+    /// Any other HTTP status is a failure carrying that status and the
+    /// body, so callers can read Tesla's `error` / `error_description`
+    /// (AuthAppForTesla#48: every status used to count as success, so
+    /// "Test Token" passed dead tokens and the 400/401 branches never ran).
     public init(data: Data?, response: HTTPURLResponse?, error: NSError?) {
         if let error {
             self = .failure(FailureDataResponse(data: data, response: response, error: error))
+        } else if let response, !(200..<300).contains(response.statusCode) {
+            self = .failure(FailureDataResponse(data: data, response: response, error: Self.httpError(response, data: data)))
         } else {
             self = .success(SuccessDataResponse(data: data ?? Data(), response: response))
         }
     }
+
+    /// An error for a non-2xx response: domain "HTTP", the status as code,
+    /// and Tesla's `error_description` (or `error`) as the description.
+    static func httpError(_ response: HTTPURLResponse, data: Data?) -> NSError {
+        let body = data.flatMap { try? JSONSerialization.jsonObject(with: $0) } as? [String: Any] ?? [:]
+        let description = (body["error_description"] as? String)
+            ?? (body["error"] as? String)
+            ?? HTTPURLResponse.localizedString(forStatusCode: response.statusCode)
+        return NSError(domain: "HTTP", code: response.statusCode, userInfo: [NSLocalizedDescriptionKey: description])
+    }
+
+    /// True when no HTTP response arrived at all (offline, timeout, DNS).
+    public var isTransportFailure: Bool {
+        if case .failure(let response) = self { return response.fullResponse == nil }
+        return false
+    }
 }
 
 class NetworkController {
-    public static let shared = NetworkController()
+    public static let shared = NetworkController(configuration: .ephemeral)
 
-    private init() {
-        // Private initializer, so no accidental class instantiations outside singleton can happen
+    private let configuration: URLSessionConfiguration
+
+    /// Tests pass a configuration whose `protocolClasses` stub the network.
+    init(configuration: URLSessionConfiguration) {
+        self.configuration = configuration
     }
 
     func get(_ url: String, token: String? = nil, apiKey: String? = nil) async -> DataResult {
@@ -103,7 +129,6 @@ class NetworkController {
             return DataResult(data: nil, response: nil, error: NSError.teslaError("Invalid url: \(url)"))
         }
         
-        let configuration = URLSessionConfiguration.ephemeral
         let session = URLSession(configuration: configuration)
         var request = URLRequest(url: url)
         request.httpMethod = method == .get ? "GET" : "POST"

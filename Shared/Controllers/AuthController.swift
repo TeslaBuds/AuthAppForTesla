@@ -15,6 +15,14 @@ import CryptoKit
 actor AuthController {
     public static let shared = AuthController()
 
+    /// Every token refresh goes through this: single flight per profile,
+    /// rotation-race aware, and never deletes a stored profile (#49, #50).
+    let refreshService = TokenRefreshService(
+        store: .shared,
+        transport: TeslaTokenEndpoint(),
+        ledger: UserDefaultsRejectionLedger()
+    )
+
     private init() {
         // Private initializer, so no accidental class instantiations outside singleton can happen
     }
@@ -31,6 +39,9 @@ actor AuthController {
     }
 
 
+    /// Signs out of the active profile: deletes it (and its mirrored
+    /// legacy entry). Only ever called because the person asked to sign
+    /// out — never from a refresh or a sign-in path (#49, #50).
     public func logOut(environment: LoginEnvironment) async
     {
         // Delete the active profile (and its mirrored legacy entry).
@@ -101,11 +112,19 @@ actor AuthController {
         }
     }
     
+    /// The active Owners profile's token: from the profile store, or the
+    /// legacy single-token mirror when there is no profile list.
     var v3Token: Token? {
-        var token: Token?
-        if let tokenJson = getV3Token() { token = try? JSONDecoder().decode(Token.self, from: tokenJson) }
-        
-        return token
+        get async { await activeToken(environment: .owner) }
+    }
+
+    /// The active profile's stored token for an API.
+    func activeToken(environment: LoginEnvironment) async -> Token? {
+        if let token = await TokenProfileStore.shared.load(environment: environment).activeProfile?.token {
+            return token
+        }
+        let data = environment == .owner ? getV3Token() : getV4Token()
+        return data.flatMap { try? JSONDecoder().decode(Token.self, from: $0) }
     }
 
     func getV3Token() -> Data? {
@@ -118,30 +137,19 @@ actor AuthController {
         }
         return nil
     }
-    
-    func acquireTokenV3Silent(forceRefresh: Bool = false) async -> Token? {
-        var token: Token?
-        if let tokenJson = getV3Token() {
-            token = try? JSONDecoder().decode(Token.self, from: tokenJson)
-        }
 
-        if let token
-        {
-            if (forceRefresh || token.expires_at ?? Date() <= Date().addingTimeInterval(60))
-            {
-                let refreshedToken = await oauthRenew(token.refresh_token, token.region ?? .global)
-                if let refreshedToken {
-                    _ = try? await TokenProfileStore.shared.updateActiveToken(refreshedToken, environment: .owner)
-                } else {
-                    return nil
-                }
-                return refreshedToken
-            }
-            return token
-        }
-        return nil
+    /// Refreshes the active profile's token, reporting why when it could
+    /// not: offline and refused both keep the stored token (#49, #50).
+    func refreshActive(environment: LoginEnvironment, forceRefresh: Bool) async -> TokenRefreshOutcome {
+        await refreshService.refresh(environment: environment, forceRefresh: forceRefresh)
     }
-   
+
+    /// The active Owners token, refreshed when forced or due; nil when a
+    /// needed refresh failed.
+    func acquireTokenV3Silent(forceRefresh: Bool = false) async -> Token? {
+        await refreshService.refresh(environment: .owner, forceRefresh: forceRefresh).freshToken
+    }
+
     func getAuthByRegion(region: TokenRegion) -> String {
         switch region {
         case .global:
@@ -150,87 +158,19 @@ actor AuthController {
             "https://auth.tesla.cn"
         }
     }
-    
-    
-    /// Refreshes a V3 (Owners API) refresh token. When `targetProfileId`
-    /// is provided, the refreshed token is written back to that specific
-    /// profile in the store rather than the currently active one. App
-    /// Intents that operate on a non-active profile use this so they
-    /// don't accidentally promote the chosen profile to active.
-    func oauthRenew(_ refreshToken: String, _ region: TokenRegion, targetProfileId: UUID? = nil, retries: Int = 0) async -> Token? {
-        let url = getAuthByRegion(region: region)
-
-        let result = await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
-                                                            ["grant_type": "refresh_token",
-                                                             "scope": "openid email offline_access",
-                                                             "client_id": "ownerapi",
-                                                             "refresh_token": "\(refreshToken)"])
-        switch result {
-        case let .success(result):
-            var token: Token?
-            if let expiresIn = result.dictionaryBody["expires_in"] as? Int,
-               let access_token = result.dictionaryBody["access_token"] as? String,
-               let token_type = result.dictionaryBody["token_type"] as? String,
-               let refresh_token = result.dictionaryBody["refresh_token"] as? String {
-                let expiresAt = Date().addingTimeInterval(TimeInterval(expiresIn))
-
-                token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
-                if let token {
-                    if let targetProfileId {
-                        _ = try? await TokenProfileStore.shared.updateProfileToken(id: targetProfileId, token: token, environment: .owner)
-                    } else {
-                        _ = try? await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
-                    }
-                }
-            }
-            return token
-        case let .failure(error):
-            if error.statusCode == 400 {
-                if retries < 3 {
-                    return await oauthRenew(refreshToken, region, targetProfileId: targetProfileId, retries: retries + 1)
-                }
-                try? await TokenProfileStore.shared.clearLegacyMirror(environment: .owner)
-            } else if error.statusCode == 401 {
-                if retries < 3 {
-                    return await oauthRenew(refreshToken, region, targetProfileId: targetProfileId, retries: retries + 1)
-                }
-                try? await TokenProfileStore.shared.clearLegacyMirror(environment: .owner)
-            } else if error.statusCode == 848 {
-                // Mystical SSL error
-                if retries < 3 {
-                    return await oauthRenew(refreshToken, region, targetProfileId: targetProfileId, retries: retries + 1)
-                }
-            } else {
-                // 19 - network connection was lost
-                // 23 - request timed out
-
-                if retries < 3 {
-                    return await oauthRenew(refreshToken, region, targetProfileId: targetProfileId, retries: retries + 1)
-                }
-            }
-            return nil
-        }
-    }
 
     /// Returns the V3 (Owners API) token for a specific profile,
     /// refreshing if it's expired or about to expire. Does NOT change
     /// the active profile — used exclusively by the App Intent path
     /// when the user has explicitly chosen an account in their Shortcut.
     func acquireTokenV3Silent(profileId: UUID, forceRefresh: Bool = false) async -> Token? {
-        let collection = await TokenProfileStore.shared.load(environment: .owner)
-        guard let profile = collection.profiles.first(where: { $0.id == profileId }) else {
-            return nil
-        }
-        let token = profile.token
-        if forceRefresh || (token.expires_at ?? Date()) <= Date().addingTimeInterval(60) {
-            return await oauthRenew(token.refresh_token, token.region ?? .global, targetProfileId: profileId)
-        }
-        return token
+        await refreshService.refresh(environment: .owner, profileId: profileId, forceRefresh: forceRefresh).freshToken
     }
 
     /// Builds the OAuth authorization URL for V3 (Owners API) login.
-    /// Returns the URL and code verifier needed to complete the exchange.
-    func buildOAuthURLV3(region: TokenRegion, redirectUrl: String) -> (url: URL, codeVerifier: String)? {
+    /// Returns the URL, plus the code verifier and `state` the redirect
+    /// must be checked against and the exchange must send (#51).
+    func buildOAuthURLV3(region: TokenRegion, redirectUrl: String) -> (url: URL, codeVerifier: String, state: String)? {
         let authenticateUrl = getAuthByRegion(region: region)
         let codeRequest = AuthCodeRequest()
 
@@ -242,7 +182,7 @@ actor AuthController {
             return nil
         }
 
-        return (url, codeRequest.codeVerifier)
+        return (url, codeRequest.codeVerifier, codeRequest.state)
     }
 
     /// Exchanges an OAuth authorization code for a V3 token. When
@@ -295,33 +235,21 @@ actor AuthController {
             if let body = String(data: error.data, encoding: .utf8) {
                 logOAuth("oauthCodeV3 fail body: \(String(body.prefix(500)))")
             }
-            if error.statusCode == 400 {
-                if retries < 3 {
-                    return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)
-                }
-                try? await TokenProfileStore.shared.clearLegacyMirror(environment: .owner)
-            } else if error.statusCode == 401 {
-                if retries < 3 {
-                    return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)
-                }
-                try? await TokenProfileStore.shared.clearLegacyMirror(environment: .owner)
-            } else if error.statusCode == 848 {
-                // Mystical SSL error
-                if retries < 3 {
-                    return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)
-                }
-            } else {
-                // 19 - network connection was lost
-                // 23 - request timed out
-                if retries < 3 {
-                    return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)
-                }
-
+            // An authorization code is single-use: a 4xx answer is final.
+            // Only a lost connection or a server error is worth retrying.
+            // A failed sign-in never touches the stored tokens (#49).
+            if Self.isRetryable(error), retries < 3 {
+                return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)
             }
             return nil
         }
     }
-    
+
+    /// No HTTP answer at all, or a 5xx: worth another try.
+    static func isRetryable(_ failure: FailureDataResponse) -> Bool {
+        failure.fullResponse == nil || failure.statusCode >= 500
+    }
+
     class AuthCodeRequest: Encodable {
         var responseType: String = "code"
         var clientID = "ownerapi"
@@ -331,13 +259,15 @@ actor AuthController {
         let codeVerifier: String
         let codeChallenge: String
         var codeChallengeMethod = "S256"
-        var state = "AuthAppForTesla"
+        /// Random per flow, and checked on the redirect (#51).
+        let state: String
         var isInApp = "true"
         var prompt = "login"
 
         init() {
-            codeVerifier = "".codeVerifier
+            codeVerifier = PKCE.makeCodeVerifier()
             codeChallenge = codeVerifier.challenge
+            state = PKCE.makeState()
         }
 
         // MARK: Codable protocol

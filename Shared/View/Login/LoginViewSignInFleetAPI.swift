@@ -49,10 +49,9 @@ struct LoginViewSignInFleetAPI: View {
             .pickerStyle(.segmented)
             .labelsHidden()
 
+            // No sign-out first: the stored profile is replaced only after
+            // a successful code exchange (#49).
             Button("Sign in with Tesla") {
-                if !addAsNewProfile {
-                    model.logOut(environment: .fleet)
-                }
                 authenticateV4(region: region, clientId: clientId, clientSecret: clientSecret, redirectUri: redirectUri)
             }
             .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
@@ -82,7 +81,7 @@ struct LoginViewSignInFleetAPI: View {
                 redirectUri: redirectUri
             )
 
-            guard let url = await AuthController.shared.buildOAuthURLV4(
+            guard let request = await AuthController.shared.buildOAuthURLV4(
                 region: region,
                 fleetClientId: clientId,
                 fleetRedirectUri: redirectUri
@@ -91,10 +90,11 @@ struct LoginViewSignInFleetAPI: View {
                 return
             }
 
-            let session = TeslaAuthSession(url: url, redirectUrl: redirectUri)
+            let session = TeslaAuthSession(url: request.url, redirectUrl: redirectUri)
 
             model.fleetAuth = FleetAuthInFlight(
-                url: url,
+                url: request.url,
+                state: request.state,
                 region: region,
                 clientId: clientId,
                 clientSecret: clientSecret,
@@ -108,10 +108,13 @@ struct LoginViewSignInFleetAPI: View {
     private func handleAuthResult(_ result: Result<URL, Error>, auth: FleetAuthInFlight) {
         switch result {
         case .success(let url):
-            let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-            guard let code = urlComponents?.queryItems?.first(where: { $0.name == "code" })?.value else {
+            let code: String
+            switch OAuthRedirect.authorizationCode(from: url, expectedState: auth.state) {
+            case .success(let value):
+                code = value
+            case .failure(let error):
                 model.fleetAuth = nil
-                model.showToast(.error("Sign-in failed: no authorization code received."))
+                model.showToast(.error(LoginViewSignInOwnersAPI.message(for: error)))
                 return
             }
             Task {

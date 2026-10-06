@@ -49,8 +49,27 @@ class AuthViewModel {
     /// never overwrites the lists on the person's other devices (#44).
     var storeProblem: TokenStoreError?
 
-    init() {
+    /// Why the last refresh of each API's token did not succeed, keyed
+    /// to the refresh token it was about. Read it with `refreshProblem(for:)`.
+    private(set) var refreshProblems: [LoginEnvironment: TokenRefreshProblem] = [:]
+
+    /// The running "refresh everything", so overlapping triggers (⌘R,
+    /// the Refresh button, launch, the menu bar) join it (#50).
+    private var refreshAllTask: Task<Void, Never>?
+
+    private let refresher: any ActiveTokenRefreshing
+
+    init(refresher: any ActiveTokenRefreshing = AuthController.shared) {
         // Tokens are loaded asynchronously after init via loadTokens()
+        self.refresher = refresher
+    }
+
+    /// The refresh problem for an API, while it still applies to the
+    /// token on screen.
+    func refreshProblem(for environment: LoginEnvironment) -> TokenRefreshProblem? {
+        guard let problem = refreshProblems[environment],
+              problem.refreshToken == token(for: environment)?.refresh_token else { return nil }
+        return problem
     }
 
     /// Presents a toast message.
@@ -60,8 +79,8 @@ class AuthViewModel {
 
     /// Loads the initial token state from the AuthController actor.
     func loadTokens() async {
-        tokenV3 = await AuthController.shared.v3Token
-        tokenV4 = await AuthController.shared.v4Token
+        tokenV3 = await refresher.activeToken(environment: .owner)
+        tokenV4 = await refresher.activeToken(environment: .fleet)
         await loadProfiles()
     }
 
@@ -121,18 +140,60 @@ class AuthViewModel {
         tokenV4 = await AuthController.shared.v4Token
     }
 
-    func refreshAll() {
-        Task {
-            let v3 = await AuthController.shared.acquireTokenV3Silent(forceRefresh: true)
-            let v4 = await AuthController.shared.acquireTokenV4Silent(forceRefresh: true)
-            tokenV3 = v3
-            tokenV4 = v4
-            if v3 == nil && v4 == nil {
-                showToast(.error("Could not refresh tokens. Please sign in again."))
-            } else {
-                showToast(.success("Tokens refreshed successfully."))
-            }
+    /// Refreshes both APIs' active tokens. A token that could not be
+    /// refreshed stays on screen: offline is not signed out, and a refused
+    /// refresh token is flagged, never deleted (#49, #50). Calls made while
+    /// one is running join it instead of posting the same tokens again.
+    @discardableResult
+    func refreshAll() -> Task<Void, Never> {
+        if let refreshAllTask { return refreshAllTask }
+        let task = Task {
+            await performRefreshAll()
+            refreshAllTask = nil
         }
+        refreshAllTask = task
+        return task
+    }
+
+    private func performRefreshAll() async {
+        let owners = await refresher.refreshActive(environment: .owner, forceRefresh: true)
+        let fleet = await refresher.refreshActive(environment: .fleet, forceRefresh: true)
+        apply(owners, environment: .owner)
+        apply(fleet, environment: .fleet)
+        if let toast = Self.toast(owners: owners, fleet: fleet) {
+            showToast(toast)
+        }
+    }
+
+    /// Shows a refresh outcome. Only a successful refresh replaces the
+    /// token; nothing here ever clears one.
+    private func apply(_ outcome: TokenRefreshOutcome, environment: LoginEnvironment) {
+        guard let token = outcome.token else { return }
+        switch environment {
+        case .owner: tokenV3 = token
+        case .fleet: tokenV4 = token
+        }
+        refreshProblems[environment] = TokenRefreshProblem(outcome)
+    }
+
+    /// The toast after "refresh everything": success only when every
+    /// refresh that was attempted succeeded.
+    static func toast(owners: TokenRefreshOutcome, fleet: TokenRefreshOutcome) -> Toast? {
+        let outcomes = [(String(localized: "Owners API"), owners), (String(localized: "Fleet API"), fleet)]
+        let refused = outcomes.compactMap { name, outcome -> String? in
+            if case .needsSignIn(_, let reason) = outcome { return "\(name): \(reason)" }
+            return nil
+        }
+        if !refused.isEmpty {
+            return .error(String(localized: "Tesla refused a refresh token. Sign in again to replace it. (\(refused.joined(separator: "; ")))"))
+        }
+        if outcomes.contains(where: { if case .offline = $0.1 { true } else { false } }) {
+            return .error(String(localized: "Couldn't reach Tesla. Your saved tokens are unchanged."))
+        }
+        if outcomes.contains(where: { $0.1.freshToken != nil }) {
+            return .success(String(localized: "Tokens refreshed successfully."))
+        }
+        return nil
     }
 
     /// The active token for an API, as currently shown in the UI.
@@ -204,18 +265,6 @@ class AuthViewModel {
         }
         tokenV3 = token
     }
-
-    func acquireTokenSilentV3(forceRefresh: Bool = false) async -> Token? {
-        let token = await AuthController.shared.acquireTokenV3Silent(forceRefresh: forceRefresh)
-        tokenV3 = token
-        return token
-    }
-
-    func acquireTokenSilentV4(forceRefresh: Bool = false) async -> Token? {
-        let token = await AuthController.shared.acquireTokenV4Silent(forceRefresh: forceRefresh)
-        tokenV4 = token
-        return token
-    }
 }
 
 /// Snapshot of an Owners API OAuth flow that's currently between
@@ -232,6 +281,8 @@ struct OwnersAuthInFlight: Identifiable, Equatable {
     let id = UUID()
     var url: URL
     var codeVerifier: String
+    /// The random `state` sent; the redirect must carry it back (#51).
+    var state: String
     var region: TokenRegion
     var addAsNewProfile: Bool
     let session: TeslaAuthSession
@@ -249,6 +300,8 @@ struct OwnersAuthInFlight: Identifiable, Equatable {
 struct FleetAuthInFlight: Identifiable, Equatable {
     let id = UUID()
     var url: URL
+    /// The random `state` sent; the redirect must carry it back (#51).
+    var state: String
     var region: TokenRegion
     var clientId: String
     var clientSecret: String

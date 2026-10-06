@@ -26,6 +26,34 @@ struct PKCETests {
         #expect(allowed.isSuperset(of: verifierCharSet))
     }
 
+    @Test("Two verifiers are never the same (#51: the verifier was derived from the clock)")
+    func verifiersAreRandom() {
+        let verifiers = (0..<50).map { _ in PKCE.makeCodeVerifier() }
+        #expect(Set(verifiers).count == verifiers.count)
+        #expect("".codeVerifier != "".codeVerifier)
+    }
+
+    @Test("A verifier carries 32 random bytes: 43 base64url characters")
+    func verifierEntropy() {
+        let verifier = PKCE.makeCodeVerifier()
+        #expect(verifier.count == 43)
+        #expect(base64UrlDecode(verifier)?.count == PKCE.verifierByteCount)
+    }
+
+    @Test("State values are random and URL-safe")
+    func stateIsRandom() {
+        let first = PKCE.makeState(), second = PKCE.makeState()
+        #expect(first != second)
+        #expect(first.count >= 32)
+        let allowed = CharacterSet.alphanumerics.union(CharacterSet(charactersIn: "-_"))
+        #expect(allowed.isSuperset(of: CharacterSet(charactersIn: first)))
+    }
+
+    @Test("S256 challenge matches the RFC 7636 Appendix B vector")
+    func challengeMatchesRFCVector() {
+        #expect("dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk".challenge == "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM")
+    }
+
     @Test("Challenge produces a valid SHA-256 base64url hash")
     func challengeFormat() {
         let verifier = "test-verifier-string"

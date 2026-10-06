@@ -13,15 +13,19 @@ struct HomeView: View {
     @State private var showDetails = false
     @State private var scrollPosition = ScrollPosition()
     @State private var isAddingAccount = false
+    @State private var isSigningInAgain = false
     let loginEnvironment: LoginEnvironment
 
     var body: some View {
         IconBackgroundView {
             ScrollView {
                 VStack(spacing: AppSpacing.cardGap) {
-                    HomeViewHeader(model: model, loginEnvironment: loginEnvironment) {
-                        isAddingAccount = true
-                    }
+                    HomeViewHeader(
+                        model: model,
+                        loginEnvironment: loginEnvironment,
+                        onAddAccount: { isAddingAccount = true },
+                        onSignInAgain: { isSigningInAgain = true }
+                    )
                     .padding(AppSpacing.cardInner)
                     .glassEffect(.clear, in: .rect(cornerRadius: AppCornerRadius.container))
 
@@ -79,6 +83,9 @@ struct HomeView: View {
         .sheet(isPresented: $isAddingAccount) {
             HomeViewAddAccountSheet(model: model, loginEnvironment: loginEnvironment, isPresented: $isAddingAccount)
         }
+        .sheet(isPresented: $isSigningInAgain) {
+            HomeViewSignInAgainSheet(model: model, loginEnvironment: loginEnvironment, isPresented: $isSigningInAgain)
+        }
     }
 }
 
@@ -129,6 +136,46 @@ private struct HomeViewAddAccountSheet: View {
                     }
                     isPresented = false
                 }
+            }
+        }
+    }
+}
+
+/// Signs in again to replace the active profile's refused refresh token
+/// (#50). The profile is only replaced once the new sign-in succeeded.
+private struct HomeViewSignInAgainSheet: View {
+    @Bindable var model: AuthViewModel
+    let loginEnvironment: LoginEnvironment
+    @Binding var isPresented: Bool
+
+    private var activeRefreshToken: String? {
+        model.token(for: loginEnvironment)?.refresh_token
+    }
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                LoginViewHeader()
+                Group {
+                    switch loginEnvironment {
+                    case .owner:
+                        LoginViewSignInOwnersAPI(model: model, addAsNewProfile: false)
+                    case .fleet:
+                        LoginViewSignInFleetAPI(model: model, addAsNewProfile: false)
+                    }
+                }
+                .fixedSize(horizontal: false, vertical: true)
+            }
+            .navigationTitle("Sign In Again")
+            .inlineNavigationTitle()
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { isPresented = false }
+                }
+            }
+            .onChange(of: activeRefreshToken) { _, _ in
+                model.showToast(.success(String(localized: "Signed in again.")))
+                isPresented = false
             }
         }
     }

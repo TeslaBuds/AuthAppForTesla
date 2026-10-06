@@ -32,10 +32,10 @@ struct LoginViewSignInOwnersAPI: View {
             }
             .pickerStyle(.segmented)
             .labelsHidden()
+            // No sign-out first: the stored profile is replaced only after
+            // a successful code exchange, so an offline attempt or a
+            // cancelled sheet never loses the account (#49).
             Button("Sign in with Tesla") {
-                if !addAsNewProfile {
-                    model.logOut(environment: .owner)
-                }
                 authenticateV3()
             }
             .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
@@ -79,6 +79,7 @@ struct LoginViewSignInOwnersAPI: View {
             model.ownersAuth = OwnersAuthInFlight(
                 url: oauthInfo.url,
                 codeVerifier: oauthInfo.codeVerifier,
+                state: oauthInfo.state,
                 region: region,
                 addAsNewProfile: addAsNewProfile,
                 session: session
@@ -91,12 +92,14 @@ struct LoginViewSignInOwnersAPI: View {
         switch result {
         case .success(let url):
             logOAuth("redirect URL: \(url.absoluteString)")
-            let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: true)
-            logOAuth("query items: \(String(describing: urlComponents?.queryItems))")
-            guard let code = urlComponents?.queryItems?.first(where: { $0.name == "code" })?.value else {
-                logOAuth("no code in redirect — query was: \(String(describing: urlComponents?.query))")
+            let code: String
+            switch OAuthRedirect.authorizationCode(from: url, expectedState: auth.state) {
+            case .success(let value):
+                code = value
+            case .failure(let error):
+                logOAuth("redirect refused: \(error)")
                 model.ownersAuth = nil
-                model.showToast(.error("Sign-in failed: no authorization code received."))
+                model.showToast(.error(Self.message(for: error)))
                 return
             }
             logOAuth("extracted code prefix: \(String(code.prefix(20)))… length=\(code.count)")
@@ -120,6 +123,15 @@ struct LoginViewSignInOwnersAPI: View {
             logOAuth("auth result failure: \(error)")
             model.showToast(.error("Sign-in failed: \(error.localizedDescription)"))
             model.ownersAuth = nil
+        }
+    }
+
+    /// The toast for a redirect that was not exchanged.
+    static func message(for error: OAuthRedirectError) -> String {
+        switch error {
+        case .stateMismatch: String(localized: "Sign-in failed: unexpected response.")
+        case .missingCode: String(localized: "Sign-in failed: no authorization code received.")
+        case .authorizationError(let description): String(localized: "Sign-in failed: \(description)")
         }
     }
 

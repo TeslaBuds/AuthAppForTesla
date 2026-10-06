@@ -12,6 +12,7 @@ struct HomeViewHeader: View {
     @Bindable var model: AuthViewModel
     let loginEnvironment: LoginEnvironment
     var onAddAccount: (() -> Void)? = nil
+    var onSignInAgain: (() -> Void)? = nil
 
     private var token: Token? {
         loginEnvironment == .owner ? model.tokenV3 : model.tokenV4
@@ -29,6 +30,9 @@ struct HomeViewHeader: View {
                 if let token {
                     HomeViewTokenHealth(token: token)
                     HomeViewRegionBadge(token: token, environment: loginEnvironment)
+                }
+                if let problem = model.refreshProblem(for: loginEnvironment) {
+                    HomeViewRefreshProblemNotice(problem: problem, onSignInAgain: onSignInAgain)
                 }
             }
             Spacer()
@@ -329,16 +333,18 @@ private struct RenameAccountSheet: View {
 #Preview("Owners – Populated") {
     HomeViewHeader(
         model: PreviewModelFactory.populatedModel(),
-        loginEnvironment: .owner
-    ) { }
+        loginEnvironment: .owner,
+        onAddAccount: { }
+    )
     .padding()
 }
 
 #Preview("Fleet – Populated") {
     HomeViewHeader(
         model: PreviewModelFactory.populatedModel(),
-        loginEnvironment: .fleet
-    ) { }
+        loginEnvironment: .fleet,
+        onAddAccount: { }
+    )
     .padding()
 }
 

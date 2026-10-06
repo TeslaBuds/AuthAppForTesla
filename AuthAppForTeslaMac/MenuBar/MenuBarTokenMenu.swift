@@ -20,7 +20,13 @@ struct MenuBarTokenMenu: View {
             Text("Your synced tokens can't be read on this Mac")
         }
         MenuBarProfileSection(title: "Owners API", collection: model.profilesV3, model: model)
+        if let problem = model.refreshProblem(for: .owner) {
+            Text(problem.message)
+        }
         MenuBarProfileSection(title: "Fleet API", collection: model.profilesV4, model: model)
+        if let problem = model.refreshProblem(for: .fleet) {
+            Text(problem.message)
+        }
 
         Divider()
         Button("Refresh All Tokens", systemImage: "arrow.clockwise") {

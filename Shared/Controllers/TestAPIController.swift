@@ -31,9 +31,14 @@ struct TestAPIResult: Identifiable, Equatable {
 }
 
 actor TestAPIController {
-    static let shared = TestAPIController()
+    static let shared = TestAPIController(network: .shared)
 
-    private init() {}
+    private let network: NetworkController
+
+    /// Tests inject a `NetworkController` with a stubbed session.
+    init(network: NetworkController) {
+        self.network = network
+    }
 
     // MARK: - Owners API (v3)
 
@@ -146,7 +151,7 @@ actor TestAPIController {
         token: String,
         summarize: @Sendable ([String: Any]) -> String?
     ) async -> TestAPIResult {
-        let result = await NetworkController.shared.get(url, token: token)
+        let result = await network.get(url, token: token)
         switch result {
         case .success(let response):
             let summary = summarize(response.dictionaryBody)
@@ -157,8 +162,10 @@ actor TestAPIController {
                 summary: summary
             )
         case .failure(let response):
-            let summary = (response.dictionaryBody["error"] as? String)
-                ?? (response.dictionaryBody["error_description"] as? String)
+            // Tesla's own explanation when it gave one; for an HTTP
+            // failure the row shows the status code beside it (#48).
+            let summary = (response.dictionaryBody["error_description"] as? String)
+                ?? (response.dictionaryBody["error"] as? String)
                 ?? response.error.localizedDescription
             return TestAPIResult(
                 title: title,

@@ -178,6 +178,21 @@ public actor TokenProfileStore {
         }
     }
 
+    /// Writes a refreshed token to a profile, but only while that profile
+    /// still holds `refreshedFrom`, the refresh token that was posted.
+    /// If another device's newer rotation landed in between, it is kept:
+    /// overwriting it with this older rotation would lose the live token
+    /// (AuthAppForTesla#50). The check runs again on every compare-and-swap
+    /// retry, against the list that is actually there.
+    @discardableResult
+    public func applyRefreshedToken(_ token: Token, toProfile id: UUID, refreshedFrom postedRefreshToken: String, environment: LoginEnvironment) throws(TokenStoreError) -> TokenProfileCollection {
+        try mutate(environment: environment) { collection in
+            guard let index = collection.profiles.firstIndex(where: { $0.id == id }),
+                  collection.profiles[index].token.refresh_token == postedRefreshToken else { return }
+            collection.profiles[index].token = token
+        }
+    }
+
     /// Updates the token for the currently active profile (used by token
     /// refreshes). If no profiles exist, creates a Default one.
     @discardableResult

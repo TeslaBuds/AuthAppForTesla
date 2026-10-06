@@ -18,6 +18,7 @@
     {"id": "tokens.copy", "code": "TokenClipboard", "ios": "shipped", "macos": "shipped"},
     {"id": "tokens.refresh-all", "code": "HomeViewRefreshTokens", "ios": "shipped", "macos": "shipped"},
     {"id": "tokens.sync-wipe-guard", "code": "StoreProblemBanner", "ios": "exempt: iOS keeps its toasts; the guard itself is in TeslaAuthKit on both", "macos": "shipped"},
+    {"id": "tokens.refresh-problem-notice", "code": "HomeViewRefreshProblemNotice", "ios": "shipped", "macos": "shipped"},
     {"id": "tools.test-token", "code": "TestTokenView", "ios": "shipped", "macos": "shipped"},
     {"id": "tools.jwt-inspector", "code": "JWTInspectorView", "ios": "shipped", "macos": "shipped"},
     {"id": "tools.snippet-exporter", "code": "SnippetExporterView", "ios": "shipped", "macos": "shipped"},

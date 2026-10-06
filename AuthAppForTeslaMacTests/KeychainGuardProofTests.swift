@@ -12,9 +12,12 @@
 //
 //    seed     entitled   seed a fixture: 3 Owners + 2 Fleet profiles and
 //                        the legacy mirrors; launch 1 reads them all and
-//                        a refresh-style write lands
-//    reread   entitled   launch 2, a new process: every profile and the
-//                        refreshed token are there; prints a fingerprint
+//                        a refresh-style write lands; a Fleet refresh
+//                        rotates, a stale one is refused, and a refused
+//                        refresh token deletes nothing (#50)
+//    reread   entitled   launch 2, a new process: every profile, the
+//                        refreshed token and the Fleet rotation are
+//                        there; prints a fingerprint
 //    noaccess NO group   the same app signed WITHOUT group.global: the
 //                        store reports unreadable, every change is
 //                        refused, and not one write reaches the keychain
@@ -54,6 +57,14 @@ final class CountingKeychainStorage: SyncedItemStorage, @unchecked Sendable {
     func remove(_ key: String) -> OSStatus {
         lock.withLock { writeAttempts.append("remove \(key)") }
         return base.remove(key)
+    }
+}
+
+/// A token endpoint that answers from a closure.
+struct ProofTransport: TokenRefreshTransport {
+    let answer: @Sendable (String) -> TokenEndpointResponse
+    func refresh(refreshToken: String, region: TokenRegion, environment: LoginEnvironment) async -> TokenEndpointResponse {
+        answer(refreshToken)
     }
 }
 
@@ -137,6 +148,26 @@ struct KeychainGuardProofTests {
         #expect(after.profiles.count == 3)
         #expect(after.profiles.first?.token.access_token == "proof-access-Personal-refreshed")
 
+        // #50 on the real keychain: a refresh rotates Production's token;
+        // a refresh based on the stale token does not overwrite it; and a
+        // refused refresh keeps the profile and writes nothing at all.
+        let rotating = ProofTransport { _ in .token(F.token("Production-rotated")) }
+        let service = TokenRefreshService(store: store, transport: rotating, ledger: InMemoryRejectionLedger(), maxAttempts: 1, retryDelay: .zero)
+        let rotated = await service.refresh(environment: .fleet, forceRefresh: true)
+        #expect(rotated.freshToken?.refresh_token == "proof-refresh-Production-rotated")
+        try await store.applyRefreshedToken(F.token("Production-stale"), toProfile: F.fleetIDs[0], refreshedFrom: "proof-refresh-Production", environment: .fleet)
+        #expect(await store.load(environment: .fleet).profiles.first?.token.refresh_token == "proof-refresh-Production-rotated")
+
+        let counting = CountingKeychainStorage(F.storage)
+        let refusing = ProofTransport { _ in .rejected(reason: "login_required") }
+        let refusedService = TokenRefreshService(store: TokenProfileStore(storage: counting), transport: refusing, ledger: InMemoryRejectionLedger(), maxAttempts: 1, retryDelay: .zero)
+        guard case .needsSignIn = await refusedService.refresh(environment: .fleet, forceRefresh: true) else {
+            Issue.record("a refused refresh was not reported as needs sign-in"); return
+        }
+        #expect(counting.writeAttempts.isEmpty, "a refused refresh wrote: \(counting.writeAttempts)")
+        #expect(await store.load(environment: .fleet).profiles.map(\.id) == F.fleetIDs)
+        F.log("refresh rotated Production; stale refresh kept the rotation; refusal kept both Fleet profiles with 0 writes")
+
         // Read-only census of the person's real items: keys only, no data.
         let census = KeychainWrapper.global.allKeys().sorted()
         F.log("read-only census of the real AuthForTesla items in group.global: \(census.count) keys \(census)")
@@ -153,6 +184,8 @@ struct KeychainGuardProofTests {
         #expect(owners.profiles.map(\.id) == F.ownerIDs)
         #expect(fleet.profiles.map(\.id) == F.fleetIDs)
         #expect(owners.profiles.first?.token.access_token == "proof-access-Personal-refreshed")
+        // #50: the rotation survived the stale refresh and the refusal.
+        #expect(fleet.profiles.first?.token.refresh_token == "proof-refresh-Production-rotated")
         let mirror = F.storage.read(kTokenV3)
         guard case .found(let data) = mirror else { Issue.record("legacy mirror missing"); return }
         #expect(try JSONDecoder().decode(Token.self, from: data).access_token == "proof-access-Personal-refreshed")
