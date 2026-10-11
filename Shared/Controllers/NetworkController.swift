@@ -101,14 +101,23 @@ public enum DataResult {
     }
 }
 
-class NetworkController {
+final class NetworkController {
     public static let shared = NetworkController(configuration: .ephemeral)
 
-    private let configuration: URLSessionConfiguration
+    /// One session for every request this controller makes, so requests to
+    /// the same host share its connection pool (one TLS handshake, HTTP/2
+    /// reuse) instead of opening a new connection each time (#60).
+    let session: URLSession
 
     /// Tests pass a configuration whose `protocolClasses` stub the network.
     init(configuration: URLSessionConfiguration) {
-        self.configuration = configuration
+        session = URLSession(configuration: configuration)
+    }
+
+    /// Lets running requests finish, then releases the session (#60). The
+    /// shared controller lives for the whole process.
+    deinit {
+        session.finishTasksAndInvalidate()
     }
 
     func get(_ url: String, token: String? = nil, apiKey: String? = nil) async -> DataResult {
@@ -129,7 +138,6 @@ class NetworkController {
             return DataResult(data: nil, response: nil, error: NSError.teslaError("Invalid url: \(url)"))
         }
         
-        let session = URLSession(configuration: configuration)
         var request = URLRequest(url: url)
         request.httpMethod = method == .get ? "GET" : "POST"
         request.setValue(getUserAgentString(), forHTTPHeaderField: "User-Agent")

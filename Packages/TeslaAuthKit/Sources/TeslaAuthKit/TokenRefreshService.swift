@@ -75,7 +75,8 @@ public actor TokenRefreshService {
 
     /// - Parameters:
     ///   - maxAttempts: tries per refresh when Tesla cannot be reached.
-    ///   - retryDelay: the pause between those tries.
+    ///   - retryDelay: the pause before the second try; it doubles for
+    ///     each try after that (#60).
     public init(
         store: TokenProfileStore,
         transport: any TokenRefreshTransport,
@@ -88,6 +89,12 @@ public actor TokenRefreshService {
         self.ledger = ledger
         self.maxAttempts = max(1, maxAttempts)
         self.retryDelay = retryDelay
+    }
+
+    /// The pause after failed attempt `attempt` (1-based): `base`, then
+    /// twice that, and so on, so an offline device backs off (#60).
+    static func backoff(_ base: Duration, afterAttempt attempt: Int) -> Duration {
+        base * (1 << max(0, attempt - 1))
     }
 
     /// Why this token's refresh token was refused on this device, if it was.
@@ -140,7 +147,8 @@ public actor TokenRefreshService {
         for attempt in 1...maxAttempts {
             response = await transport.refresh(refreshToken: posted, region: token.region ?? .global, environment: environment)
             guard case .unavailable = response, attempt < maxAttempts else { break }
-            if retryDelay > .zero { try? await Task.sleep(for: retryDelay) }
+            let pause = Self.backoff(retryDelay, afterAttempt: attempt)
+            if pause > .zero { try? await Task.sleep(for: pause) }
         }
 
         switch response {

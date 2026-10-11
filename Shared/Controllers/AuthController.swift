@@ -193,16 +193,22 @@ actor AuthController {
         await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile)
     }
 
-    fileprivate func oauthCodeV3(_ code: String, _ codeVerifier: String, _ region: TokenRegion, addAsNewProfile: Bool = false, retries: Int = 0) async -> Token? {
+    fileprivate func oauthCodeV3(_ code: String, _ codeVerifier: String, _ region: TokenRegion, addAsNewProfile: Bool = false) async -> Token? {
         let url = getAuthByRegion(region: region)
-        logOAuth("oauthCodeV3 attempt \(retries + 1): POST \(url)/oauth2/v3/token code=\(String(code.prefix(20)))… verifier=\(String(codeVerifier.prefix(10)))…")
-        let result = await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
-                                        ["grant_type": "authorization_code",
-                                         "client_id": "ownerapi",
-                                         "code": code,
-                                         "redirect_uri": "tesla://auth/callback",
-                                         "code_verifier": codeVerifier,
-                                         "scope": "openid email offline_access phone"])
+        // An authorization code is single-use: a 4xx answer is final.
+        // Only a lost connection or a server error is worth retrying, with
+        // a short backoff (#60). A failed sign-in never touches the stored
+        // tokens (#49).
+        let result = await CodeExchangeRetry.standard.run(isRetryable: Self.isRetryable) { attempt in
+            logOAuth("oauthCodeV3 attempt \(attempt + 1): POST \(url)/oauth2/v3/token code=\(String(code.prefix(20)))… verifier=\(String(codeVerifier.prefix(10)))…")
+            return await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
+                                            ["grant_type": "authorization_code",
+                                             "client_id": "ownerapi",
+                                             "code": code,
+                                             "redirect_uri": "tesla://auth/callback",
+                                             "code_verifier": codeVerifier,
+                                             "scope": "openid email offline_access phone"])
+        }
         switch result {
         case let .success(result):
             logOAuth("oauthCodeV3 200 OK, body keys: \(Array(result.dictionaryBody.keys))")
@@ -234,12 +240,6 @@ actor AuthController {
             logOAuth("oauthCodeV3 FAIL status=\(error.statusCode) error=\(error.error)")
             if let body = String(data: error.data, encoding: .utf8) {
                 logOAuth("oauthCodeV3 fail body: \(String(body.prefix(500)))")
-            }
-            // An authorization code is single-use: a 4xx answer is final.
-            // Only a lost connection or a server error is worth retrying.
-            // A failed sign-in never touches the stored tokens (#49).
-            if Self.isRetryable(error), retries < 3 {
-                return await oauthCodeV3(code, codeVerifier, region, addAsNewProfile: addAsNewProfile, retries: retries + 1)
             }
             return nil
         }

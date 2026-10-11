@@ -7,7 +7,7 @@ import Foundation
 
 /// Read-only access to the token summary the app publishes for the widget.
 ///
-/// The app writes these keys in `AuthViewModel.persistTokenSummary()` to the
+/// The app writes these keys with `TokenSummaryPublisher` (only on change) to the
 /// `group.global` UserDefaults suite: an expiry date and a presence flag per
 /// API, nothing else. The widget never touches the keychain and never writes
 /// here, so it cannot alter the synced token list.

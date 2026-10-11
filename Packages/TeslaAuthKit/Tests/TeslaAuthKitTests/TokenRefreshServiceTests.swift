@@ -198,4 +198,11 @@ struct RejectionLedgerTests {
         ledger.clearRejection(of: "secret-refresh-token")
         #expect(ledger.rejection(for: "secret-refresh-token") == nil)
     }
+
+    @Test("Offline refresh retries back off: 1 s, then 2 s (#60)")
+    func refreshRetryBacksOff() {
+        let pauses = (1...2).map { TokenRefreshService.backoff(.seconds(1), afterAttempt: $0) }
+        #expect(pauses == [.seconds(1), .seconds(2)])
+        #expect(TokenRefreshService.backoff(.zero, afterAttempt: 3) == .zero)
+    }
 }

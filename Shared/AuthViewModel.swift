@@ -7,7 +7,6 @@
 
 import Foundation
 import TeslaAuthKit
-import WidgetKit
 
 /// Shared observable model that holds the current authentication state
 /// for both Owners API (v3) and Fleet API (v4) tokens.
@@ -15,11 +14,11 @@ import WidgetKit
 @Observable
 class AuthViewModel {
     var tokenV3: Token? {
-        didSet { persistTokenSummary() }
+        didSet { scheduleTokenSummary() }
     }
 
     var tokenV4: Token? {
-        didSet { persistTokenSummary() }
+        didSet { scheduleTokenSummary() }
     }
 
     /// All known Owners API token profiles.
@@ -59,9 +58,23 @@ class AuthViewModel {
 
     private let refresher: any ActiveTokenRefreshing
 
-    init(refresher: any ActiveTokenRefreshing = AuthController.shared) {
+    /// Publishes the widget's token summary (#58).
+    private let summaryPublisher: TokenSummaryPublisher
+
+    /// The pending summary write. Every token assignment made before it
+    /// runs joins it, so assigning both tokens costs one write and at
+    /// most one widget reload (#58). Tests await it.
+    private(set) var pendingTokenSummary: Task<Void, Never>?
+
+    /// How many token assignments asked for a summary write. Before #58
+    /// each one wrote the summary and reloaded every widget timeline.
+    @ObservationIgnored private(set) var tokenSummaryRequests = 0
+
+    init(refresher: any ActiveTokenRefreshing = AuthController.shared,
+         summaryPublisher: TokenSummaryPublisher = .live) {
         // Tokens are loaded asynchronously after init via loadTokens()
         self.refresher = refresher
+        self.summaryPublisher = summaryPublisher
     }
 
     /// The refresh problem for an API, while it still applies to the
@@ -79,9 +92,24 @@ class AuthViewModel {
 
     /// Loads the initial token state from the AuthController actor.
     func loadTokens() async {
-        tokenV3 = await refresher.activeToken(environment: .owner)
-        tokenV4 = await refresher.activeToken(environment: .fleet)
+        let owners = await refresher.activeToken(environment: .owner)
+        let fleet = await refresher.activeToken(environment: .fleet)
+        setTokens(owners: owners, fleet: fleet)
         await loadProfiles()
+    }
+
+    /// Shows both active tokens at once, so the widget summary is written
+    /// once for the pair (#58).
+    private func setTokens(owners: Token?, fleet: Token?) {
+        tokenV3 = owners
+        tokenV4 = fleet
+    }
+
+    /// Reads both active tokens back from the store after a profile change.
+    private func reloadActiveTokens() async {
+        let owners = await AuthController.shared.v3Token
+        let fleet = await AuthController.shared.v4Token
+        setTokens(owners: owners, fleet: fleet)
     }
 
     /// Reloads both profile collections from the underlying store.
@@ -111,8 +139,7 @@ class AuthViewModel {
             return
         }
         await loadProfiles()
-        tokenV3 = await AuthController.shared.v3Token
-        tokenV4 = await AuthController.shared.v4Token
+        await reloadActiveTokens()
 
         let collection = environment == .owner ? profilesV3 : profilesV4
         if let active = collection.activeProfile {
@@ -136,8 +163,7 @@ class AuthViewModel {
             report(error)
         }
         await loadProfiles()
-        tokenV3 = await AuthController.shared.v3Token
-        tokenV4 = await AuthController.shared.v4Token
+        await reloadActiveTokens()
     }
 
     /// Refreshes both APIs' active tokens. A token that could not be
@@ -236,15 +262,18 @@ class AuthViewModel {
         }
     }
 
-    /// Writes a lightweight token summary to the shared App Group UserDefaults
-    /// so the WidgetKit extension can read expiry dates without keychain access.
-    private func persistTokenSummary() {
-        let defaults = UserDefaults(suiteName: "group.global")
-        defaults?.set(tokenV3?.expires_at, forKey: "widget.tokenV3.expiresAt")
-        defaults?.set(tokenV4?.expires_at, forKey: "widget.tokenV4.expiresAt")
-        defaults?.set(tokenV3 != nil, forKey: "widget.tokenV3.hasToken")
-        defaults?.set(tokenV4 != nil, forKey: "widget.tokenV4.hasToken")
-        WidgetCenter.shared.reloadAllTimelines()
+    /// Queues one write of the widget's token summary to the shared App
+    /// Group UserDefaults, so the WidgetKit extension can read expiry dates
+    /// without keychain access. Assignments made before the write runs join
+    /// it; the write itself does nothing when the summary is unchanged (#58).
+    private func scheduleTokenSummary() {
+        tokenSummaryRequests += 1
+        guard pendingTokenSummary == nil else { return }
+        pendingTokenSummary = Task { [weak self] in
+            guard let self else { return }
+            pendingTokenSummary = nil
+            summaryPublisher.publish(TokenSummary(owners: tokenV3, fleet: tokenV4))
+        }
     }
 
     func logOut(environment: LoginEnvironment) {
@@ -254,8 +283,7 @@ class AuthViewModel {
             // active profile becomes visible instead of dumping the
             // user back to the sign-in screen.
             await loadProfiles()
-            tokenV3 = await AuthController.shared.v3Token
-            tokenV4 = await AuthController.shared.v4Token
+            await reloadActiveTokens()
         }
     }
 

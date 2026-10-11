@@ -51,18 +51,21 @@ extension AuthController {
         await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, addAsNewProfile: addAsNewProfile)
     }
 
-    fileprivate func oauthCodeV4(_ code: String, _ region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String, addAsNewProfile: Bool = false, retries: Int = 0) async -> Token? {
+    fileprivate func oauthCodeV4(_ code: String, _ region: TokenRegion, fleetClientId: String, fleetSecret: String, fleetRedirectUri: String, addAsNewProfile: Bool = false) async -> Token? {
         let url = getAuthByRegion(region: region)
                 
         let audience = "https://fleet-api.prd.\(String(code.prefix(2)).lowercased()).vn.cloud.tesla.\(region == .global ? "com" : "cn")"
         
-        let result = await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
+        // Retry only a lost connection or a 5xx, with a short backoff (#60).
+        let result = await CodeExchangeRetry.standard.run(isRetryable: Self.isRetryable) { _ in
+            await NetworkController.shared.post("\(url)/oauth2/v3/token", parameters:
                                                             [   "grant_type": "authorization_code",
                                                                 "client_id": fleetClientId,
                                                                 "client_secret": fleetSecret,
                                                                 "code": code,
                                                                 "audience": audience,
                                                                 "redirect_uri": fleetRedirectUri])
+        }
         
         switch result {
         case .success(let result):
@@ -86,12 +89,9 @@ extension AuthController {
                 }
             }
             return token
-        case .failure(let error):
+        case .failure:
             // A code is single-use; a failed sign-in never touches the
-            // stored tokens (#49). Retry only a lost connection or 5xx.
-            if Self.isRetryable(error), retries < 3 {
-                return await oauthCodeV4(code, region, fleetClientId: fleetClientId, fleetSecret: fleetSecret, fleetRedirectUri: fleetRedirectUri, addAsNewProfile: addAsNewProfile, retries: retries + 1)
-            }
+            // stored tokens (#49).
             return nil
         }
     }
