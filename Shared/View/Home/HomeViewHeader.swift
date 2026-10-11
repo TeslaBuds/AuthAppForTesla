@@ -80,7 +80,6 @@ private struct HomeViewAccountMenu: View {
     var onAddAccount: (() -> Void)?
 
     @State private var isPresented = false
-    @State private var renameTarget: TokenProfile?
     @State private var pendingDeletion: TokenProfile?
 
     var body: some View {
@@ -119,30 +118,11 @@ private struct HomeViewAccountMenu: View {
                 environment: environment,
                 collection: collection,
                 onAddAccount: onAddAccount,
-                renameTarget: $renameTarget,
                 pendingDeletion: $pendingDeletion,
                 dismiss: { isPresented = false }
             )
             .frame(minWidth: 280, idealHeight: 360)
             .presentationCompactAdaptation(.popover)
-        }
-        // SwiftUI alerts don't honor .buttonStyle, so we can't override
-        // the inherited TeslaRed tint that bleeds into Save and Cancel.
-        // Use a small sheet with a real Form instead so Save can be
-        // .borderedProminent and Cancel can be the system default.
-        .sheet(item: $renameTarget) { target in
-            RenameAccountSheet(
-                initialName: target.name,
-                onSave: { newName in
-                    Task {
-                        await model.renameProfile(id: target.id, to: newName, environment: environment)
-                    }
-                    renameTarget = nil
-                },
-                onCancel: {
-                    renameTarget = nil
-                }
-            )
         }
         .confirmationDialog(
             collection.profiles.count > 1
@@ -189,7 +169,6 @@ private struct HomeViewAccountMenuContent: View {
     let environment: LoginEnvironment
     let collection: TokenProfileCollection
     var onAddAccount: (() -> Void)?
-    @Binding var renameTarget: TokenProfile?
     @Binding var pendingDeletion: TokenProfile?
     let dismiss: () -> Void
 
@@ -226,13 +205,7 @@ private struct HomeViewAccountMenuContent: View {
 
             if let active = collection.activeProfile {
                 Section(active.name) {
-                    Button {
-                        renameTarget = active
-                        dismiss()
-                    } label: {
-                        Label("Rename", systemImage: "pencil")
-                            .foregroundStyle(.primary)
-                    }
+                    AccountNameField(model: model, environment: environment, profile: active)
                     if onAddAccount != nil {
                         Button {
                             dismiss()
@@ -277,56 +250,59 @@ private struct HomeViewAccountMenuContent: View {
     }
 }
 
-/// Sheet-based rename form. Used instead of `.alert` because alerts
-/// don't honor `.buttonStyle`, so the inherited TeslaRed tint at the
-/// RootView level can't be overridden — Save and Cancel ended up
-/// rendering in alarming red even though neither action is destructive.
-private struct RenameAccountSheet: View {
-    let initialName: String
-    let onSave: (String) -> Void
-    let onCancel: () -> Void
+/// The active account's name, edited in place (#55). There is no Save
+/// or Cancel: the name is stored when editing ends (Return, or focus
+/// moving away, or the popover closing), and Undo puts the old one back.
+private struct AccountNameField: View {
+    let model: AuthViewModel
+    let environment: LoginEnvironment
+    let profile: TokenProfile
 
-    @State private var name: String = ""
-    @FocusState private var isNameFocused: Bool
+    @Environment(\.undoManager) private var undoManager
+    @State private var name: String
+    @FocusState private var isFocused: Bool
 
-    var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    TextField("Account name", text: $name)
-                        .focused($isNameFocused)
-                        .wordsAutocapitalized()
-                        .submitLabel(.done)
-                        .onSubmit(saveIfValid)
-                }
-            }
-            .navigationTitle("Rename Account")
-            .inlineNavigationTitle()
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel", action: onCancel)
-                }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save", action: saveIfValid)
-                        .buttonStyle(.borderedProminent)
-                        .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
-            }
-            .onAppear {
-                name = initialName
-                // Defer focus a hair so the sheet finishes presenting first.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                    isNameFocused = true
-                }
-            }
-        }
-        .presentationDetents([.medium])
+    init(model: AuthViewModel, environment: LoginEnvironment, profile: TokenProfile) {
+        self.model = model
+        self.environment = environment
+        self.profile = profile
+        _name = State(initialValue: profile.name)
     }
 
-    private func saveIfValid() {
-        let trimmed = name.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else { return }
-        onSave(trimmed)
+    var body: some View {
+        Label {
+            TextField("Account name", text: $name)
+                .focused($isFocused)
+                .wordsAutocapitalized()
+                .submitLabel(.done)
+                .onSubmit(commit)
+                .accessibilityIdentifier("accountNameField")
+        } icon: {
+            Image(systemName: "pencil")
+                .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
+        }
+        .onChange(of: isFocused) { _, focused in
+            if !focused { commit() }
+        }
+        .onChange(of: profile.name) { _, stored in
+            if !isFocused { name = stored }
+        }
+        .onDisappear(perform: commit)
+    }
+
+    /// Stores the typed name. A blank name puts the stored one back.
+    private func commit() {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            name = profile.name
+            return
+        }
+        guard trimmed != profile.name else { return }
+        let id = profile.id
+        Task {
+            await model.renameProfile(id: id, to: trimmed, environment: environment, undoManager: undoManager)
+        }
     }
 }
 
@@ -346,6 +322,18 @@ private struct RenameAccountSheet: View {
         onAddAccount: { }
     )
     .padding()
+}
+
+#Preview("Account menu – inline rename") {
+    HomeViewAccountMenuContent(
+        model: PreviewModelFactory.populatedModel(),
+        environment: .owner,
+        collection: PreviewModelFactory.populatedModel().profilesV3,
+        onAddAccount: { },
+        pendingDeletion: .constant(nil),
+        dismiss: { }
+    )
+    .frame(width: 320, height: 360)
 }
 
 #Preview("Owners – Empty") {

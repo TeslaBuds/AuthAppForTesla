@@ -31,6 +31,7 @@ struct RootView: View {
     @State private var toolsPath: NavigationPath
     @State private var showOnboarding = false
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+    @Environment(\.scenePhase) private var scenePhase
 
     init(model: AuthViewModel, initialTab: AppTab = .owners) {
         self.model = model
@@ -88,6 +89,13 @@ struct RootView: View {
             #endif
         }
         .toast($model.toast)
+        // Back in the foreground: show what a Shortcut or the widget did
+        // to the tokens meanwhile (#52).
+        .onChange(of: scenePhase) { old, phase in
+            if old == .background && phase != .background {
+                Task { await model.reloadFromStore() }
+            }
+        }
         .sheet(isPresented: $showOnboarding) {
             OnboardingView(isPresented: $showOnboarding)
                 .onDisappear {

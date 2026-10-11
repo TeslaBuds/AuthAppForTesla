@@ -74,31 +74,31 @@ struct LoginViewSignInFleetAPI: View {
     }
 
     private func authenticateV4(region: TokenRegion, clientId: String, clientSecret: String, redirectUri: String) {
+        let credentials = FleetCredentials(clientId: clientId, clientSecret: clientSecret, redirectUri: redirectUri)
         Task {
-            await AuthController.shared.storeFleetConnection(
-                clientId: clientId,
-                clientSecret: clientSecret,
-                redirectUri: redirectUri
-            )
+            // Remembered for next time when this device can write them.
+            // When it can't (the sync-wipe guard, #44), the sign-in still
+            // runs with what was typed; the store problem is shown apart.
+            try? await AuthController.shared.storeFleetConnection(credentials)
 
             guard let request = await AuthController.shared.buildOAuthURLV4(
                 region: region,
-                fleetClientId: clientId,
-                fleetRedirectUri: redirectUri
+                fleetClientId: credentials.clientId,
+                fleetRedirectUri: credentials.redirectUri
             ) else {
                 model.showToast(.error("Could not build authorization URL. Check your credentials."))
                 return
             }
 
-            let session = TeslaAuthSession(url: request.url, redirectUrl: redirectUri)
+            let session = TeslaAuthSession(url: request.url, redirectUrl: credentials.redirectUri)
 
             model.fleetAuth = FleetAuthInFlight(
                 url: request.url,
                 state: request.state,
                 region: region,
-                clientId: clientId,
-                clientSecret: clientSecret,
-                redirectUri: redirectUri,
+                clientId: credentials.clientId,
+                clientSecret: credentials.clientSecret,
+                redirectUri: credentials.redirectUri,
                 addAsNewProfile: addAsNewProfile,
                 session: session
             )

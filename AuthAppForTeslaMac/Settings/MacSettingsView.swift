@@ -18,7 +18,7 @@ struct MacSettingsView: View {
                 GeneralSettings(model: model)
             }
             Tab("Fleet API", systemImage: "car.2.fill") {
-                FleetConnectionSettings()
+                FleetConnectionSettings(model: model)
             }
             Tab("About", systemImage: "info.circle") {
                 AboutSettings()
@@ -65,12 +65,19 @@ struct GeneralSettings: View {
 }
 
 /// The Fleet API client credentials, stored in the synced keychain like
-/// the tokens (and behind the same guard).
+/// the tokens (and behind the same guard). "Saved" appears only when the
+/// write happened; a refused write says why (#54).
 struct FleetConnectionSettings: View {
+    @Bindable var model: AuthViewModel
+    /// Stores the credentials; throws, writing nothing, when it can't.
+    var save: @MainActor (FleetCredentials) async throws(TokenStoreError) -> Void = { credentials throws(TokenStoreError) in
+        try await AuthController.shared.storeFleetConnection(credentials)
+    }
+
     @State private var clientId = ""
     @State private var clientSecret = ""
     @State private var redirectUri = ""
-    @State private var saved = false
+    @State private var outcome: FleetSaveOutcome?
 
     var body: some View {
         Form {
@@ -84,18 +91,20 @@ struct FleetConnectionSettings: View {
                     .foregroundStyle(.secondary)
             }
             HStack {
+                FleetSaveOutcomeLabel(outcome: outcome, storeProblem: model.storeProblem)
                 Spacer()
-                if saved {
-                    Label("Saved", systemImage: "checkmark")
-                        .foregroundStyle(.secondary)
-                }
                 Button("Save") {
                     Task {
-                        await AuthController.shared.storeFleetConnection(clientId: clientId, clientSecret: clientSecret, redirectUri: redirectUri)
-                        saved = true
+                        let credentials = FleetCredentials(clientId: clientId, clientSecret: clientSecret, redirectUri: redirectUri)
+                        do throws(TokenStoreError) {
+                            try await save(credentials)
+                            outcome = .saved
+                        } catch {
+                            outcome = .failed(error.message)
+                        }
                     }
                 }
-                .disabled(clientId.isEmpty || redirectUri.isEmpty)
+                .disabled(model.storeProblem != nil || clientId.isEmpty || redirectUri.isEmpty)
             }
         }
         .formStyle(.grouped)
@@ -107,7 +116,38 @@ struct FleetConnectionSettings: View {
             clientSecret = await AuthController.shared.fleetClientSecret
             redirectUri = await AuthController.shared.fleetRedirectUri
         }
-        .onChange(of: [clientId, clientSecret, redirectUri]) { saved = false }
+        .onChange(of: [clientId, clientSecret, redirectUri]) { outcome = nil }
+    }
+}
+
+/// What the last Save did.
+enum FleetSaveOutcome: Equatable {
+    case saved
+    case failed(String)
+}
+
+/// "Saved", or why nothing was saved. While the synced items can't be
+/// read on this Mac, Save is off and this says so up front.
+struct FleetSaveOutcomeLabel: View {
+    let outcome: FleetSaveOutcome?
+    let storeProblem: TokenStoreError?
+
+    var body: some View {
+        if let storeProblem {
+            Label(storeProblem.message, systemImage: "exclamationmark.icloud")
+                .foregroundStyle(.orange)
+        } else {
+            switch outcome {
+            case .saved:
+                Label("Saved", systemImage: "checkmark")
+                    .foregroundStyle(.secondary)
+            case .failed(let message):
+                Label(message, systemImage: "exclamationmark.triangle.fill")
+                    .foregroundStyle(Color("TeslaRed"))
+            case nil:
+                EmptyView()
+            }
+        }
     }
 }
 
@@ -132,4 +172,16 @@ struct AboutSettings: View {
         .frame(maxWidth: .infinity)
         .padding(AppSpacing.xl)
     }
+}
+
+#Preview("Fleet API – refused write") {
+    FleetConnectionSettings(model: AuthViewModel()) { _ throws(TokenStoreError) in
+        throw .unreadable(errSecInteractionNotAllowed)
+    }
+}
+
+#Preview("Fleet API – store unreadable") {
+    let model = AuthViewModel()
+    model.storeProblem = .unreadable(errSecInteractionNotAllowed)
+    return FleetConnectionSettings(model: model)
 }

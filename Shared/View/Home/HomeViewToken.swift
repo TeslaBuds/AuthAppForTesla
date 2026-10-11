@@ -21,6 +21,9 @@ struct HomeViewToken: View {
     static let copyHint: LocalizedStringKey = "Tap to copy"
     #endif
 
+    /// What VoiceOver says the card does (#57).
+    static let copyAccessibilityHint: LocalizedStringKey = "Copies the token to the clipboard"
+
     let title: String
     let description: String
     let token: Token?
@@ -37,10 +40,12 @@ struct HomeViewToken: View {
 
     /// Copies the token string to the system clipboard with a 60-minute expiry
     /// so it is automatically cleared, reducing clipboard privacy exposure.
+    /// The checkmark animation is only seen, so the copy is also spoken (#57).
     private func copyTokenToClipboard() {
         guard let tokenString else { return }
         TokenClipboard.copy(tokenString)
         animateCheck()
+        AccessibilityAnnouncer.live.announce(AccessibilityAnnouncer.copiedMessage(for: tokenTypeToShow))
     }
 
     private func animateCheck() {
@@ -95,9 +100,12 @@ struct HomeViewToken: View {
                 .contentShape(.rect)
             }
             .buttonStyle(.plain)
+            .accessibilityHint(Self.copyAccessibilityHint)
+            .accessibilityAddTraits(.isButton)
 
             Image(systemName: "checkmark.seal")
                 .foregroundStyle(Color("TeslaRed"))
+                .accessibilityHidden(true)
                 .animatableFont(size: fontSize)
                 .opacity(checkOpacity)
                 .shadow(radius: 2)

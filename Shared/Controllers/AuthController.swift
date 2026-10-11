@@ -15,16 +15,45 @@ import CryptoKit
 actor AuthController {
     public static let shared = AuthController()
 
+    /// The synced token profiles.
+    let store: TokenProfileStore
+
     /// Every token refresh goes through this: single flight per profile,
     /// rotation-race aware, and never deletes a stored profile (#49, #50).
-    let refreshService = TokenRefreshService(
-        store: .shared,
-        transport: TeslaTokenEndpoint(),
-        ledger: UserDefaultsRejectionLedger()
-    )
+    let refreshService: TokenRefreshService
 
-    private init() {
-        // Private initializer, so no accidental class instantiations outside singleton can happen
+    /// Keeps the widget summary in step with `store` (#52).
+    let summaryWriter: TokenSummaryWriter
+
+    /// Posted, with the controller as the object, after the stored
+    /// tokens or profiles changed — by the app, or by a Shortcut running
+    /// in its process (#52).
+    static let storeDidChange = Notification.Name("AuthController.storeDidChange")
+
+    /// The app uses `shared`; tests build one over an in-memory store and
+    /// a stub token endpoint.
+    init(
+        store: TokenProfileStore = .shared,
+        transport: any TokenRefreshTransport = TeslaTokenEndpoint(),
+        ledger: any RefreshRejectionRecording = UserDefaultsRejectionLedger(),
+        retryDelay: Duration = .seconds(1),
+        summaryWriter: TokenSummaryWriter = .live
+    ) {
+        self.store = store
+        self.refreshService = TokenRefreshService(store: store, transport: transport, ledger: ledger, retryDelay: retryDelay)
+        self.summaryWriter = summaryWriter
+    }
+
+    /// Publishes the widget summary for what is now stored, and tells the
+    /// app's model to reload (#52). Every store change made here ends
+    /// with this, so a Shortcut's refresh reaches the widget and the Mac
+    /// menu bar without the app's view model being involved.
+    func storeDidChange() async {
+        await summaryWriter.update { [self] in
+            TokenSummary(owners: await activeToken(environment: .owner),
+                         fleet: await activeToken(environment: .fleet))
+        }.value
+        NotificationCenter.default.post(name: Self.storeDidChange, object: self)
     }
 
     /// Mirror an OAuth diagnostic line to both os.Logger (so a developer
@@ -45,54 +74,60 @@ actor AuthController {
     public func logOut(environment: LoginEnvironment) async
     {
         // Delete the active profile (and its mirrored legacy entry).
-        let collection = await TokenProfileStore.shared.load(environment: environment)
+        let collection = await store.load(environment: environment)
         if let active = collection.activeProfile {
-            _ = try? await TokenProfileStore.shared.delete(id: active.id, environment: environment)
+            _ = try? await store.delete(id: active.id, environment: environment)
         } else {
             // Fallback: clean any stale legacy keychain entry — through
             // the store, which refuses when the synced items are unreadable.
-            try? await TokenProfileStore.shared.clearLegacyMirror(environment: environment)
+            try? await store.clearLegacyMirror(environment: environment)
         }
+        await storeDidChange()
     }
 
     func setJwtToken(_ token: Token) async
     {
         // Persist via the profile store so the active profile + legacy
         // keychain mirror are updated together.
-        _ = try? await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
+        _ = try? await store.updateActiveToken(token, environment: .owner)
+        await storeDidChange()
     }
 
     // MARK: - Profile management
 
     func loadProfiles(environment: LoginEnvironment) async -> TokenProfileCollection {
-        await TokenProfileStore.shared.load(environment: environment)
+        await store.load(environment: environment)
     }
 
     /// The stored profiles, telling an unreadable store apart from an
     /// empty one (the sync-wipe guard, #44).
     func loadProfileState(environment: LoginEnvironment) async -> TokenProfileLoadState {
-        await TokenProfileStore.shared.loadState(environment: environment)
+        await store.loadState(environment: environment)
     }
 
     func setActiveProfile(id: UUID, environment: LoginEnvironment) async throws(TokenStoreError) {
-        try await TokenProfileStore.shared.setActive(id: id, environment: environment)
+        try await store.setActive(id: id, environment: environment)
+        await storeDidChange()
     }
 
     func renameProfile(id: UUID, to name: String, environment: LoginEnvironment) async throws(TokenStoreError) {
-        try await TokenProfileStore.shared.rename(id: id, to: name, environment: environment)
+        try await store.rename(id: id, to: name, environment: environment)
+        await storeDidChange()
     }
 
     func deleteProfile(id: UUID, environment: LoginEnvironment) async throws(TokenStoreError) {
-        try await TokenProfileStore.shared.delete(id: id, environment: environment)
+        try await store.delete(id: id, environment: environment)
+        await storeDidChange()
     }
 
     func addProfile(name: String, token: Token, environment: LoginEnvironment, makeActive: Bool = true) async throws(TokenStoreError) {
         let profile = TokenProfile(name: name, token: token)
-        try await TokenProfileStore.shared.upsert(profile: profile, environment: environment, makeActive: makeActive)
+        try await store.upsert(profile: profile, environment: environment, makeActive: makeActive)
+        await storeDidChange()
     }
 
     func suggestedProfileName(environment: LoginEnvironment) async -> String {
-        await TokenProfileStore.shared.suggestedName(for: environment)
+        await store.suggestedName(for: environment)
     }
 
     /// Removes every Owners and Fleet token profile, plus any legacy
@@ -101,14 +136,14 @@ actor AuthController {
     /// invoked from production code paths.
     func wipeAllProfiles() async {
         for env in [LoginEnvironment.owner, LoginEnvironment.fleet] {
-            let collection = await TokenProfileStore.shared.load(environment: env)
+            let collection = await store.load(environment: env)
             for profile in collection.profiles {
-                _ = try? await TokenProfileStore.shared.delete(id: profile.id, environment: env)
+                _ = try? await store.delete(id: profile.id, environment: env)
             }
             // Belt and braces — clear any legacy mirror entry the store
             // didn't already wipe (e.g. from a build that pre-dated profile
             // storage entirely).
-            try? await TokenProfileStore.shared.clearLegacyMirror(environment: env)
+            try? await store.clearLegacyMirror(environment: env)
         }
     }
     
@@ -120,7 +155,7 @@ actor AuthController {
 
     /// The active profile's stored token for an API.
     func activeToken(environment: LoginEnvironment) async -> Token? {
-        if let token = await TokenProfileStore.shared.load(environment: environment).activeProfile?.token {
+        if let token = await store.load(environment: environment).activeProfile?.token {
             return token
         }
         let data = environment == .owner ? getV3Token() : getV4Token()
@@ -141,13 +176,23 @@ actor AuthController {
     /// Refreshes the active profile's token, reporting why when it could
     /// not: offline and refused both keep the stored token (#49, #50).
     func refreshActive(environment: LoginEnvironment, forceRefresh: Bool) async -> TokenRefreshOutcome {
-        await refreshService.refresh(environment: environment, forceRefresh: forceRefresh)
+        await refresh(environment: environment, profileId: nil, forceRefresh: forceRefresh)
+    }
+
+    /// Every refresh, from the app or a Shortcut: the refresh service,
+    /// then the widget summary and the model (#52).
+    func refresh(environment: LoginEnvironment, profileId: UUID?, forceRefresh: Bool) async -> TokenRefreshOutcome {
+        let outcome = await refreshService.refresh(environment: environment, profileId: profileId, forceRefresh: forceRefresh)
+        if case .refreshed = outcome {
+            await storeDidChange()
+        }
+        return outcome
     }
 
     /// The active Owners token, refreshed when forced or due; nil when a
     /// needed refresh failed.
     func acquireTokenV3Silent(forceRefresh: Bool = false) async -> Token? {
-        await refreshService.refresh(environment: .owner, forceRefresh: forceRefresh).freshToken
+        await refresh(environment: .owner, profileId: nil, forceRefresh: forceRefresh).freshToken
     }
 
     func getAuthByRegion(region: TokenRegion) -> String {
@@ -164,7 +209,7 @@ actor AuthController {
     /// the active profile — used exclusively by the App Intent path
     /// when the user has explicitly chosen an account in their Shortcut.
     func acquireTokenV3Silent(profileId: UUID, forceRefresh: Bool = false) async -> Token? {
-        await refreshService.refresh(environment: .owner, profileId: profileId, forceRefresh: forceRefresh).freshToken
+        await refresh(environment: .owner, profileId: profileId, forceRefresh: forceRefresh).freshToken
     }
 
     /// Builds the OAuth authorization URL for V3 (Owners API) login.
@@ -225,16 +270,17 @@ actor AuthController {
                 token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
                 if let token {
                     if addAsNewProfile {
-                        let name = await TokenProfileStore.shared.suggestedName(for: .owner)
+                        let name = await store.suggestedName(for: .owner)
                         let profile = TokenProfile(name: name, token: token)
-                        _ = try? await TokenProfileStore.shared.upsert(profile: profile, environment: .owner, makeActive: true)
+                        _ = try? await store.upsert(profile: profile, environment: .owner, makeActive: true)
                     } else {
-                        _ = try? await TokenProfileStore.shared.updateActiveToken(token, environment: .owner)
+                        _ = try? await store.updateActiveToken(token, environment: .owner)
                     }
                 }
             } else {
                 logOAuth("oauthCodeV3 200 OK but missing one of expires_in/access_token/token_type/refresh_token")
             }
+            if token != nil { await storeDidChange() }
             return token
         case .failure(let error):
             logOAuth("oauthCodeV3 FAIL status=\(error.statusCode) error=\(error.error)")

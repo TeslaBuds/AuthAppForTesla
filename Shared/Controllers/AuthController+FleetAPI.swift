@@ -9,15 +9,15 @@ import Foundation
 import TeslaAuthKit
 
 extension AuthController {
-    public func storeFleetConnection(clientId: String, clientSecret: String, redirectUri: String) {
-        // The sync-wipe guard (#44): never write synced items this device
-        // could not read.
-        for key in [kFleetClientID, kFleetClientSecret, kFleetRedirectUri] {
-            if case .failed = KeychainWrapper.global.readResult(forKey: key, withAccessibility: .afterFirstUnlock) { return }
-        }
-        KeychainWrapper.global.set(clientId, forKey: kFleetClientID, withAccessibility: .afterFirstUnlock)
-        KeychainWrapper.global.set(clientSecret, forKey: kFleetClientSecret, withAccessibility: .afterFirstUnlock)
-        KeychainWrapper.global.set(redirectUri, forKey: kFleetRedirectUri, withAccessibility: .afterFirstUnlock)
+    /// Stores the Fleet API client credentials in the synced keychain.
+    /// Throws, writing nothing, when the synced items cannot be read on
+    /// this device (the sync-wipe guard, #44), so no caller can report a
+    /// save that did not happen (#54).
+    func storeFleetConnection(_ credentials: FleetCredentials) throws(TokenStoreError) {
+        try credentials.store(
+            read: { KeychainWrapper.global.readResult(forKey: $0, withAccessibility: .afterFirstUnlock) },
+            write: { KeychainWrapper.global.set($0, forKey: $1, withAccessibility: .afterFirstUnlock) }
+        )
     }
 
     var fleetClientId: String {
@@ -35,13 +35,41 @@ extension AuthController {
     /// Builds the OAuth authorization URL for V4 (Fleet API) login.
     /// Returns the URL to present and the random `state` the redirect
     /// must carry back before its code is exchanged (#51).
+    ///
+    /// Built from query items, like the Owners flow, so a redirect URI
+    /// or client ID with reserved characters (`?`, `&`, `#`, spaces,
+    /// non-ASCII) arrives at Tesla as one intact value (#53).
     func buildOAuthURLV4(region: TokenRegion, fleetClientId: String, fleetRedirectUri: String) -> (url: URL, state: String)? {
-        let authenticateUrl = getAuthByRegion(region: region)
         let state = PKCE.makeState()
-
-        let authRequest = "\(authenticateUrl)/oauth2/v3/authorize?response_type=code&client_id=\(fleetClientId)&redirect_uri=\(fleetRedirectUri)&prompt=login&scope=openid%20vehicle_device_data%20vehicle_cmds%20vehicle_charging_cmds%20offline_access&state=\(state)"
-        guard let url = URL(string: authRequest) else { return nil }
+        guard let url = Self.fleetAuthorizeURL(
+            authenticateUrl: getAuthByRegion(region: region),
+            clientId: fleetClientId,
+            redirectUri: fleetRedirectUri,
+            state: state
+        ) else { return nil }
         return (url, state)
+    }
+
+    /// The scopes a Fleet API sign-in asks for.
+    static let fleetScope = "openid vehicle_device_data vehicle_cmds vehicle_charging_cmds offline_access"
+
+    /// The Fleet API authorize URL, every value percent-encoded as one
+    /// query item (#53).
+    nonisolated static func fleetAuthorizeURL(authenticateUrl: String, clientId: String, redirectUri: String, state: String) -> URL? {
+        guard var components = URLComponents(string: authenticateUrl) else { return nil }
+        components.path = "/oauth2/v3/authorize"
+        components.queryItems = [
+            URLQueryItem(name: "response_type", value: "code"),
+            URLQueryItem(name: "client_id", value: clientId),
+            URLQueryItem(name: "redirect_uri", value: redirectUri),
+            URLQueryItem(name: "prompt", value: "login"),
+            URLQueryItem(name: "scope", value: fleetScope),
+            URLQueryItem(name: "state", value: state)
+        ]
+        // `queryItems` leaves `+` alone, which a form-decoding server
+        // reads as a space; encode it so a value round-trips exactly.
+        components.percentEncodedQuery = components.percentEncodedQuery?.replacing("+", with: "%2B")
+        return components.url
     }
 
     /// Exchanges an OAuth authorization code for a V4 (Fleet API) token.
@@ -80,14 +108,15 @@ extension AuthController {
                 token = Token(access_token: access_token, token_type: token_type, expires_in: expiresIn, refresh_token: refresh_token, expires_at: expiresAt, region: region)
                 if let token {
                     if addAsNewProfile {
-                        let name = await TokenProfileStore.shared.suggestedName(for: .fleet)
+                        let name = await store.suggestedName(for: .fleet)
                         let profile = TokenProfile(name: name, token: token)
-                        _ = try? await TokenProfileStore.shared.upsert(profile: profile, environment: .fleet, makeActive: true)
+                        _ = try? await store.upsert(profile: profile, environment: .fleet, makeActive: true)
                     } else {
-                        _ = try? await TokenProfileStore.shared.updateActiveToken(token, environment: .fleet)
+                        _ = try? await store.updateActiveToken(token, environment: .fleet)
                     }
                 }
             }
+            if token != nil { await storeDidChange() }
             return token
         case .failure:
             // A code is single-use; a failed sign-in never touches the
@@ -101,7 +130,7 @@ extension AuthController {
     /// the active profile — used exclusively by the App Intent path
     /// when the user has explicitly chosen an account in their Shortcut.
     func acquireTokenV4Silent(profileId: UUID, forceRefresh: Bool = false) async -> Token? {
-        await refreshService.refresh(environment: .fleet, profileId: profileId, forceRefresh: forceRefresh).freshToken
+        await refresh(environment: .fleet, profileId: profileId, forceRefresh: forceRefresh).freshToken
     }
 
     /// The active Fleet profile's token (see `v3Token`).
@@ -123,6 +152,6 @@ extension AuthController {
     /// The active Fleet token, refreshed when forced or due; nil when a
     /// needed refresh failed. Never deletes the profile (#50).
     func acquireTokenV4Silent(forceRefresh: Bool = false) async -> Token? {
-        await refreshService.refresh(environment: .fleet, forceRefresh: forceRefresh).freshToken
+        await refresh(environment: .fleet, profileId: nil, forceRefresh: forceRefresh).freshToken
     }
 }

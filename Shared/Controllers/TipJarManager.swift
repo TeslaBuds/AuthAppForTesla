@@ -16,7 +16,8 @@ class TipJarManager {
     var products: [Product] = []
     /// Whether products are currently being loaded.
     var isLoading = false
-    /// An error message to display if something goes wrong.
+    /// Why the last load or purchase failed. `TipJarView` shows it under
+    /// the buttons; the next attempt clears it (#54).
     var errorMessage: String?
     /// Set briefly after a successful purchase to trigger thank-you feedback.
     var recentlyTipped = false
@@ -36,6 +37,13 @@ class TipJarManager {
         "dk.kimhansen.AuthAppForTesla.LargeTip": ("Night Out", "party.popper.fill")
     ]
 
+    /// Loads products from the App Store; tests substitute a failing one.
+    private let productLoader: @MainActor ([String]) async throws -> [Product]
+
+    init(productLoader: @escaping @MainActor ([String]) async throws -> [Product] = { try await Product.products(for: $0) }) {
+        self.productLoader = productLoader
+    }
+
     /// Fetches tip products from the App Store.
     func loadProducts() async {
         guard products.isEmpty else { return }
@@ -43,10 +51,10 @@ class TipJarManager {
         errorMessage = nil
 
         do {
-            let storeProducts = try await Product.products(for: Self.productIDs)
+            let storeProducts = try await productLoader(Self.productIDs)
             products = storeProducts.sorted { $0.price < $1.price }
         } catch {
-            errorMessage = "Unable to load tips."
+            errorMessage = String(localized: "Unable to load tips. Check your connection and try again.")
         }
 
         isLoading = false
@@ -54,6 +62,7 @@ class TipJarManager {
 
     /// Initiates a purchase for the given product.
     func purchase(_ product: Product) async {
+        errorMessage = nil
         do {
             let result = try await product.purchase()
             switch result {
@@ -71,8 +80,10 @@ class TipJarManager {
             @unknown default:
                 break
             }
+        } catch StoreError.verificationFailed {
+            errorMessage = String(localized: "The App Store couldn't verify this tip. Check your purchase history before trying again.")
         } catch {
-            errorMessage = "Purchase failed. Please try again."
+            errorMessage = String(localized: "The tip didn't go through. Please try again.")
         }
     }
 

@@ -43,6 +43,8 @@ struct AuthAppForTeslaApp: App {
                     }
                     #endif
                     await model.loadTokens()
+                    // A Shortcut run in this process updates the screen (#52).
+                    model.startObservingStore()
                     await downloadLatestExternalApplicationList()
                 }
         }

@@ -41,9 +41,12 @@ struct ToastView: View {
     }
 }
 
-/// Overlay modifier that displays a `Toast` and auto-dismisses after a delay.
+/// Overlay modifier that displays a `Toast` and auto-dismisses after a
+/// delay. With VoiceOver running it stays until dismissed, so it can be
+/// found and read; it is announced when shown either way (#57).
 struct ToastOverlayModifier: ViewModifier {
     @Binding var toast: Toast?
+    @Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
 
     func body(content: Content) -> some View {
         content
@@ -72,6 +75,7 @@ struct ToastOverlayModifier: ViewModifier {
                     // just gives the toast room to breathe.
                     .padding(.bottom, 75)
                     .task(id: toast.id) {
+                        guard !voiceOverEnabled else { return }
                         try? await Task.sleep(for: .seconds(4))
                         withAnimation(.spring) {
                             if self.toast?.id == toast.id {
@@ -86,7 +90,8 @@ struct ToastOverlayModifier: ViewModifier {
 }
 
 extension View {
-    /// Attaches a toast overlay that auto-dismisses after ~4 seconds.
+    /// Attaches a toast overlay that auto-dismisses after ~4 seconds
+    /// (not while VoiceOver is running).
     func toast(_ toast: Binding<Toast?>) -> some View {
         modifier(ToastOverlayModifier(toast: toast))
     }

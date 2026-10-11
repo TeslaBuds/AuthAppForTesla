@@ -12,12 +12,21 @@ import StoreKit
 /// A compact, unobtrusive tip jar prompt that can be placed on any page.
 /// Shows a friendly message with three tip buttons (coffee, dinner, night out).
 struct TipJarView: View {
-    @State private var tipManager = TipJarManager()
-    @State private var isExpanded = false
+    @State private var tipManager: TipJarManager
+    @State private var isExpanded: Bool
 
     /// The parent scroll view's position, used to scroll the tip buttons
     /// into view when expanded.
     var scrollPosition: Binding<ScrollPosition>?
+
+    @MainActor
+    init(scrollPosition: Binding<ScrollPosition>? = nil,
+         tipManager: TipJarManager? = nil,
+         isExpanded: Bool = false) {
+        self.scrollPosition = scrollPosition
+        _tipManager = State(initialValue: tipManager ?? TipJarManager())
+        _isExpanded = State(initialValue: isExpanded)
+    }
 
     var body: some View {
         VStack(spacing: AppSpacing.sm) {
@@ -45,6 +54,12 @@ struct TipJarView: View {
             await tipManager.loadProducts()
         }
         .sensoryFeedback(.success, trigger: tipManager.recentlyTipped)
+        .onChange(of: tipManager.errorMessage) { _, message in
+            // A failure is spoken too, not only shown (#54, #57).
+            if let message {
+                AccessibilityAnnouncer.live.announce(message)
+            }
+        }
     }
 
     /// Stable identity for scroll targeting.
@@ -105,9 +120,11 @@ struct TipJarView: View {
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, AppSpacing.sm)
         } else if tipManager.products.isEmpty {
-            Text("Tips unavailable right now")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            if tipManager.errorMessage == nil {
+                Text("Tips unavailable right now")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         } else {
             HStack(spacing: AppSpacing.sm) {
                 ForEach(tipManager.products, id: \.id) { product in
@@ -115,6 +132,22 @@ struct TipJarView: View {
                 }
             }
         }
+        if let message = tipManager.errorMessage {
+            TipJarErrorText(message: message)
+        }
+    }
+}
+
+/// Why the last tip load or purchase failed, under the buttons (#54).
+struct TipJarErrorText: View {
+    let message: String
+
+    var body: some View {
+        Label(message, systemImage: "exclamationmark.triangle.fill")
+            .font(.caption)
+            .foregroundStyle(Color("TeslaRed"))
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityIdentifier("tipJarError")
     }
 }
 
@@ -181,6 +214,15 @@ struct TipButtonLabel: View {
 #Preview {
     IconBackgroundView {
         TipJarView()
+    }
+}
+
+#Preview("Tip jar – failed to load") {
+    IconBackgroundView {
+        TipJarView(
+            tipManager: TipJarManager { _ in throw URLError(.notConnectedToInternet) },
+            isExpanded: true
+        )
     }
 }
 
