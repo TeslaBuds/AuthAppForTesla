@@ -49,6 +49,17 @@ class TipJarManager {
         self.purchaser = purchaser
     }
 
+    /// The App Store's products, or, for the UI test that captures the
+    /// error state (#54), a store that cannot be reached.
+    static func makeDefault() -> TipJarManager {
+        #if DEBUG
+        if CommandLine.arguments.contains("-tipjar-fail") {
+            return TipJarManager(productLoader: { _ in throw URLError(.notConnectedToInternet) })
+        }
+        #endif
+        return TipJarManager()
+    }
+
     /// Fetches tip products from the App Store.
     func loadProducts() async {
         guard products.isEmpty else { return }

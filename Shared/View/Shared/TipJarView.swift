@@ -24,7 +24,7 @@ struct TipJarView: View {
          tipManager: TipJarManager? = nil,
          isExpanded: Bool = false) {
         self.scrollPosition = scrollPosition
-        _tipManager = State(initialValue: tipManager ?? TipJarManager())
+        _tipManager = State(initialValue: tipManager ?? TipJarManager.makeDefault())
         _isExpanded = State(initialValue: isExpanded)
     }
 
