@@ -56,10 +56,17 @@ struct TokenSummaryWriterTests {
         let expiry = Date(timeIntervalSince1970: 2_000_000_000)
         let summary = TokenSummary(hasOwnersToken: true, ownersExpiresAt: expiry, hasFleetToken: false, fleetExpiresAt: nil)
 
-        let tasks = await (0..<5).asyncMap { _ in await writer.update { summary } }
-        for task in tasks { await task.value }
+        // The first pass is slow to read, so the next four arrive while
+        // it reads: they cost one more pass between them, not four.
+        let first = await writer.update {
+            try? await Task.sleep(for: .milliseconds(200))
+            return summary
+        }
+        let rest = await (0..<4).asyncMap { _ in await writer.update { summary } }
+        await first.value
+        for task in rest { await task.value }
 
-        #expect(await writer.passes < 5)
+        #expect(await writer.passes == 2)
         #expect(await writer.stored == summary)
         #expect(fixture.reloads.value == 1)
     }

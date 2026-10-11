@@ -220,7 +220,7 @@ struct TipButtonLabel: View {
 #Preview("Tip jar – failed to load") {
     IconBackgroundView {
         TipJarView(
-            tipManager: TipJarManager { _ in throw URLError(.notConnectedToInternet) },
+            tipManager: TipJarManager(productLoader: { _ in throw URLError(.notConnectedToInternet) }),
             isExpanded: true
         )
     }

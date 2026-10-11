@@ -40,8 +40,13 @@ class TipJarManager {
     /// Loads products from the App Store; tests substitute a failing one.
     private let productLoader: @MainActor ([String]) async throws -> [Product]
 
-    init(productLoader: @escaping @MainActor ([String]) async throws -> [Product] = { try await Product.products(for: $0) }) {
+    /// Buys a product; tests substitute a failing one.
+    private let purchaser: @MainActor (Product) async throws -> Product.PurchaseResult
+
+    init(productLoader: @escaping @MainActor ([String]) async throws -> [Product] = { try await Product.products(for: $0) },
+         purchaser: @escaping @MainActor (Product) async throws -> Product.PurchaseResult = { try await $0.purchase() }) {
         self.productLoader = productLoader
+        self.purchaser = purchaser
     }
 
     /// Fetches tip products from the App Store.
@@ -64,7 +69,7 @@ class TipJarManager {
     func purchase(_ product: Product) async {
         errorMessage = nil
         do {
-            let result = try await product.purchase()
+            let result = try await purchaser(product)
             switch result {
             case .success(let verification):
                 let transaction = try checkVerified(verification)

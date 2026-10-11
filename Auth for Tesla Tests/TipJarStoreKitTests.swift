@@ -56,4 +56,27 @@ struct TipJarStoreKitTests {
         #expect(session.allTransactions().count == TipJarManager.productIDs.count)
     }
     #endif
+
+    // #54
+    @Test("A failed purchase says so, and the next attempt clears it")
+    func tipPurchaseFailureIsReported() async throws {
+        let session = try makeSession()
+        defer { session.clearTransactions() }
+
+        let failing = PurchaseSwitch()
+        let manager = TipJarManager(purchaser: { _ in
+            if failing.isOn { throw StoreKitError.networkError(URLError(.notConnectedToInternet)) }
+            return .userCancelled
+        })
+        await manager.loadProducts()
+        let product = try #require(manager.products.first)
+
+        await manager.purchase(product)
+        #expect(manager.errorMessage != nil)
+        #expect(!manager.recentlyTipped)
+
+        failing.isOn = false
+        await manager.purchase(product)
+        #expect(manager.errorMessage == nil)
+    }
 }

@@ -64,7 +64,7 @@ struct AccountRenameUndoTests {
         await model.renameProfile(id: fixture.fleetId, to: "Work", environment: .fleet, undoManager: undo)
         undo.endUndoGrouping()
         #expect(model.profilesV4.activeProfile?.name == "Work")
-        #expect(!undo.canUndo)
+        #expect(undo.undoActionName.isEmpty, "no rename was registered")
     }
 
     @Test("A refused rename is reported and leaves no undo step")
@@ -79,6 +79,6 @@ struct AccountRenameUndoTests {
         await model.renameProfile(id: fixture.ownersId, to: "Other", environment: .owner, undoManager: undo)
         undo.endUndoGrouping()
         #expect(model.toast?.style == .error)
-        #expect(!undo.canUndo)
+        #expect(undo.undoActionName.isEmpty, "no rename was registered")
     }
 }
