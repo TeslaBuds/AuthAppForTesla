@@ -13,7 +13,11 @@ import StoreKitTest
 /// Exercises the tip jar end to end against `TipJarProducts.storekit`:
 /// all three consumables load in price order, and a purchase succeeds and
 /// finishes its transaction. Nothing is gated, so there is nothing to restore.
-@Suite("Tip jar (StoreKit test session)", .serialized)
+@Suite(
+    "Tip jar (StoreKit test session)",
+    .serialized,
+    .enabled(StoreKitTestAvailability.skipReason) { await StoreKitTestAvailability.sessionCanTransact() }
+)
 @MainActor
 struct TipJarStoreKitTests {
 
