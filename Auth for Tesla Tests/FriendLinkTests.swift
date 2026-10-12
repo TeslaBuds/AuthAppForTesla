@@ -8,14 +8,16 @@ import TeslaAuthKit
 import Foundation
 @testable import AuthAppForTesla
 
-/// #32 / #38: friend tiles open through `openURL`, never `SKStoreProductViewController`.
+/// #32 / #38 / #62: App Store friends open through RumskrotAppStoreLink (the
+/// presented store sheet, never an embedded `SKStoreProductViewController`);
+/// web friends open their URL.
 @Suite("FriendLink")
 struct FriendLinkTests {
 
     @Test("App Store ID resolves to an apps.apple.com product URL")
     func appIdBecomesAppStoreURL() throws {
         let link = try #require(FriendLink(appId: "1532406445", appUrl: nil))
-        #expect(link == .appStore(try #require(URL(string: "https://apps.apple.com/app/id1532406445"))))
+        #expect(link == .appStore(appStoreID: "1532406445", url: try #require(URL(string: "https://apps.apple.com/app/id1532406445"))))
     }
 
     @Test("App Store ID wins over a web URL")

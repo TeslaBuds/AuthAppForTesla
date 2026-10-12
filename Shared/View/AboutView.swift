@@ -7,9 +7,15 @@
 
 import SwiftUI
 import TeslaAuthKit
+import RumskrotAppsKit
 
 struct AboutView: View {
     @State private var scrollPosition = ScrollPosition()
+#if DEBUG
+    /// Capture harness: `about-open-beta` lands on the beta screen.
+    @State private var showsBetaForCapture = CommandLine.arguments.contains("about-open-beta")
+        || CommandLine.arguments.contains("-about-open-beta")
+#endif
 
     var body: some View {
         IconBackgroundView {
@@ -17,6 +23,9 @@ struct AboutView: View {
                 VStack(spacing: AppSpacing.cardGap) {
                     AboutViewHeader()
                     AboutViewShortcuts()
+                    // The suite's Settings ending: the beta invitation, then
+                    // More from Dansk Rumskrot (audit §4.1).
+                    AboutViewBeta()
                     AboutViewMoreApps()
                         .id(AboutViewMoreApps.scrollID)
                     AboutViewFooter()
@@ -31,6 +40,11 @@ struct AboutView: View {
             }
             .scrollPosition($scrollPosition)
 #if DEBUG
+            .navigationDestination(isPresented: $showsBetaForCapture) {
+                if let program = BetaProgram(bundleID: Bundle.main.bundleIdentifier ?? "") {
+                    AuthBetaProgramView(program: program)
+                }
+            }
             .task {
                 // Capture harness: `about-scroll-apps` scrolls to the app
                 // grids so their layout can be photographed as presented.

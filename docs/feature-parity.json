@@ -24,6 +24,8 @@
     {"id": "tools.snippet-exporter", "code": "SnippetExporterView", "ios": "shipped", "macos": "shipped"},
     {"id": "onboarding", "code": "OnboardingView", "ios": "shipped", "macos": "shipped"},
     {"id": "tip-jar", "code": "TipJarView", "ios": "shipped", "macos": "shipped"},
+    {"id": "about.more-from-dansk-rumskrot", "code": "AboutViewMoreApps", "ios": "shipped", "macos": "shipped"},
+    {"id": "about.beta-program", "code": "AuthBetaProgramView", "ios": "shipped", "macos": "shipped"},
     {"id": "menu.tokens-commands", "code": "AppCommands", "ios": "shipped", "macos": "shipped"},
     {"id": "mac.menu-bar-token-menu", "code": "MenuBarTokenMenu", "ios": "exempt: no menu bar on iPhone or iPad", "macos": "shipped"},
     {"id": "mac.settings-scene", "code": "MacSettingsView", "ios": "exempt: iOS has no Settings scene; its settings live in the tabs", "macos": "shipped"},

@@ -14,6 +14,12 @@
     {
       "kind": "local",
       "path": "Packages/TeslaAuthKit",
+    }, {
+      "kind": "remote",
+      "repository": "https://github.com/Kemmey/RumskrotShared.git",
+      "version": {
+        "revision": "1d74067461367957c557817c68f0c83fd518a570",
+      },
     },
   ],
   "files": [
@@ -136,6 +142,10 @@
         {
           "product-name": "TeslaAuthKit",
           "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "RumskrotShared",
+          "product-name": "RumskrotAppsKit",
+          "build-phase": { "build-phase": "frameworks" },
         },
       ],
       "build-settings": {
@@ -255,6 +265,10 @@
       "package-product-members": [
         {
           "product-name": "TeslaAuthKit",
+          "build-phase": { "build-phase": "frameworks" },
+        }, {
+          "package": "RumskrotShared",
+          "product-name": "RumskrotAppsKit",
           "build-phase": { "build-phase": "frameworks" },
         },
       ],

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import TeslaAuthKit
+import RumskrotAppsKit
 #if os(iOS)
 import SafariServices
 #endif
@@ -18,36 +19,29 @@ struct AboutViewFriend: View {
     let icon: String
     var tagline: String? = nil
 
-    @Environment(\.openURL) private var openURL
     @State private var safariURL: URL?
     @State private var showSafari = false
 
     var body: some View {
-        Button {
-            open()
-        } label: {
-            VStack(spacing: AppSpacing.sm) {
-                Image(icon)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 60, height: 60)
-                    .clipShape(.rect(cornerRadius: AppCornerRadius.small))
-                Text(name)
-                    .font(.subheadline)
-                if let tagline {
-                    Text(tagline)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                        .fixedSize(horizontal: false, vertical: true)
+        Group {
+            switch FriendLink(appId: appId, appUrl: appUrl) {
+            case .appStore(let appStoreID, let url):
+                // The same in-app store sheet as "More from Dansk Rumskrot":
+                // modal on iPhone and iPad, a closable window on the Mac.
+                RumskrotAppStoreLink(appStoreID: appStoreID, url: url) { label }
+            case .web(let url):
+                Button {
+                    openWeb(url)
+                } label: {
+                    label
                 }
+            case nil:
+                label
             }
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(name)
-        .accessibilityHint(tagline ?? "")
-        .padding(AppSpacing.sm)
-        .shadow(radius: AppTheme.shadowRadius)
+        .accessibilityLabel(Text(verbatim: name))
+        .accessibilityHint(Text(verbatim: tagline ?? ""))
         .sheet(isPresented: $showSafari) {
             if let safariURL {
                 SafariView(url: safariURL)
@@ -56,37 +50,41 @@ struct AboutViewFriend: View {
         }
     }
 
-    /// App Store links go through `openURL`, which hands off to the App Store
-    /// (Mac App Store on Mac). This replaces the old `SKStoreProductViewController`
-    /// presentation, which threw on teardown (#32) and was gated off on Mac (#38).
-    /// Plain web links open in an in-app Safari sheet on iOS and in the default
-    /// browser on Mac, where `SFSafariViewController` is not available.
-    private func open() {
-        guard let destination = FriendLink(appId: appId, appUrl: appUrl) else { return }
-        switch destination {
-        case .appStore(let url):
-            openURL(url)
-        case .web(let url):
-#if os(macOS)
-            openURL(url)
-#else
-            safariURL = url
-            showSafari = true
-#endif
+    private var label: some View {
+        AboutTileLabel(name: name, tagline: tagline) { _ in
+            Image(icon)
+                .resizable()
+                .scaledToFit()
+                .clipShape(.rect(cornerRadius: AppCornerRadius.small))
         }
+    }
+
+    @Environment(\.openURL) private var openURL
+
+    /// Plain web links open in an in-app Safari sheet on iOS and in the
+    /// default browser on Mac, where `SFSafariViewController` is not available.
+    private func openWeb(_ url: URL) {
+#if os(macOS)
+        openURL(url)
+#else
+        safariURL = url
+        showSafari = true
+#endif
     }
 }
 
 /// Where tapping a friend tile should take the user.
 enum FriendLink: Equatable {
-    case appStore(URL)
+    /// The App Store item `appStoreID`, with its web URL for platforms or
+    /// moments where the in-app store sheet can't be shown.
+    case appStore(appStoreID: String, url: URL)
     case web(URL)
 
     /// Prefers the App Store product page when an App Store ID is known,
     /// otherwise the web URL. Returns `nil` when neither yields a valid URL.
     init?(appId: String?, appUrl: String?) {
         if let appId, !appId.isEmpty, let url = URL(string: "https://apps.apple.com/app/id\(appId)") {
-            self = .appStore(url)
+            self = .appStore(appStoreID: appId, url: url)
         } else if let appUrl, let url = URL(string: appUrl), url.scheme != nil {
             self = .web(url)
         } else {

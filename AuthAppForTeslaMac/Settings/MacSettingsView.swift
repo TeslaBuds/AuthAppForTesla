@@ -8,6 +8,7 @@
 
 import SwiftUI
 import TeslaAuthKit
+import RumskrotAppsKit
 
 struct MacSettingsView: View {
     @Bindable var model: AuthViewModel
@@ -168,10 +169,39 @@ struct AboutSettings: View {
             Button("Auth for Tesla Support") {
                 if let url = AppCommands.supportURL { openURL(url) }
             }
+            if let betaProgram {
+                // The same invitation as the About section of the main
+                // window (#63): explained first, then offered.
+                Button {
+                    showsBeta = true
+                } label: {
+                    AboutBetaRowLabel(program: betaProgram, showsChevron: true)
+                        .padding(AppSpacing.cardInner)
+                        .glassEffect(.regular, in: .rect(cornerRadius: AppCornerRadius.card))
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("betaProgram.row")
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(AppSpacing.xl)
+        .sheet(isPresented: $showsBeta) {
+            if let betaProgram {
+                NavigationStack {
+                    AuthBetaProgramView(program: betaProgram)
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done") { showsBeta = false }
+                            }
+                        }
+                }
+                .frame(width: 520, height: 600)
+            }
+        }
     }
+
+    @State private var showsBeta = false
+    private let betaProgram = BetaProgram(bundleID: Bundle.main.bundleIdentifier ?? "")
 }
 
 #Preview("Fleet API – refused write") {

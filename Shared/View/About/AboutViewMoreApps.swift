@@ -4,42 +4,39 @@
 //
 
 import SwiftUI
-import TeslaAuthKit
+import RumskrotAppsKit
 
-/// Cross-promotes other Dansk Rumskrot apps. Mirrors the Friends grid
-/// but uses our own apps and our own copy.
+/// "More from Dansk Rumskrot": every Dansk Rumskrot app that is live on the
+/// App Store, with no curation (#62).
+///
+/// The list and the tap come from RumskrotAppsKit, like every other app in
+/// the family. The list is `RumskrotApps.siblings`, which is every directory
+/// app with an App Store ID except this one, so a new release appears here
+/// with the next package bump and no edit. A tap goes through
+/// `RumskrotAppStoreLink`, which opens Apple's store sheet in the app: modal
+/// on iPhone and iPad, and a closable window on the Mac. The look is Auth's
+/// own: the glass card and tile grid that "Friends of the App" uses, not
+/// BrandKit's rows (Auth is exempt from BrandKit).
 struct AboutViewMoreApps: View {
     /// Stable identity for scroll targeting.
     static let scrollID = "moreApps"
+    static let title = "More from Dansk Rumskrot"
 
-    /// Every Dansk Rumskrot app that is live on the App Store (checked
-    /// against the public App Store lookup on 29 Sep 2026, #43). Apps still
-    /// in review are left out until they ship. No prices here, by design.
-    private let apps: [Friend] = [
-        Friend(name: "Caravan Leveler", appId: "1537330412", appUrl: nil, icon: "CaravanLeveler",
-               tagline: "Level your caravan or camper"),
-        Friend(name: "ManaScope", appId: "6760581915", appUrl: nil, icon: "ManaScope",
-               tagline: "Scan and collect Magic cards"),
-        Friend(name: "PairPanic", appId: "6761368630", appUrl: nil, icon: "PairPanic",
-               tagline: "A fast symbol-matching game"),
-        Friend(name: "Rumskrot Beacon", appId: "6766202612", appUrl: nil, icon: "RumskrotBeacon",
-               tagline: "Find where your network breaks"),
-        Friend(name: "Rumskrot Pulse", appId: "6766450592", appUrl: nil, icon: "RumskrotPulse",
-               tagline: "Bluetooth LE debugger"),
-        Friend(name: "Rumskrot Remote", appId: "6761122209", appUrl: nil, icon: "RumskrotRemote",
-               tagline: "Your Mac's screen, anywhere"),
-        Friend(name: "Rumskrot Terminal", appId: "6761121988", appUrl: nil, icon: "RumskrotTerminal",
-               tagline: "An SSH terminal for your servers"),
-    ]
+    /// The apps shown, in RumskrotAppsKit's directory order.
+    static func apps(currentBundleID: String = Bundle.main.bundleIdentifier ?? "") -> [RumskrotApp] {
+        RumskrotApps.siblings(currentBundleID: currentBundleID)
+    }
+
+    private let apps = AboutViewMoreApps.apps()
 
     var body: some View {
         VStack(spacing: AppSpacing.sm) {
-            Text("More from Dansk Rumskrot")
+            Text(verbatim: Self.title)
                 .font(.title)
+                .accessibilityAddTraits(.isHeader)
             AboutTileGrid(itemCount: apps.count) {
-                ForEach(apps, id: \.name) { app in
-                    AboutViewFriend(name: app.name, appId: app.appId, appUrl: app.appUrl, icon: app.icon, tagline: app.tagline)
-                        .multilineTextAlignment(.center)
+                ForEach(apps) { app in
+                    AboutMoreAppsTile(app: app)
                 }
             }
         }
@@ -48,8 +45,28 @@ struct AboutViewMoreApps: View {
     }
 }
 
+/// One app's tile. Opens the app's App Store page in the app.
+private struct AboutMoreAppsTile: View {
+    let app: RumskrotApp
+
+    var body: some View {
+        RumskrotAppStoreLink(app: app) {
+            AboutTileLabel(name: app.shortName, tagline: app.tagline) { side in
+                RumskrotAppIconImage(app: app, side: side)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(verbatim: app.name))
+        .accessibilityHint(Text(verbatim: app.tagline))
+        .accessibilityIdentifier("moreApps.\(app.id)")
+    }
+}
+
 #Preview {
-    AboutViewMoreApps()
+    ScrollView {
+        AboutViewMoreApps()
+            .padding()
+    }
 }
 
 #Preview("DRS + Friends side-by-side") {

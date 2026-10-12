@@ -11,7 +11,7 @@
 import XCTest
 
 /// #32 / #38: tapping a cross-promoted app in the About tab must hand off
-/// to the App Store via `openURL` instead of crashing, and on Mac both
+/// to the App Store (now the in-app store sheet, #62) instead of crashing, and on Mac both
 /// cross-promotion sections must be present.
 final class AboutFriendLinkTests: XCTestCase {
 
@@ -33,7 +33,7 @@ final class AboutFriendLinkTests: XCTestCase {
 
         let moreHeading = app.staticTexts["More from Dansk Rumskrot"].firstMatch
         let friendsHeading = app.staticTexts["Friends of the App"].firstMatch
-        let lastTile = app.buttons["Rumskrot Terminal"].firstMatch
+        let lastTile = app.buttons["Caravan Leveler"].firstMatch
         // The last tile of the section: the grid is lazy, so a first-row
         // tile can be scrolled past and unloaded before it is checked.
         for _ in 0..<16 where !(lastTile.exists && lastTile.isHittable) {
@@ -46,7 +46,7 @@ final class AboutFriendLinkTests: XCTestCase {
             #endif
         }
         XCTAssertTrue(moreHeading.exists, "More from Dansk Rumskrot section missing")
-        XCTAssertTrue(lastTile.waitForExistence(timeout: 5), "Rumskrot Terminal tile missing")
+        XCTAssertTrue(lastTile.waitForExistence(timeout: 5), "Caravan Leveler tile missing")
         for _ in 0..<4 where !friendsHeading.exists {
             #if targetEnvironment(macCatalyst)
             app.scrollViews.firstMatch.scroll(byDeltaX: 0, deltaY: -300)
