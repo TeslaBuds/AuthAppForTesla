@@ -102,7 +102,13 @@ private struct AuthBetaProgramJoinCard: View {
                 }
                 .frame(maxWidth: .infinity)
             }
+            #if os(macOS)
+            // On the Mac a glass button takes the window's TeslaRed tint and
+            // reads as a second prominent button; Share is the secondary one.
+            .buttonStyle(.bordered)
+            #else
             .buttonStyle(.glass)
+            #endif
             .controlSize(.large)
             .accessibilityIdentifier("betaProgram.share")
 
