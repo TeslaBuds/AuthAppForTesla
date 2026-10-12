@@ -24,7 +24,7 @@ struct MainWindow: View {
     init(model: AuthViewModel, initialTab: AppTab = .owners) {
         self.model = model
         _selection = State(initialValue: initialTab)
-        _toolsPath = State(initialValue: MainWindow.initialToolsPath())
+        _toolsPath = State(initialValue: ToolsRouting.initialPath())
     }
 
     var body: some View {
@@ -60,20 +60,6 @@ struct MainWindow: View {
             if MacLaunch.isRunningTests { return }
             if !hasSeenOnboarding { showOnboarding = true }
         }
-    }
-
-    /// Lands the Tools column on the sub-screen a screenshot scenario wants.
-    private static func initialToolsPath() -> NavigationPath {
-        var path = NavigationPath()
-        #if DEBUG
-        switch ScreenshotScenario.current {
-        case .jwtInspector: path.append(ToolsDestination.jwtInspector)
-        case .snippetExporter: path.append(ToolsDestination.snippetExporter)
-        case .testToken: path.append(ToolsDestination.testToken)
-        default: break
-        }
-        #endif
-        return path
     }
 }
 
@@ -112,33 +98,12 @@ struct MainDetail: View {
                     .navigationTitle("Fleet API")
             }
         case .tools:
-            NavigationStack(path: $toolsPath) {
-                ToolsView(model: model)
-                    .navigationDestination(for: ToolsDestination.self) { destination in
-                        switch destination {
-                        case .jwtInspector:
-                            JWTInspectorView(model: model, initialInput: MainDetail.jwtInspectorInitialInput())
-                        case .snippetExporter:
-                            SnippetExporterView(model: model)
-                        case .testToken:
-                            TestTokenView(model: model)
-                        }
-                    }
-            }
+            ToolsStack(model: model, path: $toolsPath)
         case .about:
             NavigationStack {
                 AboutView()
                     .navigationTitle("About")
             }
         }
-    }
-
-    private static func jwtInspectorInitialInput() -> String {
-        #if DEBUG
-        if ScreenshotScenario.current == .jwtInspector {
-            return ScreenshotHarness.currentOwnersToken
-        }
-        #endif
-        return ""
     }
 }

@@ -36,7 +36,7 @@ struct RootView: View {
     init(model: AuthViewModel, initialTab: AppTab = .owners) {
         self.model = model
         _selection = State(initialValue: initialTab)
-        _toolsPath = State(initialValue: Self.initialToolsPath())
+        _toolsPath = State(initialValue: ToolsRouting.initialPath())
     }
 
     var body: some View {
@@ -52,19 +52,7 @@ struct RootView: View {
                 }
             }
             Tab(AppTab.tools.title, systemImage: AppTab.tools.systemImage, value: .tools) {
-                NavigationStack(path: $toolsPath) {
-                    ToolsView(model: model)
-                        .navigationDestination(for: ToolsDestination.self) { destination in
-                            switch destination {
-                            case .jwtInspector:
-                                JWTInspectorView(model: model, initialInput: Self.jwtInspectorInitialInput())
-                            case .snippetExporter:
-                                SnippetExporterView(model: model)
-                            case .testToken:
-                                TestTokenView(model: model)
-                            }
-                        }
-                }
+                ToolsStack(model: model, path: $toolsPath)
             }
             Tab(AppTab.about.title, systemImage: AppTab.about.systemImage, value: .about) {
                 NavigationStack {
@@ -116,32 +104,6 @@ struct RootView: View {
             }
             model.refreshAll()
         }
-    }
-
-    /// Builds the initial Tools NavigationPath for screenshot scenarios
-    /// that want to land on a specific Tools sub-screen.
-    private static func initialToolsPath() -> NavigationPath {
-        var path = NavigationPath()
-        #if DEBUG
-        switch ScreenshotScenario.current {
-        case .jwtInspector: path.append(ToolsDestination.jwtInspector)
-        case .snippetExporter: path.append(ToolsDestination.snippetExporter)
-        case .testToken: path.append(ToolsDestination.testToken)
-        default: break
-        }
-        #endif
-        return path
-    }
-
-    /// Pre-fills the JWT inspector with the sample token only when the
-    /// matching screenshot scenario is active.
-    private static func jwtInspectorInitialInput() -> String {
-        #if DEBUG
-        if ScreenshotScenario.current == .jwtInspector {
-            return ScreenshotHarness.currentOwnersToken
-        }
-        #endif
-        return ""
     }
 }
 
