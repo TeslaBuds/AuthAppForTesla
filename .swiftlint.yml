@@ -1,0 +1,481 @@
+# Build output and other agents' worktrees are not this repo's source
+# (install-guardrails.py, WAFT#218).
+excluded:
+  - .claude
+  - .build
+  - "**/.build"
+  - build
+  - "DerivedData*"
+  - "**/DerivedData*"
+  - "**/SourcePackages"
+
+custom_rules:
+  # >>> BrandKit house rules — managed by RumskrotShared/scripts/sync-house-lint.sh; do not edit
+  no_dark_panel:
+    name: "No dark panel on the brand surface (RumskrotShared#114)"
+    # `.background(` / `.fill(` / `.listRowBackground(` handed `.black`,
+    # `Color.black`, either with `.opacity(…)`, or `modalCardBackground`
+    # (`DesignTokens.` or bare); and `Color.black…ignoresSafeArea()` as a
+    # screen ground. `BrandDarkCard` is *not* matched — it is the sanctioned
+    # reading panel (untinted glass since #117). A modal's own `modalCardBackground` card takes
+    # `swiftlint:disable:next` with the reason; the Python twin exempts
+    # `*Sheet` / `*Modal` types by name, SwiftLint cannot.
+    regex: '\.(?:background|fill|listRowBackground)\(\s*(?:Color\.|\.)black\b|\.(?:background|fill|listRowBackground)\(\s*(?:DesignTokens\.)?modalCardBackground\b|\bColor\.black(?:\.opacity\([^)]*\))?\s*\.ignoresSafeArea\('
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "No dark or black panels on the brand surface, ever (RumskrotShared#114). Text that must be read goes on BrandDarkCard, the family's glass reading panel (#117); modalCardBackground is a modal's card colour. A ground that is black by nature (a framebuffer, a photo) says so with // swiftlint:disable:next no_dark_panel above it and // brand-lint: allow no_dark_panel — <reason> trailing it."
+    severity: error
+
+  # --- The global house rules' one-line API bans (RumskrotShared#25). One
+  # canonical id each, replacing the `rt_…` / `manascope_…` / unprefixed
+  # copies three repos kept. Twins: scripts/brand_rules/<id>.py via api_ban.py.
+  # A consumer that carried its own copy deletes it when it syncs this block.
+  no_foreground_color:
+    name: "No .foregroundColor( — .foregroundStyle( instead (RumskrotShared#25)"
+    regex: '\.foregroundColor\('
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: ".foregroundColor( is deprecated — use .foregroundStyle(, see the global house rules"
+    severity: error
+  no_corner_radius:
+    name: "No .cornerRadius( — .clipShape(.rect(cornerRadius:)) instead (RumskrotShared#25)"
+    # Not BrandKit's BrandMonogramTile.cornerRadius(for:), a radius lookup (RumskrotShared#126).
+    regex: '(?<!BrandMonogramTile)\.cornerRadius\('
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: ".cornerRadius( is deprecated — use .clipShape(.rect(cornerRadius:)), see the global house rules"
+    severity: error
+  no_tab_item:
+    name: "No .tabItem — the Tab API instead (RumskrotShared#25)"
+    regex: '\.tabItem\b'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: ".tabItem is the old tab API — use Tab(_:systemImage:) { … }, see the global house rules"
+    severity: error
+  no_navigation_view:
+    name: "No NavigationView — NavigationStack instead (RumskrotShared#25)"
+    regex: '\bNavigationView\b'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "NavigationView is deprecated — use NavigationStack, see the global house rules"
+    severity: error
+  no_observable_object:
+    name: "No ObservableObject — an @Observable class instead (RumskrotShared#25)"
+    regex: '\bObservableObject\b'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "ObservableObject is the legacy observation model — use an @MainActor @Observable class, see the global house rules"
+    severity: error
+  no_published:
+    name: "No @Published — a plain property on an @Observable class instead (RumskrotShared#25)"
+    regex: '@Published\b'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "@Published belongs to ObservableObject — use a plain property on an @Observable class, see the global house rules"
+    severity: error
+  no_state_object:
+    name: "No @StateObject — @State owning an @Observable class instead (RumskrotShared#25)"
+    regex: '@StateObject\b'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "@StateObject belongs to ObservableObject — own an @Observable class with @State, see the global house rules"
+    severity: error
+  no_observed_object:
+    name: "No @ObservedObject — a plain property or @Bindable instead (RumskrotShared#25)"
+    regex: '@ObservedObject\b'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "@ObservedObject belongs to ObservableObject — pass the @Observable model plainly or as @Bindable, see the global house rules"
+    severity: error
+  no_environment_object:
+    name: "No @EnvironmentObject — @Environment(Model.self) instead (RumskrotShared#25)"
+    regex: '@EnvironmentObject\b|\.environmentObject\('
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "EnvironmentObject belongs to ObservableObject — inject with .environment(model) and read @Environment(Model.self), see the global house rules"
+    severity: error
+  no_task_sleep_nanoseconds:
+    name: "No Task.sleep(nanoseconds:) — Task.sleep(for:) instead (RumskrotShared#25)"
+    regex: 'Task\.sleep\s*\(\s*nanoseconds\s*:'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "Task.sleep(nanoseconds:) — use Task.sleep(for: .seconds(…)), see the global house rules"
+    severity: error
+  no_uiscreen_main:
+    name: "No UIScreen.main — the layout's own size (containerRelativeFrame, visualEffect) instead (RumskrotShared#25)"
+    regex: '\bUIScreen\.main\b'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "UIScreen.main is deprecated and not the space a view has — use containerRelativeFrame / visualEffect, see the global house rules"
+    severity: error
+  no_shows_indicators:
+    name: "No showsIndicators: — .scrollIndicators(_:) instead (RumskrotShared#25)"
+    regex: 'showsIndicators\s*:'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "showsIndicators: in the ScrollView initialiser — use .scrollIndicators(.hidden), see the global house rules"
+    severity: error
+  no_foreach_array_enumerated:
+    name: "No ForEach(Array(x.enumerated())) — ForEach(x.enumerated()) instead (RumskrotShared#25)"
+    regex: 'ForEach\(\s*Array\([^)]*\.enumerated\(\)'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "ForEach(Array(….enumerated())) — pass the enumerated sequence directly, see the global house rules"
+    severity: error
+  no_font_weight_bold:
+    name: "No .fontWeight(.bold) — .bold() instead (RumskrotShared#25)"
+    regex: '\.fontWeight\(\s*\.bold\s*\)'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: ".fontWeight(.bold) — use .bold(), see the global house rules"
+    severity: error
+  no_string_format_numbers:
+    name: "No String(format:) for numbers — a FormatStyle instead (RumskrotShared#122)"
+    regex: 'String\s*\(\s*format\s*:\s*"[^"]*%[-+ 0-9.]*[fdeEgG]'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+    message: "String(format:) with a numeric specifier — use a FormatStyle (Text(value, format: .number.precision(.fractionLength(2)))), see the global house rules"
+    severity: error
+  no_any_view:
+    name: "No AnyView( unless absolutely required (RumskrotShared#122)"
+    regex: '\bAnyView\('
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "AnyView( erases the view type — avoid it unless absolutely required, see the global house rules"
+    severity: error
+  no_reload_all_timelines:
+    name: "No reloadAllTimelines() — reload by kind through GlanceReloadCoordinator (RumskrotShared#144)"
+    regex: '\breloadAllTimelines(?<!brand-lint:\s{0,3}allow\s{1,3}no_reload_all_timelines\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_reload_all_timelines\s+[—-]\s*\S)\s*\('
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "reloadAllTimelines() reloads every widget kind against WidgetKit's budget — reload by kind through RumskrotKit's GlanceReloadCoordinator (DRSFramer#69 §4.5)"
+    severity: error
+  no_scroll_view_reader:
+    name: "No ScrollViewReader — ScrollPosition instead (RumskrotShared#122)"
+    regex: '\bScrollViewReader\s*\{'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "ScrollViewReader forces a proxy through the view tree — use @State var position = ScrollPosition() with .scrollPosition($position), or .defaultScrollAnchor(_:), see the global house rules"
+    severity: error
+  no_replacing_occurrences:
+    name: "No .replacingOccurrences(of: — .replacing(_:with:) instead (RumskrotShared#122)"
+    regex: '\.replacingOccurrences\s*\(\s*of\s*:'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: ".replacingOccurrences(of:) — use Swift-native .replacing(_:with:), see the global house rules"
+    severity: error
+
+  # --- The rest of the house rules that are a regex (RumskrotShared#135). Twins:
+  # scripts/brand_rules/<id>.py, same id. Unlike the twins above, each regex
+  # honours the reasoned brand-lint allow itself — trailing the line, or on the
+  # line above — so a site needs ONE escape, the one `brand-rules.py` reads:
+  #     // brand-lint: allow <id> — <reason>
+  # An allow with no reason is not honoured. `swiftlint:disable:next <id>` still
+  # works. A multi-line shape matches only its first token and checks the rest
+  # in a lookahead, so a comment inside the shape cannot hide it (SwiftLint drops
+  # a match that spans an excluded kind) and the finding lands on the first line.
+  # Fixtures: swiftlint/FixtureTests/, run by `brand-rules.py --self-test`; parity
+  # with the Python rules (and the ones a regex cannot express) is checked there too.
+  no_raw_segmented_picker:
+    name: "No system segmented Picker — BrandSegmentedControl instead (RumskrotShared#135)"
+    # `\s` spans newlines, so the wrapped `.pickerStyle(\n    .segmented\n)` spelling is caught too.
+    regex: '\.pickerStyle(?<!brand-lint:\s{0,3}allow\s{1,3}no_raw_segmented_picker\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_raw_segmented_picker\s+[—-]\s*\S)(?=\(\s*\.segmented\s*\))|\bSegmentedPickerStyle\b(?<!brand-lint:\s{0,3}allow\s{1,3}no_raw_segmented_picker\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_raw_segmented_picker\s+[—-]\s*\S)'
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "System segmented Picker — use BrandSegmentedControl, never Picker(…).pickerStyle(.segmented) or SegmentedPickerStyle(), see the global house rules"
+    severity: error
+  no_on_tap_gesture:
+    name: "No bare .onTapGesture — a Button, unless the count or the location is needed (RumskrotShared#135)"
+    regex: '\.onTapGesture\b(?<!brand-lint:\s{0,3}allow\s{1,3}no_on_tap_gesture\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_on_tap_gesture\s+[—-]\s*\S)(?!\s*\(\s*(?:count|coordinateSpace)\s*:)'
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: ".onTapGesture without count: or coordinateSpace: — use a Button (BrandButton / BrandControl); a bare tap has no focus, no VoiceOver trait and no chrome"
+    severity: error
+  no_dispatch_queue:
+    name: "No DispatchQueue.main / .global() dispatch — modern Swift concurrency instead (RumskrotShared#135)"
+    regex: '\bDispatchQueue(?<!brand-lint:\s{0,3}allow\s{1,3}no_dispatch_queue\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_dispatch_queue\s+[—-]\s*\S)(?=\s*\.\s*(?:main|global\s*\([^)]*\))\s*\.\s*(?:async|asyncAfter|sync|asyncAndWait)\b)'
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "DispatchQueue.main / .global() dispatch is old-style GCD — use @MainActor / Task { } / Task.sleep(for:) instead, see the global house rules"
+    severity: error
+  no_legacy_formatters:
+    name: "No legacy Formatter subclasses — FormatStyle instead (RumskrotShared#135)"
+    regex: '\b(?:DateFormatter|NumberFormatter|MeasurementFormatter|DateComponentsFormatter|ByteCountFormatter|RelativeDateTimeFormatter|DateIntervalFormatter|PersonNameComponentsFormatter|ListFormatter|ISO8601DateFormatter)(?<!brand-lint:\s{0,3}allow\s{1,3}no_legacy_formatters\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_legacy_formatters\s+[—-]\s*\S)\s*\('
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "A legacy Formatter subclass — use the FormatStyle API (.formatted(…), Date(_:strategy:)), see the global house rules"
+    severity: error
+  no_raw_text_field:
+    name: "A text input is BrandField / BrandField.Bare / BrandTextArea, never a bare TextField (RumskrotShared#113)"
+    regex: '(?<![A-Za-z0-9_.])(?:SwiftUI\.)?(?:TextField|SecureField|TextEditor)(?<!brand-lint:\s{0,3}allow\s{1,3}no_raw_text_field\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_raw_text_field\s+[—-]\s*\S)\s*\('
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "Raw SwiftUI TextField / SecureField / TextEditor — use BrandField (BrandField.Bare inside a row, BrandField.secure for secure entry) or BrandTextArea; see docs/control-purpose.md § \"A text input is a BrandField\""
+    severity: error
+  no_raw_section_header:
+    name: "A section header is BrandListSection / BrandFormSection, never a bare Section (RumskrotShared#106)"
+    regex: '(?<![A-Za-z0-9_.])(?<!\b(?:enum|struct|class|actor|extension|protocol|typealias)\s)(?:SwiftUI\.)?Section(?<!brand-lint:\s{0,3}allow\s{1,3}no_raw_section_header\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_raw_section_header\s+[—-]\s*\S)\s*[({]'
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "Raw SwiftUI Section — use BrandListSection (in a BrandList) or BrandFormSection (in a BrandForm); a menu group takes an inline allow; see docs/control-purpose.md § \"A section header is bare text\""
+    severity: error
+  no_raw_button_style:
+    name: "A consumer's .buttonStyle(…) goes through the catalog; only .plain is raw (RumskrotShared#89)"
+    regex: '\.buttonStyle(?<!brand-lint:\s{0,3}allow\s{1,3}no_raw_button_style\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_raw_button_style\s+[—-]\s*\S)\(\s*(?!(?:\.plain|PlainButtonStyle\(\))\s*\))'
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: ".buttonStyle(…) on a raw Button — use BrandButton (BrandControl for ShareLink/NavigationLink/Menu, BrandToolbarButton in a toolbar, BrandHeroButton for the hero capsule); only .plain is raw. .borderedProminent was retired on 1 Sep 2026 — BrandButton(style: .glassProminent), one per screen"
+    severity: error
+  no_custom_button_style:
+    name: "No hand-rolled ButtonStyle / PrimitiveButtonStyle — BrandButton and its rank (DRSFramer#69)"
+    # A conformance in the declaration's inheritance clause, generic
+    # parameters skipped, so `BrandButton<Label: View, Style:
+    # PrimitiveButtonStyle>: View` (a constraint) is silent. One line only:
+    # the Python twin also follows a clause that wraps onto the next lines.
+    regex: '\b(?:struct|class|enum|actor|extension)(?<!brand-lint:\s{0,3}allow\s{1,3}no_custom_button_style\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_custom_button_style\s+[—-]\s*\S)\s+[A-Za-z_][\w.]*(?:<[^<>{\n]*(?:<[^<>{\n]*>[^<>{\n]*)*>)?\s*:[^{\n]*?\b(?:SwiftUI\.)?(?:Primitive)?ButtonStyle\b'
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "A hand-rolled button style is a second implementation of the catalogue's chrome — use BrandButton / BrandControl / BrandHeroButton and put the rank in style:; a missing control is donated through RumskrotShared docs/control-purpose.md"
+    severity: error
+  no_raw_divider:
+    name: "A separator is BrandDivider, never a bare Divider() (RumskrotIssues#229)"
+    regex: '(?<![A-Za-z0-9_.])(?<!\b(?:enum|struct|class|actor|extension|protocol|typealias)\s)(?:SwiftUI\.)?Divider(?<!brand-lint:\s{0,3}allow\s{1,3}no_raw_divider\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_raw_divider\s+[—-]\s*\S)\s*\('
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "Raw SwiftUI Divider — use BrandDivider (BrandDivider(axis: .vertical) in an HStack); a separator inside a Menu takes an inline allow"
+    severity: error
+  glass_on_content:
+    name: "Glass is applied to the content, never to a Color.clear beside it (RumskrotShared#82)"
+    regex: '\bColor\.clear(?<!brand-lint:\s{0,3}allow\s{1,3}glass_on_content\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+glass_on_content\s+[—-]\s*\S)(?=\s*\.glassEffect\()'
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "Color.clear.glassEffect(…) — glass on an empty shape beside the content. Apply .glassEffect(_:in:) to the content itself, or — for a content-less well — // brand-lint: allow glass_on_content — well: <what it is under>"
+    severity: error
+  no_raw_glass_container:
+    name: "A merge or morph group is a BrandGlassCluster, never a bare GlassEffectContainer (RumskrotShared#83)"
+    regex: '(?<![A-Za-z0-9_.])GlassEffectContainer(?<!brand-lint:\s{0,3}allow\s{1,3}no_raw_glass_container\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_raw_glass_container\s+[—-]\s*\S)\s*[({]'
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "GlassEffectContainer opened directly — use BrandGlassCluster (brandGlassID / brandGlassUnion publish the namespace); see docs/control-purpose.md § \"A glass cluster\""
+    severity: error
+  no_in_content_add:
+    name: "An add is the SDK's plus in the toolbar's top-right corner, never a capsule in the content (Traverse#153)"
+    # The shape a regex sees on one line: a BrandButton / BrandHeroButton add
+    # capsule ("Add…" title or a plus glyph), which is never a toolbar item.
+    # Only the identifier is matched (the rest is a lookahead), so the
+    # string exclusion does not swallow it. The Python twin also brace-matches
+    # up the file for every other in-content add and for `.primaryAction`.
+    regex: '\b(?:BrandButton|BrandHeroButton)(?<!brand-lint:\s{0,3}allow\s{1,3}no_in_content_add\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_in_content_add\s+[—-]\s*\S)(?=\(\s*(?:"Add\b|[^\n]*systemImage:\s*"plus(?:\.circle(?:\.fill)?|\.app(?:\.fill)?)?"))'
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "An add in the content. Adding is the SDK's plus in the toolbar's top-right corner: ToolbarItem(placement: .topBarTrailing) with Button(\"Add\", systemImage: \"plus\"). An empty list offers its add through PhaseStateView(empty:primaryAction:)"
+    severity: error
+  no_tint_nil:
+    name: "`.tint(nil)` is not a no-op — skip the call instead (RumskrotNavigator#90)"
+    regex: '\.tint(?<!brand-lint:\s{0,3}allow\s{1,3}no_tint_nil\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_tint_nil\s+[—-]\s*\S)\(\s*nil\s*\)'
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: ".tint(nil) is an explicit reset to the platform default, not a no-op — it clears an ancestor's tint back to system blue. Skip the .tint(_:) call when there is nothing to set"
+    severity: error
+  no_hand_rolled_tree_indent:
+    name: "Tree-row indentation is TreeBrowserRowShell(depth:) / TreeDisclosureRow, never a local depth * constant (RumskrotShared#86)"
+    # Reads the rest of the line, where the Python twin reads only the paren argument.
+    regex: '\.padding(?<!brand-lint:\s{0,3}allow\s{1,3}no_hand_rolled_tree_indent\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_hand_rolled_tree_indent\s+[—-]\s*\S)\(\s*\.leading\s*,(?=[^\n]*(?<![A-Za-z0-9_])[Dd]epth(?![A-Za-z0-9_]))(?=[^\n]*\*)'
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "Hand-rolled tree indent — depth * constant re-derives what TreeBrowserRowShell(depth:) / TreeDisclosureRow.indent(forDepth:) own; pass depth: to the shared row instead"
+    severity: error
+  no_size_class_root_swap:
+    name: "No hand-rolled `if sizeClass == .regular { A() } else { B() }` root swap — use AdaptiveRoot (RumskrotShared#113)"
+    # Matches the swap's exact shape (one bare call per branch); the Python twin's file-level `AdaptiveRoot(` exemption has no regex form.
+    regex: '\bif\b(?<!brand-lint:\s{0,3}allow\s{1,3}no_size_class_root_swap\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_size_class_root_swap\s+[—-]\s*\S)(?=[^\n{]*(?<![A-Za-z0-9_])(?:horizontal|vertical)?[Ss]izeClass(?![A-Za-z0-9_])\s*==\s*\.(?:regular|compact)\b[^\n]*\{[ \t]*\n\s*([A-Za-z][A-Za-z0-9_]*)\s*\(\s*\)[ \t]*\n\s*\}\s*else\s*\{[ \t]*\n\s*(?!\1\s*\()[A-Za-z][A-Za-z0-9_]*\s*\(\s*\)[ \t]*\n)'
+    excluded: '(?:^|/)[^/]*Tests/'   # test targets, as the Python twin's is_excluded
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "Hand-rolled size-class root swap — SwiftUI tears down every @State beneath a root when it swaps between two View types on rotation, silently dismissing any open sheet/popover/cover (RumskrotTerminal#113); use BrandKit's AdaptiveRoot instead"
+    severity: error
+  no_invented_colour:
+    name: "No invented colour anywhere — BrandKit tokens, the app's accent through the kit, or SwiftUI's semantic styles (DRSFramer#69)"
+    # Kim, 14 Oct 2026: "the widgets follow the app" — and then "Not limited
+    # to those - blocked everywhere!" Partial twin of the Python rule: colour
+    # initialisers (a semantic role colour or a DesignTokens bridge on the
+    # same line excepted), #colorLiteral, Color.red … Color.black,
+    # UIColor.systemRed …, a bare .red … .black inside a colour modifier,
+    # after a colour label or `Color =`, or in a gradient on the same line,
+    # and a hand-built BrandGlanceTint / .derived(from:) (the kit's semantic
+    # status alone excepted). Python-only: Color-typed bodies (`case .ok:
+    # .green`), multi-line arguments, an app's palette-type use sites.
+    # `excluded:` mirrors scripts/brand_rules/palette_files.py by in-repo
+    # path; the Python self-test fails if the two drift. Severity error since
+    # 14 Oct 2026 (WAFT#218): every consumer's build runs this file through
+    # scripts/guardrails-build-phase.sh against the repo's own SwiftLint
+    # baseline, so today's sites stay green and a new one fails the build.
+    regex: '(?:(?<![\w.])(?<!extension\s)(?<!struct\s)(?<!class\s)(?<!enum\s)(?:SwiftUI\.)?(?:Color|UIColor|NSColor|CGColor)(?=\s*(?:\.init)?\s*\((?!\s*(?:(?:uiColor|nsColor)\s*:\s*)?(?:(?:UI|NS)Color)?\.(?:label|secondaryLabel|tertiaryLabel|quaternaryLabel|placeholderText|separator|opaqueSeparator|link|systemBackground|secondarySystemBackground|tertiarySystemBackground|systemGroupedBackground|secondarySystemGroupedBackground|tertiarySystemGroupedBackground|systemFill|secondarySystemFill|tertiarySystemFill|quaternarySystemFill|clear|windowBackgroundColor|controlBackgroundColor|textBackgroundColor|underPageBackgroundColor|textColor|labelColor|secondaryLabelColor|tertiaryLabelColor|quaternaryLabelColor|separatorColor|gridColor|controlColor|controlTextColor|selectedContentBackgroundColor|unemphasizedSelectedContentBackgroundColor|selectedTextBackgroundColor|placeholderTextColor|windowFrameTextColor|headerTextColor|linkColor|controlAccentColor|keyboardFocusIndicatorColor)\s*\))(?![^)\n]*DesignTokens\.))|(?<![\w)\]])\.init(?=\(\s*(?:red|hue|white|displayP3Red|srgbRed)\s*:)|#colorLiteral(?=\()|\b(?:SwiftUI\.)?Color\.(?:red|orange|yellow|green|mint|teal|cyan|blue|indigo|purple|pink|brown|gray|grey|white|black)\b(?!\s*\()|\b(?:UI|NS)Color\.(?:system(?:Red|Orange|Yellow|Green|Mint|Teal|Cyan|Blue|Indigo|Purple|Pink|Brown|Gray[2-6]?)|red|orange|yellow|green|cyan|blue|purple|magenta|brown|gray|darkGray|lightGray|white|black)\b(?!\s*\()|\.(?:foregroundStyle|foregroundColor|background|backgroundStyle|tint|fill|stroke|strokeBorder|listRowBackground|listRowSeparatorTint|listSectionSeparatorTint|border|shadow|accentColor|containerBackground|overlay|toolbarBackground|presentationBackground|colorMultiply|glassEffect|scrollContentBackground|underline|strikethrough)(?=\([^\n]*?(?<=[\s(\[,:?!=])\.(?:red|orange|yellow|green|mint|teal|cyan|blue|indigo|purple|pink|brown|gray|grey|white|black)\b(?!\s*\()(?!:))|\b(?:color|colors|tint|tintColor|accent|ground|foot|footColors|secondaryInk|foregroundColor|backgroundColor|fillColor|strokeColor|shadowColor|foreground|background)(?=\s*:[^\n]*?(?<=[\s(\[,:?!=])\.(?:red|orange|yellow|green|mint|teal|cyan|blue|indigo|purple|pink|brown|gray|grey|white|black)\b(?!\s*\()(?!:))|\b(?:Color|UIColor|NSColor)(?=\s*\]?\??\s*=\s*\.(?:red|orange|yellow|green|mint|teal|cyan|blue|indigo|purple|pink|brown|gray|grey|white|black)\b)|(?<![\w.])(?:Linear|Radial|Angular|Elliptical|Mesh)?Gradient(?=\s*\([^\n]*?(?<=[\s(\[,:?!=])\.(?:red|orange|yellow|green|mint|teal|cyan|blue|indigo|purple|pink|brown|gray|grey|white|black)\b(?!\s*\()(?!:))|(?<![\w.])BrandGlanceTint(?=\s*(?:\.init)?\s*\()|\.derived(?=\s*\(\s*from\s*:(?!\s*\[\s*DesignTokens\.(?:success|warning|error|live|info|edit)Accent\s*\])))(?<!brand-lint:\s{0,3}allow\s{1,3}no_invented_colour\s{1,3}[—-]\s{0,3}\S[^\n]{0,400}\n[^\n]{0,400})(?![^\n]*brand-lint:\s*allow\s+no_invented_colour\s+[—-]\s*\S)'
+    excluded: '(?:^|/)[^/]*Tests/|(?:Sources/BrandKit/(?:DesignTokens|BrandGlanceTint|BrandAccentOverride|BrandMonogramPalette)|Shared/Views/Backgrounds/(?:DynamicTripBackground|DynamicManaBackground)|Shared/Components/BackgroundAlternatives|PairPanicUI/Shared/DynamicGameBackground|Features/Game/FX/PanicBackdropRenderer|RipplockUI/RipplockPalette|GlanceShared/RoadLensGlance|Shared/Views/ManaColor\+SwiftUI)\.swift$'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "An invented colour. Colours come from BrandKit only: DesignTokens and the kit's components and semantic status colours, the app's in-app accent through the kit (BrandTheme, BrandAccentOverride, BrandGlanceTint.following), or SwiftUI's semantic styles (.primary, .secondary, .tint). Widgets follow the app — never a palette of their own (Kim, 14 Oct 2026; DRSFramer#69). Content colour (a terminal theme, a photo, a framebuffer) takes // swiftlint:disable:next no_invented_colour above and // brand-lint: allow no_invented_colour — <reason> trailing it"
+    severity: error
+
+  no_view_in_extension:
+    name: "No SwiftUI views defined in a glance extension — reuse the app's shared views (WAFT#218)"
+    # Kim, WAFT#218, 14 Oct 2026: "look at the app - everything for the widget
+    # is already right there! It's just a matter of reusing the code - no
+    # fucking need to duplicate ANYTHING!" Partial twin of
+    # scripts/brand_rules/no_view_in_extension.py. `included:` and `excluded:`
+    # are per repo: sync-house-lint.sh replaces the two placeholders with the
+    # consumer's extension-only folders (read from its project file by
+    # extension_targets.py) and the files extension_view_files.py allows, and
+    # drops the rule for a consumer with no glance extension. One regex sees
+    # one file, so the twin takes a View type with a stored `entry` or
+    # `context` property for the widget's entry view; the Python twin, in the
+    # same build phase, is the authority (entry views named by a Widget body,
+    # and an entry view that draws its own layout).
+    regex: '\b(?:struct|class|enum|extension)\s+\w+(?:<[^>{\n]*>)?\s*:\s*(?:[\w.]+\s*,\s*)*(?:SwiftUI\.)?View\b[^{\n]*\{(?!(?:(?!\b(?:struct|class|enum|extension)\s)[\s\S]){0,800}?\b(?:let|var)\s+(?:entry|context)\s*:)'
+    included: '(?:/AuthForTeslaWidgets/)'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "A SwiftUI View defined in a widget / control / Live Activity / intents extension. The app already draws this: move the view into shared code the app compiles too (its Shared folder or package, or BrandKit) and use it from both; the extension keeps only the widget's entry view, which composes shared views (Kim, WAFT#218: no need to duplicate ANYTHING)"
+    severity: error
+
+  # --- Kim, 14 Oct 2026, verbatim: "it's using home-rolled ui again ... It's
+  # like a fucking cancer - it just keep coming back in new places ... we DO
+  # need a brandkit round glass button - everywhere - globally aligned.
+  # Unified ui. Coherence. One code for one button - reused everywhere. NOT
+  # FUCKING DUPLICATED LOCAL IMPLEMENRATIONS!!!!" (WAFT#218). Three twins; the
+  # Python rules are the authority and run in the same build phase.
+  no_control_lookalike_view:
+    name: "No local View named like a catalogue control — use or extend BrandKit's (WAFT#218)"
+    # A View type whose name carries Button, Toggle, Row, Chip, Card, Panel,
+    # Header, Badge, Pill, Gauge or Stepper as a whole CamelCase word.
+    # `included:` is every Swift file (a placeholder only so the fixture run can
+    # aim it); `excluded:` is tests, the catalogue itself, and the files
+    # control_lookalike_files.py allows for this repo.
+    regex: '\b(?:struct|class|enum)\s+\w*?(?:Button|Toggle|Row|Chip|Card|Panel|Header|Badge|Pill|Gauge|Stepper)s?(?![a-z])\w*\s*(?:<[^>{\n]*>)?\s*:\s*(?:[\w.]+\s*,\s*)*(?:SwiftUI\.)?View\b'
+    included: '(?:\.swift$)'
+    excluded:
+      - '(?:^|/)[^/]*Tests/|/Sources/BrandKit/'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "A local view named like a catalogue control (Button, Toggle, Row, Chip, Card, Panel, Header, Badge, Pill, Gauge, Stepper). BrandKit already has it (BrandButton, BrandRow/ActionRow, GlassPill, BrandDarkCard/BrandPanel, BrandSectionHeaderChrome, BrandGlanceGauge, BrandValueStepper): use it, or extend it there so every app gets it (Kim, WAFT#218: One code for one button - reused everywhere)"
+    severity: error
+  no_raw_button_in_glance:
+    name: "No raw Button in widget / control / Live Activity code — BrandButton (WAFT#218)"
+    # `included:` is this repo's glance code (every folder a glance extension
+    # compiles, read from the project file), filled in by sync-house-lint.sh;
+    # the rule is dropped for a consumer with no glance extension.
+    regex: '(?<![\w.])(?:SwiftUI\.)?Button\s*(?:<[^>\n]*>)?\s*[({]'
+    included: '(?:/AuthForTeslaWidgets/)'
+    excluded:
+      - '(?:^|/)[^/]*Tests/'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "A raw SwiftUI Button in glance code. A widget, control, Live Activity or complication action is BrandButton(intent:…, shape: .circle): BrandKit's round glass button (Kim, WAFT#218: One code for one button - reused everywhere)"
+    severity: error
+  no_labelled_glance_button:
+    name: "A glance action is BrandButton(…, shape: .circle) — round, glyph only (WAFT#218)"
+    # Sees one call's arguments up to the label closure's `{`; the Python twin
+    # paren-matches.
+    regex: '(?<![\w.])(?:BrandButton|BrandGlanceToggle)\s*\((?![^{]*?\bshape\s*:\s*\.circle\b)'
+    included: '(?:/AuthForTeslaWidgets/)'
+    excluded:
+      - '(?:^|/)[^/]*Tests/'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "A glance action without shape: .circle. On a widget, control, Live Activity or complication the action is BrandKit's round glass button, glyph only: BrandButton(intent:…, shape: .circle) { Label(\"Title\", systemImage: …) }, so the title stays the accessibility label (Kim, WAFT#218)"
+    severity: error
+  # <<< BrandKit house rules

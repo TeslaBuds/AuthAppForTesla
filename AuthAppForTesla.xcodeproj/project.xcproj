@@ -129,6 +129,13 @@
         "AuthForTeslaWidgetsExtension",
       ],
       "build-phases": [
+        {
+          "kind": "script",
+          "name": "BrandKit guardrails",
+          "run-on-every-build": true,
+          "shell": "/bin/bash",
+          "script": "\"${SRCROOT}/scripts/brand-guardrails.sh\"\n",
+        },
         "compile-sources",
         "frameworks",
         "resources",
@@ -156,6 +163,7 @@
         "CURRENT_PROJECT_VERSION": "34",
         "DEVELOPMENT_ASSET_PATHS": "\"AuthAppForTesla/Preview Content\"",
         "ENABLE_PREVIEWS": "YES",
+        "ENABLE_USER_SCRIPT_SANDBOXING": "NO",
         "INFOPLIST_FILE": "AuthAppForTesla/Info.plist",
         "IPHONEOS_DEPLOYMENT_TARGET": "26.0",
         "LD_RUNPATH_SEARCH_PATHS": [
@@ -253,6 +261,13 @@
         "AuthForTeslaWidgetsMacExtension",
       ],
       "build-phases": [
+        {
+          "kind": "script",
+          "name": "BrandKit guardrails",
+          "run-on-every-build": true,
+          "shell": "/bin/bash",
+          "script": "\"${SRCROOT}/scripts/brand-guardrails.sh\"\n",
+        },
         "compile-sources",
         "frameworks",
         "resources",
@@ -285,6 +300,7 @@
         "ENABLE_HARDENED_RUNTIME": "YES",
         "ENABLE_OUTGOING_NETWORK_CONNECTIONS": "YES",
         "ENABLE_PREVIEWS": "YES",
+        "ENABLE_USER_SCRIPT_SANDBOXING": "NO",
         "GCC_C_LANGUAGE_STANDARD": "gnu17",
         "GENERATE_INFOPLIST_FILE": "YES",
         "INFOPLIST_KEY_CFBundleDisplayName": "Auth for Tesla",
@@ -386,6 +402,13 @@
       "product": "Products/AuthForTeslaWidgetsExtension.appex",
       "product-type": "app-extension",
       "build-phases": [
+        {
+          "kind": "script",
+          "name": "BrandKit guardrails",
+          "run-on-every-build": true,
+          "shell": "/bin/bash",
+          "script": "\"${SRCROOT}/scripts/brand-guardrails.sh\"\n",
+        },
         "compile-sources",
         "frameworks",
         "resources",
@@ -397,6 +420,7 @@
         "CODE_SIGN_STYLE": "Automatic",
         "CURRENT_PROJECT_VERSION": "34",
         "DEVELOPMENT_TEAM": "R8S8D227CC",
+        "ENABLE_USER_SCRIPT_SANDBOXING": "NO",
         "GCC_C_LANGUAGE_STANDARD": "gnu17",
         "GENERATE_INFOPLIST_FILE": "YES",
         "INFOPLIST_FILE": "AuthForTeslaWidgets/Info.plist",
@@ -427,6 +451,13 @@
       "product": "Products/AuthForTeslaWidgetsMacExtension.appex",
       "product-type": "app-extension",
       "build-phases": [
+        {
+          "kind": "script",
+          "name": "BrandKit guardrails",
+          "run-on-every-build": true,
+          "shell": "/bin/bash",
+          "script": "\"${SRCROOT}/scripts/brand-guardrails.sh\"\n",
+        },
         "compile-sources",
         "frameworks",
         "resources",
@@ -439,6 +470,7 @@
         "CURRENT_PROJECT_VERSION": "34",
         "DEVELOPMENT_TEAM": "R8S8D227CC",
         "ENABLE_APP_SANDBOX": "YES",
+        "ENABLE_USER_SCRIPT_SANDBOXING": "NO",
         "GCC_C_LANGUAGE_STANDARD": "gnu17",
         "GENERATE_INFOPLIST_FILE": "YES",
         "INFOPLIST_FILE": "AuthForTeslaWidgets/Info.plist",

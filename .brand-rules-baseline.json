@@ -1,0 +1,144 @@
+{
+  "detect_shadowed_extensions": {},
+  "dialog_anchored_on_trigger": {},
+  "glass_on_content": {},
+  "glass_variant_on_content": {
+    "AuthAppForTeslaMac/Settings/MacSettingsView.swift": 1,
+    "Shared/View/About/AboutViewShortcuts.swift": 1,
+    "Shared/View/Shared/IconBackgroundView.swift": 1
+  },
+  "no_any_view": {},
+  "no_control_lookalike_view": {
+    "Shared/View/About/AboutViewBeta.swift": 1,
+    "Shared/View/About/AboutViewHeader.swift": 1,
+    "Shared/View/About/AuthBetaProgramView.swift": 2,
+    "Shared/View/Home/HomeViewHeader.swift": 2,
+    "Shared/View/Home/HomeViewRegionBadge.swift": 1,
+    "Shared/View/Home/HomeViewToken.swift": 1,
+    "Shared/View/Home/TokenDetailRow.swift": 1,
+    "Shared/View/Login/LoginViewHeader.swift": 1,
+    "Shared/View/Shared/TipJarView.swift": 2,
+    "Shared/View/Tools/JWTInspectorView.swift": 8,
+    "Shared/View/Tools/SnippetExporterView.swift": 5,
+    "Shared/View/Tools/TestTokenView.swift": 6,
+    "Shared/View/Tools/ToolsView.swift": 2
+  },
+  "no_corner_radius": {},
+  "no_custom_button_style": {},
+  "no_dark_lock": {},
+  "no_dark_panel": {},
+  "no_dispatch_queue": {
+    "Shared/Models/LiveTestLog.swift": 1
+  },
+  "no_environment_object": {},
+  "no_font_weight_bold": {},
+  "no_foreach_array_enumerated": {
+    "Shared/View/Tools/TestTokenView.swift": 1
+  },
+  "no_foreground_color": {},
+  "no_hand_rolled_button_chrome": {
+    "AuthAppForTeslaMac/Settings/MacSettingsView.swift": 1,
+    "Shared/View/About/AboutViewBeta.swift": 1
+  },
+  "no_hand_rolled_toolbar_overflow": {},
+  "no_hand_rolled_tree_indent": {},
+  "no_in_content_add": {},
+  "no_invented_colour": {
+    "AuthAppForTesla/RootView.swift": 1,
+    "AuthAppForTeslaMac/Main/MainWindow.swift": 1,
+    "AuthAppForTeslaMac/Main/StoreProblemBanner.swift": 1,
+    "AuthAppForTeslaMac/Settings/MacSettingsView.swift": 4,
+    "AuthForTeslaWidgets/TokenWidgetView.swift": 6,
+    "Shared/Models/Toast.swift": 2,
+    "Shared/View/About/AboutViewBeta.swift": 1,
+    "Shared/View/About/AboutViewHeader.swift": 2,
+    "Shared/View/About/AboutViewShortcuts.swift": 3,
+    "Shared/View/About/AuthBetaProgramView.swift": 3,
+    "Shared/View/Home/HomeViewHeader.swift": 3,
+    "Shared/View/Home/HomeViewRefreshProblemNotice.swift": 1,
+    "Shared/View/Home/HomeViewRefreshTokens.swift": 2,
+    "Shared/View/Home/HomeViewToken.swift": 2,
+    "Shared/View/Home/HomeViewTokenHealth.swift": 1,
+    "Shared/View/License/LicenseViewEntry.swift": 2,
+    "Shared/View/Login/LoginViewSignInFleetAPI.swift": 2,
+    "Shared/View/Login/LoginViewSignInOwnersAPI.swift": 2,
+    "Shared/View/Onboarding/OnboardingPageView.swift": 1,
+    "Shared/View/Onboarding/OnboardingView.swift": 4,
+    "Shared/View/Shared/IconBackgroundView.swift": 2,
+    "Shared/View/Shared/TipJarView.swift": 6,
+    "Shared/View/Shared/ToastView.swift": 8,
+    "Shared/View/Tools/JWTInspectorView.swift": 7,
+    "Shared/View/Tools/SnippetExporterView.swift": 3,
+    "Shared/View/Tools/TestTokenView.swift": 5,
+    "Shared/View/Tools/ToolsView.swift": 1
+  },
+  "no_labelled_glance_button": {},
+  "no_legacy_formatters": {
+    "Shared/Models/LiveTestLog.swift": 1
+  },
+  "no_navigation_view": {},
+  "no_observable_object": {},
+  "no_observed_object": {},
+  "no_on_tap_gesture": {},
+  "no_prominent_on_glance": {},
+  "no_published": {},
+  "no_raw_button_in_glance": {},
+  "no_raw_button_style": {
+    "Shared/View/About/AboutViewHeader.swift": 1,
+    "Shared/View/About/AuthBetaProgramView.swift": 3,
+    "Shared/View/Home/HomeViewHeader.swift": 1,
+    "Shared/View/Home/HomeViewRefreshTokens.swift": 1,
+    "Shared/View/Login/LoginViewSignInFleetAPI.swift": 1,
+    "Shared/View/Login/LoginViewSignInOwnersAPI.swift": 1,
+    "Shared/View/Onboarding/OnboardingView.swift": 1,
+    "Shared/View/Shared/TipJarView.swift": 2,
+    "Shared/View/Tools/JWTInspectorView.swift": 3,
+    "Shared/View/Tools/SnippetExporterView.swift": 1,
+    "Shared/View/Tools/TestTokenView.swift": 1
+  },
+  "no_raw_divider": {
+    "AuthAppForTeslaMac/MenuBar/MenuBarTokenMenu.swift": 2,
+    "AuthForTeslaWidgets/TokenWidgetView.swift": 1,
+    "Shared/View/About/AboutViewShortcuts.swift": 1,
+    "Shared/View/AppCommands.swift": 1,
+    "Shared/View/HomeView.swift": 2,
+    "Shared/View/LicenseView.swift": 1,
+    "Shared/View/Tools/TestTokenView.swift": 1,
+    "Shared/View/Tools/ToolsView.swift": 2
+  },
+  "no_raw_glass_container": {},
+  "no_raw_section_header": {
+    "AuthAppForTeslaMac/MenuBar/MenuBarTokenMenu.swift": 1,
+    "AuthAppForTeslaMac/Settings/MacSettingsView.swift": 3,
+    "Shared/View/Home/HomeViewHeader.swift": 3
+  },
+  "no_raw_segmented_picker": {
+    "Shared/View/Login/LoginViewSignInFleetAPI.swift": 1,
+    "Shared/View/Login/LoginViewSignInOwnersAPI.swift": 1,
+    "Shared/View/Tools/SnippetExporterView.swift": 2,
+    "Shared/View/Tools/TestTokenView.swift": 1
+  },
+  "no_raw_text_field": {
+    "AuthAppForTeslaMac/Settings/MacSettingsView.swift": 3,
+    "Shared/View/Home/HomeViewHeader.swift": 1,
+    "Shared/View/Login/LoginViewSignInFleetAPI.swift": 3,
+    "Shared/View/Tools/JWTInspectorView.swift": 1,
+    "Shared/View/Tools/SnippetExporterView.swift": 1
+  },
+  "no_reload_all_timelines": {},
+  "no_replacing_occurrences": {},
+  "no_scroll_view_reader": {},
+  "no_shows_indicators": {},
+  "no_size_class_root_swap": {},
+  "no_state_object": {},
+  "no_string_format_numbers": {},
+  "no_tab_item": {},
+  "no_task_sleep_nanoseconds": {},
+  "no_tint_nil": {},
+  "no_trademark_in_surface_copy": {},
+  "no_uiscreen_main": {},
+  "no_view_in_extension": {
+    "AuthForTeslaWidgets/TokenWidgetView.swift": 6
+  },
+  "settings_toolbar_placement": {}
+}
