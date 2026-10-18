@@ -131,10 +131,10 @@
       "build-phases": [
         {
           "kind": "script",
-          "name": "BrandKit guardrails",
+          "name": "SwiftLint",
           "run-on-every-build": true,
           "shell": "/bin/bash",
-          "script": "\"${SRCROOT}/scripts/brand-guardrails.sh\"\n",
+          "script": "\"${SRCROOT}/scripts/swiftlint-build-phase.sh\"\n",
         },
         "compile-sources",
         "frameworks",
@@ -263,10 +263,10 @@
       "build-phases": [
         {
           "kind": "script",
-          "name": "BrandKit guardrails",
+          "name": "SwiftLint",
           "run-on-every-build": true,
           "shell": "/bin/bash",
-          "script": "\"${SRCROOT}/scripts/brand-guardrails.sh\"\n",
+          "script": "\"${SRCROOT}/scripts/swiftlint-build-phase.sh\"\n",
         },
         "compile-sources",
         "frameworks",
@@ -404,10 +404,10 @@
       "build-phases": [
         {
           "kind": "script",
-          "name": "BrandKit guardrails",
+          "name": "SwiftLint",
           "run-on-every-build": true,
           "shell": "/bin/bash",
-          "script": "\"${SRCROOT}/scripts/brand-guardrails.sh\"\n",
+          "script": "\"${SRCROOT}/scripts/swiftlint-build-phase.sh\"\n",
         },
         "compile-sources",
         "frameworks",
@@ -453,10 +453,10 @@
       "build-phases": [
         {
           "kind": "script",
-          "name": "BrandKit guardrails",
+          "name": "SwiftLint",
           "run-on-every-build": true,
           "shell": "/bin/bash",
-          "script": "\"${SRCROOT}/scripts/brand-guardrails.sh\"\n",
+          "script": "\"${SRCROOT}/scripts/swiftlint-build-phase.sh\"\n",
         },
         "compile-sources",
         "frameworks",
