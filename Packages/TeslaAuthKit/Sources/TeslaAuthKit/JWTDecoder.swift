@@ -81,7 +81,7 @@ public enum JWTDecoder {
 }
 
 private extension Dictionary where Key == String, Value == Any {
-    public func date(forKey key: String) -> Date? {
+    func date(forKey key: String) -> Date? {
         if let interval = self[key] as? TimeInterval {
             return Date(timeIntervalSince1970: interval)
         }
@@ -91,7 +91,7 @@ private extension Dictionary where Key == String, Value == Any {
         return nil
     }
 
-    public var audiences: [String] {
+    var audiences: [String] {
         if let array = self["aud"] as? [String] {
             return array
         }
@@ -101,7 +101,7 @@ private extension Dictionary where Key == String, Value == Any {
         return []
     }
 
-    public var scopes: [String] {
+    var scopes: [String] {
         if let array = self["scp"] as? [String] {
             return array
         }

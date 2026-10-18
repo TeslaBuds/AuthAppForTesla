@@ -16,3 +16,8 @@ let package = Package(
         .testTarget(name: "TeslaAuthKitTests", dependencies: ["TeslaAuthKit"], swiftSettings: [.swiftLanguageMode(.v5)]),
     ]
 )
+
+// Kim, 18 Oct 2026: "Globally: warnings are errors."
+for target in package.targets {
+    target.swiftSettings = (target.swiftSettings ?? []) + [.treatAllWarnings(as: .error)]
+}

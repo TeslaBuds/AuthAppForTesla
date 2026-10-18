@@ -9,6 +9,10 @@
 # palette, BrandButton/BrandField/BrandDivider catalogue, glass, glance
 # chrome). scripts/swiftlint-build-phase.sh runs it from every app and
 # extension target, against .swiftlint-baseline.json.
+#
+# Kim, 18 Oct 2026: "Globally: warnings are errors." — strict: true turns
+# every warning-level violation into a build error.
+strict: true
 
 # Build output and other agents' worktrees are not this repo's source
 # (install-guardrails.py, WAFT#218).
