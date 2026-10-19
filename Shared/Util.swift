@@ -32,7 +32,7 @@ extension String {
 }
 
 extension UserDefaults {
-    public static let standard = UserDefaults(suiteName: "group.global")!
+    public static let standard = AuthSharedSuite.defaults!
 }
 
 extension URL: @retroactive Identifiable {
@@ -94,7 +94,8 @@ func downloadLatestExternalApplicationList() async {
     }
     
     do {
-        let (data, response) = try await URLSession.shared.data(from: githubURL)
+        // The app's one HTTP session (NetworkController, #60), not a second.
+        let (data, response) = try await NetworkController.shared.session.data(from: githubURL)
         guard let httpResponse = response as? HTTPURLResponse,
               (200...299).contains(httpResponse.statusCode) else {
             return

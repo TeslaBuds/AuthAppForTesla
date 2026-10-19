@@ -39,15 +39,11 @@ struct TokenSummary: Equatable, Sendable {
 /// in-memory copy, so a summary written by another process (a Shortcut,
 /// #52) is respected and never causes a redundant reload here.
 struct TokenSummaryPublisher {
-    static let suiteName = "group.global"
+    static let suiteName = AuthSharedSuite.suiteName
 
-    /// The keys `TokenSummaryStore` in the widget extension reads.
-    enum Key {
-        static let ownersExpiresAt = "widget.tokenV3.expiresAt"
-        static let ownersHasToken = "widget.tokenV3.hasToken"
-        static let fleetExpiresAt = "widget.tokenV4.expiresAt"
-        static let fleetHasToken = "widget.tokenV4.hasToken"
-    }
+    /// The keys `TokenSummaryStore` in the widget extension reads — one
+    /// spelling for both (`AuthSharedSuite`).
+    typealias Key = AuthSharedSuite.TokenSummaryKey
 
     /// The widget's kind, from `AuthForTeslaWidgets/TokenWidget.swift`.
     static let widgetKind = "TokenWidget"
@@ -62,7 +58,7 @@ struct TokenSummaryPublisher {
 
     /// The real App Group suite and the real widget.
     static var live: TokenSummaryPublisher {
-        TokenSummaryPublisher(defaults: UserDefaults(suiteName: suiteName)) {
+        TokenSummaryPublisher(defaults: AuthSharedSuite.defaults) {
             WidgetCenter.shared.reloadTimelines(ofKind: widgetKind)
         }
     }

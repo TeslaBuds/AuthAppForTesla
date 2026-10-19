@@ -12,18 +12,14 @@ import Foundation
 /// API, nothing else. The widget never touches the keychain and never writes
 /// here, so it cannot alter the synced token list.
 struct TokenSummaryStore {
-    static let suiteName = "group.global"
+    static let suiteName = AuthSharedSuite.suiteName
 
-    enum Key {
-        static let ownersExpiresAt = "widget.tokenV3.expiresAt"
-        static let ownersHasToken = "widget.tokenV3.hasToken"
-        static let fleetExpiresAt = "widget.tokenV4.expiresAt"
-        static let fleetHasToken = "widget.tokenV4.hasToken"
-    }
+    /// The app's own spelling of the keys (`AuthSharedSuite`), never a copy.
+    typealias Key = AuthSharedSuite.TokenSummaryKey
 
     let defaults: UserDefaults?
 
-    init(defaults: UserDefaults? = UserDefaults(suiteName: Self.suiteName)) {
+    init(defaults: UserDefaults? = AuthSharedSuite.defaults) {
         self.defaults = defaults
     }
 

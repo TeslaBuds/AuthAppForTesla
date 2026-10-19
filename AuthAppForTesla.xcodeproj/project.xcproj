@@ -55,6 +55,7 @@
       ],
     },
     { "kind": "folder", "path": "Shared", "target-membership": [ "AuthAppForTesla", "AuthAppForTeslaMac" ] },
+    { "kind": "folder", "path": "SharedSuite", "target-membership": [ "AuthAppForTesla", "AuthAppForTeslaMac", "AuthForTeslaWidgetsExtension", "AuthForTeslaWidgetsMacExtension" ] },
     { "kind": "folder", "path": "Auth for Tesla Tests", "target-membership": [ "Auth for Tesla Tests" ] },
     { "kind": "folder", "path": "Auth for Tesla UI Tests", "target-membership": [ "Auth for Tesla UI Tests" ] },
     { "kind": "folder", "path": "AuthAppForTeslaMac", "target-membership": [ "AuthAppForTeslaMac" ] },

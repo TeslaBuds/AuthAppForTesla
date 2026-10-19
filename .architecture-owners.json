@@ -1,0 +1,18 @@
+{
+  "_comment": "One owner per app-wide concern (pass 3, single owner; Kim: \"Yes, treat auth as portfolio\"). Concern id -> repo-relative globs. Read by RumskrotShared's single_owner rule when the portfolio audit runs over this repo; Auth's own build phase runs SwiftLint only (#66), not the BrandKit scripts.",
+  "app-group-defaults": [
+    "SharedSuite/AuthSharedSuite.swift"
+  ],
+  "http-client": [
+    "Shared/Controllers/NetworkController.swift"
+  ],
+  "keychain": [
+    "Packages/TeslaAuthKit/Sources/TeslaAuthKit/KeychainWrapper.swift"
+  ],
+  "settings-defaults": [
+    "AuthAppForTesla/AuthAppForTeslaApp.swift"
+  ],
+  "widget-reload": [
+    "Shared/Models/TokenSummaryPublisher.swift"
+  ]
+}
