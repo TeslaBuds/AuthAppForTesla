@@ -13,34 +13,54 @@ struct OnboardingPageView: View {
     let title: String
     let description: String
 
+    #if os(iOS)
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    #endif
+
     var body: some View {
+        // Side by side when the height is compact (an iPhone in landscape,
+        // the iPhone Duo's outer display turned), stacked otherwise — a
+        // size-class decision, never the device type (#66).
+        let layout = isHeightCompact
+            ? AnyLayout(HStackLayout(spacing: AppSpacing.lg))
+            : AnyLayout(VStackLayout(spacing: AppSpacing.lg))
         VStack(spacing: AppSpacing.lg) {
-            Spacer()
+            Spacer(minLength: 0)
+            layout {
+                Image(systemName: systemImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 90, height: 90)
+                    .foregroundStyle(imageColor)
+                    .padding(AppSpacing.lg)
+                    .background(imageColor.opacity(0.12), in: .circle)
 
-            Image(systemName: systemImage)
-                .resizable()
-                .scaledToFit()
-                .frame(width: 90, height: 90)
-                .foregroundStyle(imageColor)
-                .padding(AppSpacing.lg)
-                .background(imageColor.opacity(0.12), in: .circle)
+                VStack(spacing: AppSpacing.sm) {
+                    Text(title)
+                        .font(.title2)
+                        .bold()
+                        .multilineTextAlignment(isHeightCompact ? .leading : .center)
+                        .frame(maxWidth: .infinity, alignment: isHeightCompact ? .leading : .center)
 
-            VStack(spacing: AppSpacing.sm) {
-                Text(title)
-                    .font(.title2)
-                    .bold()
-                    .multilineTextAlignment(.center)
-
-                Text(description)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
+                    Text(description)
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(isHeightCompact ? .leading : .center)
+                        .frame(maxWidth: .infinity, alignment: isHeightCompact ? .leading : .center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             .padding(.horizontal, AppSpacing.xl)
-
-            Spacer()
+            Spacer(minLength: 0)
         }
+    }
+
+    private var isHeightCompact: Bool {
+        #if os(iOS)
+        verticalSizeClass == .compact
+        #else
+        false
+        #endif
     }
 }
 

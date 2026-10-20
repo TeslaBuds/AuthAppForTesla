@@ -22,6 +22,8 @@ enum ScreenshotScenario: String {
     case testToken    = "screenshot-test-token"
     case multiAccount = "screenshot-multi-account"
     case about        = "screenshot-about"
+    /// The first-launch welcome sheet over the Owners tab (#66).
+    case onboarding   = "screenshot-onboarding"
 
     /// Detects whichever screenshot scenario was passed via CLI arguments.
     static var current: ScreenshotScenario? {

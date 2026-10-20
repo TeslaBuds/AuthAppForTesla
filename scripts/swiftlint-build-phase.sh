@@ -31,4 +31,21 @@ fi
 
 BASELINE_ARGS=()
 [ -f .swiftlint-baseline.json ] && BASELINE_ARGS=(--baseline .swiftlint-baseline.json)
-"$SWIFTLINT" lint --quiet --config .swiftlint.yml "${BASELINE_ARGS[@]+"${BASELINE_ARGS[@]}"}"
+status=0
+"$SWIFTLINT" lint --quiet --config .swiftlint.yml "${BASELINE_ARGS[@]+"${BASELINE_ARGS[@]}"}" || status=1
+
+# The iPhone app supports portrait and both landscapes, and never asks for
+# full screen: on the iPhone Duo a portrait-locked app cannot follow the
+# device across its displays and poses (#66, RumskrotShared#178 G7).
+PLIST=AuthAppForTesla/Info.plist
+for orientation in UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight; do
+    if ! /usr/libexec/PlistBuddy -c "Print :UISupportedInterfaceOrientations" "$PLIST" 2>/dev/null | grep -qx "[[:space:]]*$orientation"; then
+        echo "$PWD/$PLIST:1: error: iPhone must support $orientation — a portrait lock breaks the iPhone Duo (#66)"
+        status=1
+    fi
+done
+if [ "$(/usr/libexec/PlistBuddy -c "Print :UIRequiresFullScreen" "$PLIST" 2>/dev/null)" = "true" ]; then
+    echo "$PWD/$PLIST:1: error: UIRequiresFullScreen must not be set — the app has to resize (#66)"
+    status=1
+fi
+exit $status

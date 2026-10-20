@@ -57,12 +57,6 @@ enum AppSpacing {
     /// in IconBackgroundView already applies `.padding()` (= 16pt),
     /// so views that build their own card should match.
     static let cardInner: CGFloat = md
-
-    /// Bottom inset needed to clear the iOS 26 floating tab bar
-    /// capsule (≈75pt tall, with margins). Used for elements that
-    /// float at the bottom of the screen on top of the TabView,
-    /// like the toast overlay.
-    static let tabBarClearance: CGFloat = 110
 }
 
 /// Corner radius tokens, shared across glass cards, buttons, and

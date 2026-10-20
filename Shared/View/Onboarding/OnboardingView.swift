@@ -47,32 +47,43 @@ struct OnboardingView: View {
             )
             .id(currentPage)
             .transition(.push(from: .trailing))
-            HStack(spacing: AppSpacing.sm) {
-                ForEach(pages.indices, id: \.self) { index in
-                    Circle()
-                        .fill(index == currentPage ? Color.primary : Color.secondary.opacity(0.4))
-                        .frame(width: 7, height: 7)
-                }
-            }
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Page \(currentPage + 1) of \(pages.count)")
             #else
-            TabView(selection: $currentPage) {
-                ForEach(pages.indices, id: \.self) { index in
-                    let page = pages[index]
-                    OnboardingPageView(
-                        systemImage: page.systemImage,
-                        imageColor: page.color,
-                        title: page.title,
-                        description: page.description
-                    )
-                    .tag(index)
+            // A paging scroll view rather than a `.page` TabView: TabView
+            // draws its dots over the page, and on a short display (the
+            // iPhone Duo's outer display, landscape, large text) they
+            // covered the text. Each page scrolls vertically on its own,
+            // so nothing is clipped whatever the height (#66).
+            ScrollView(.horizontal) {
+                LazyHStack(spacing: 0) {
+                    ForEach(pages.indices, id: \.self) { index in
+                        let page = pages[index]
+                        ScrollView {
+                            OnboardingPageView(
+                                systemImage: page.systemImage,
+                                imageColor: page.color,
+                                title: page.title,
+                                description: page.description
+                            )
+                        }
+                        .defaultScrollAnchor(.center, for: .alignment)
+                        .scrollBounceBehavior(.basedOnSize)
+                        .containerRelativeFrame([.horizontal, .vertical])
+                        .id(index)
+                    }
                 }
+                .scrollTargetLayout()
             }
-            .tabViewStyle(.page(indexDisplayMode: .always))
-            .indexViewStyle(.page(backgroundDisplayMode: .always))
-
+            .scrollTargetBehavior(.paging)
+            .scrollIndicators(.hidden)
+            .scrollPosition(id: pagePosition)
+            // A scroll view draws into the safe area beside it; without the
+            // clip the next page peeks out under the iPhone Duo's camera
+            // column on the outer display.
+            .clipShape(.rect)
+            .padding(.bottom, AppSpacing.md)
             #endif
+
+            OnboardingPageDots(count: pages.count, current: currentPage)
 
             Button {
                 if currentPage < pages.count - 1 {
@@ -86,15 +97,34 @@ struct OnboardingView: View {
                 Text(currentPage == pages.count - 1 ? "Get Started" : "Continue")
                     .frame(maxWidth: .infinity)
             }
+            .accessibilityIdentifier("onboardingContinueButton")
             .buttonStyle(.borderedProminent)
             .tint(Color("TeslaRed"))
             .padding(.horizontal, AppSpacing.xl)
             .padding(.top, AppSpacing.md)
-            .padding(.bottom, AppSpacing.xl + AppSpacing.md)
+            .padding(.bottom, Self.bottomMargin)
             .animation(.default, value: currentPage)
         }
         .interactiveDismissDisabled()
     }
+
+    /// Below the button. A sheet on iOS already keeps clear of the home
+    /// indicator, so it needs less than a Mac window does.
+    #if os(iOS)
+    private static let bottomMargin = AppSpacing.lg
+    #else
+    private static let bottomMargin = AppSpacing.xl + AppSpacing.md
+    #endif
+
+    #if os(iOS)
+    /// The paging scroll view's position, as the page number.
+    private var pagePosition: Binding<Int?> {
+        Binding(
+            get: { currentPage },
+            set: { if let page = $0 { currentPage = page } }
+        )
+    }
+    #endif
 
     private func dismiss() {
         isPresented = false

@@ -228,3 +228,25 @@ custom_rules:
       - string
     message: ".tint(nil) is an explicit reset to the platform default, not a no-op — it clears an ancestor's tint back to system blue. Skip the .tint(_:) call when there is nothing to set"
     severity: error
+  # iPhone Duo readiness (TeslaBuds/AuthAppForTesla#66, DRSFramer#72) — SDK
+  # conventions, not BrandKit look: Auth's own copies of RumskrotShared#178's
+  # G1 and G9, because Auth does not run brand-rules.py.
+  no_idiom_layout:
+    name: "No layout on the device type — size classes and container size instead (#66, RumskrotShared#178 G1)"
+    regex: '\buserInterfaceIdiom\b|UIDevice\s*\.\s*current\s*\.\s*orientation\b|\borientationDidChangeNotification\b|\.interfaceOrientation\b|\bUIInterfaceOrientation\b(?!Mask)'
+    excluded: '(?:^|/)[^/]*Tests/'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "Apple: \"Don't use userInterfaceIdiom or UIInterfaceOrientation for layout decisions.\" Decide on horizontalSizeClass / verticalSizeClass or the container's size — on the iPhone Duo one device is compact and regular, portrait and landscape"
+    severity: error
+  no_page_tab_view:
+    name: "No .page TabView — its dots sit over the page (#66, RumskrotShared#178 G9)"
+    regex: '\.tabViewStyle\(\s*\.page\b'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "A .page TabView draws its index dots over the page; on a short display (the iPhone Duo's outer display, landscape, large text) they cover the text. Use a paging ScrollView with the dots in the layout, as OnboardingView does"
+    severity: error

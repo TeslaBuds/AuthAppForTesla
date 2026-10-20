@@ -157,7 +157,7 @@ enum ScreenshotHarness {
     static func initialTab() -> AppTab {
         guard let scenario = ScreenshotScenario.current else { return .owners }
         switch scenario {
-        case .ownersHome, .ownersLogin, .multiAccount: return .owners
+        case .ownersHome, .ownersLogin, .multiAccount, .onboarding: return .owners
         case .fleetHome: return .fleet
         case .toolsLanding, .jwtInspector, .snippetExporter, .testToken: return .tools
         case .about: return .about
@@ -176,8 +176,16 @@ enum ScreenshotHarness {
         model.profilesV3 = TokenProfileCollection()
         model.profilesV4 = TokenProfileCollection()
 
+        defer {
+            // `show-toast`: a toast over the scenario, to check where it
+            // lands beside the tab bar (#66).
+            if CommandLine.arguments.contains("show-toast") {
+                model.toast = .success("Tokens refreshed successfully.")
+            }
+        }
+
         switch scenario {
-        case .ownersLogin:
+        case .ownersLogin, .onboarding:
             // No tokens — login screen is what we want. Already cleared above.
             return
 

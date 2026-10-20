@@ -45,19 +45,23 @@ struct RootView: View {
                 NavigationStack {
                     OwnersAPIView(model: model)
                 }
+                .toast($model.toast)
             }
             Tab(AppTab.fleet.title, systemImage: AppTab.fleet.systemImage, value: .fleet) {
                 NavigationStack {
                     FleetAPIView(model: model)
                 }
+                .toast($model.toast)
             }
             Tab(AppTab.tools.title, systemImage: AppTab.tools.systemImage, value: .tools) {
                 ToolsStack(model: model, path: $toolsPath)
+                    .toast($model.toast)
             }
             Tab(AppTab.about.title, systemImage: AppTab.about.systemImage, value: .about) {
                 NavigationStack {
                     AboutView()
                 }
+                .toast($model.toast)
             }
         }
         .tint(Color("TeslaRed"))
@@ -76,7 +80,9 @@ struct RootView: View {
             }
             #endif
         }
-        .toast($model.toast)
+        // The toast is attached inside each tab, above, so it sits in the
+        // tab content's safe area and clears the tab bar wherever the
+        // system puts it — beside the content on the iPhone Duo (#66).
         // Back in the foreground: show what a Shortcut or the widget did
         // to the tokens meanwhile (#52).
         .onChange(of: scenePhase) { old, phase in
@@ -92,6 +98,10 @@ struct RootView: View {
         }
         .task {
             #if DEBUG
+            if ScreenshotScenario.current == .onboarding {
+                showOnboarding = true
+                return
+            }
             guard !CommandLine.arguments.contains("enable-testing") else { return }
             // Live UI tests pre-set hasSeenOnboarding=true in App.init,
             // so we don't need to do anything here for them.

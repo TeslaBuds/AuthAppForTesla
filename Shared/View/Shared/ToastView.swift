@@ -46,6 +46,18 @@ struct ToastView: View {
 /// found and read; it is announced when shown either way (#57).
 struct ToastOverlayModifier: ViewModifier {
     @Binding var toast: Toast?
+
+    /// On iOS the toast is attached to each tab's content, whose safe area
+    /// already ends at the tab bar — at the bottom on a phone, at the side
+    /// on the iPhone Duo's outer display, at the top on iPad — so a small
+    /// gap is all it needs (#66). The Mac window has no tab bar; the toast
+    /// keeps the room it always had above the window's bottom edge.
+    #if os(iOS)
+    private static let bottomMargin = AppSpacing.sm
+    #else
+    private static let bottomMargin: CGFloat = 75
+    #endif
+
     @Environment(\.accessibilityVoiceOverEnabled) private var voiceOverEnabled
 
     func body(content: Content) -> some View {
@@ -63,17 +75,7 @@ struct ToastOverlayModifier: ViewModifier {
                             removal: .move(edge: .bottom).combined(with: .opacity)
                         )
                     )
-                    // Clear the iOS 26 floating tab bar capsule by a
-                    // hair: tab bar is ~75pt tall, sits ~10pt below
-                    // the safe area, and the toast itself is ~50pt
-                    // tall, so 75pt of bottom padding leaves a
-                    // ~10pt gap above the tab bar's rounded top.
-                    // Hardcoding the offset is fine here: the toast is
-                    // only ever shown inside the RootView TabView
-                    // hierarchy on iPhone — on iPad the tab bar is
-                    // top-mounted, where the extra bottom padding
-                    // just gives the toast room to breathe.
-                    .padding(.bottom, 75)
+                    .padding(.bottom, Self.bottomMargin)
                     .task(id: toast.id) {
                         guard !voiceOverEnabled else { return }
                         try? await Task.sleep(for: .seconds(4))
