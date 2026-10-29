@@ -9,10 +9,7 @@ import SwiftUI
 import TeslaAuthKit
 
 struct LicenseViewEntry: View {
-    var author: String
-    var name: String
-    var link: String
-    var license: String = ""
+    let component: OpenSourceComponent
 
     @State private var isExpanded = false
 
@@ -20,15 +17,15 @@ struct LicenseViewEntry: View {
         VStack(alignment: .leading, spacing: AppSpacing.sm) {
             HStack {
                 VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                    Text(name)
+                    Text(component.name)
                         .font(.headline)
-                    Text("by \(author)")
+                    Text("by \(component.author)")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                if let url = URL(string: link) {
-                    Link(destination: url) {
+                if let link = component.link {
+                    Link(destination: link) {
                         Image(systemName: "arrow.up.right.square")
                             .font(.title3)
                             .foregroundStyle(Color("TeslaRed"))
@@ -36,22 +33,20 @@ struct LicenseViewEntry: View {
                 }
             }
 
-            if !license.isEmpty {
-                DisclosureGroup("License", isExpanded: $isExpanded) {
-                    Text(license)
-                        .font(.caption2)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.top, AppSpacing.xs)
-                }
-                .font(.subheadline)
-                .tint(Color("TeslaRed"))
+            DisclosureGroup("License", isExpanded: $isExpanded) {
+                Text(component.licence)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, AppSpacing.xs)
             }
+            .font(.subheadline)
+            .tint(Color("TeslaRed"))
         }
         .padding(AppSpacing.cardInner)
     }
 }
 
 #Preview {
-    LicenseViewEntry(author: "Me", name: "Great Library", link: "https://github/superduper/library", license: "MIT License\n\nCopyright (c) 2020")
+    LicenseViewEntry(component: .swiftKeychainWrapper)
 }

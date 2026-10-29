@@ -120,7 +120,7 @@ private struct HomeViewAddAccountSheet: View {
             .inlineNavigationTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { isPresented = false }
+                    SheetCancelButton { isPresented = false }
                 }
             }
             .task {
@@ -170,7 +170,7 @@ private struct HomeViewSignInAgainSheet: View {
             .inlineNavigationTitle()
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { isPresented = false }
+                    SheetCancelButton { isPresented = false }
                 }
             }
             .onChange(of: activeRefreshToken) { _, _ in

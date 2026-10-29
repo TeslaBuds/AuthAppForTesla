@@ -93,11 +93,7 @@ struct AuthWebView: View {
                 .ignoresSafeArea(edges: .bottom)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel", systemImage: "xmark.circle.fill") {
-                            dismiss()
-                        }
-                        .labelStyle(.iconOnly)
-                        .foregroundStyle(.secondary)
+                        SheetCancelButton { dismiss() }
                     }
                 }
                 .navigationTitle("Sign in with Tesla")

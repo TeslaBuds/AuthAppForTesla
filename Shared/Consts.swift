@@ -13,8 +13,6 @@ enum AppTheme {
     static let shadowRadius: Double = 4
 }
 
-let externalApplicationListFilenameComponents = ["ExternalApplicationList", "json"]
-
 public enum TeslaError: Error, Equatable {
     case networkError(error: NSError)
     case authenticationRequired

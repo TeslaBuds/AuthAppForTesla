@@ -112,7 +112,7 @@ struct RootView: View {
             if !hasSeenOnboarding {
                 showOnboarding = true
             }
-            model.refreshAll()
+            model.refreshAll(.launch)
         }
     }
 }

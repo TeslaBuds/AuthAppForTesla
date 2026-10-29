@@ -26,6 +26,17 @@ excluded:
   - "**/SourcePackages"
 
 custom_rules:
+  no_title_only_cancel:
+    name: "No title-only Cancel — SheetCancelButton instead (AuthAppForTesla#69)"
+    # A bar item with a title and no icon is not shown when the bar is
+    # vertical, and on the iPhone Duo's outer display a sheet's bar is
+    # vertical by default: the sheet would have no way out.
+    regex: 'Button\(\s*"Cancel"\s*\)'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+    message: "A title-only Cancel disappears from a vertical sheet bar (iPhone Duo) — use SheetCancelButton, which has the cancel role and an icon"
+    severity: error
   no_foreground_color:
     name: "No .foregroundColor( — .foregroundStyle( instead (house rules, RumskrotShared#25)"
     regex: '\.foregroundColor\('

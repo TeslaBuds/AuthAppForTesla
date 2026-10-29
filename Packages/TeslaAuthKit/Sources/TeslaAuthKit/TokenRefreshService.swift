@@ -71,24 +71,29 @@ public actor TokenRefreshService {
     private let ledger: any RefreshRejectionRecording
     private let maxAttempts: Int
     private let retryDelay: Duration
+    /// The clock the "is it due?" gate reads. Tests pass a fixed one (#59).
+    private let now: @Sendable () -> Date
     private var inFlight: [FlightKey: Task<TokenRefreshOutcome, Never>] = [:]
 
     /// - Parameters:
     ///   - maxAttempts: tries per refresh when Tesla cannot be reached.
     ///   - retryDelay: the pause before the second try; it doubles for
     ///     each try after that (#60).
+    ///   - now: the current time, for the "is it due?" gate (#59).
     public init(
         store: TokenProfileStore,
         transport: any TokenRefreshTransport,
         ledger: any RefreshRejectionRecording,
         maxAttempts: Int = 3,
-        retryDelay: Duration = .seconds(1)
+        retryDelay: Duration = .seconds(1),
+        now: @escaping @Sendable () -> Date = { .now }
     ) {
         self.store = store
         self.transport = transport
         self.ledger = ledger
         self.maxAttempts = max(1, maxAttempts)
         self.retryDelay = retryDelay
+        self.now = now
     }
 
     /// The pause after failed attempt `attempt` (1-based): `base`, then
@@ -138,7 +143,7 @@ public actor TokenRefreshService {
             if let reason = ledger.rejection(for: posted) {
                 return .needsSignIn(token, reason: reason)
             }
-            if (token.expires_at ?? .distantPast) > Date.now.addingTimeInterval(60) {
+            if (token.expires_at ?? .distantPast) > now().addingTimeInterval(60) {
                 return .current(token)
             }
         }

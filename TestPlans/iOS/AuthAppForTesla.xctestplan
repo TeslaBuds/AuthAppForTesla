@@ -1,0 +1,29 @@
+{
+  "configurations": [
+    {
+      "id": "E1B8C8F2-7026-4E01-826D-C441D629BFD7",
+      "name": "Configuration 1",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {},
+  "testTargets": [
+    {
+      "target": {
+        "containerPath": "container:AuthAppForTesla.xcodeproj",
+        "identifier": "EA5640842F5D996D00A50586",
+        "name": "Auth for Tesla Tests"
+      },
+      "parallelizable": true
+    },
+    {
+      "target": {
+        "containerPath": "container:AuthAppForTesla.xcodeproj",
+        "identifier": "EA5640912F5D998300A50586",
+        "name": "Auth for Tesla UI Tests"
+      },
+      "parallelizable": true
+    }
+  ],
+  "version": 1
+}

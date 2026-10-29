@@ -13,7 +13,7 @@ struct HomeViewRefreshTokens: View {
     
     var body: some View {
         Button("Refresh Tokens") {
-            model.refreshAll()
+            model.refreshAll(.userRequest)
         }
         .buttonStyle(.glass(.regular.tint(Color("TeslaRed"))))
         .foregroundStyle(.white)

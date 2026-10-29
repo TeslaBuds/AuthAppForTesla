@@ -37,10 +37,12 @@ actor AuthController {
         transport: any TokenRefreshTransport = TeslaTokenEndpoint(),
         ledger: any RefreshRejectionRecording = UserDefaultsRejectionLedger(),
         retryDelay: Duration = .seconds(1),
-        summaryWriter: TokenSummaryWriter = .live
+        summaryWriter: TokenSummaryWriter = .live,
+        now: @escaping @Sendable () -> Date = { .now }
     ) {
         self.store = store
-        self.refreshService = TokenRefreshService(store: store, transport: transport, ledger: ledger, retryDelay: retryDelay)
+        self.refreshService = TokenRefreshService(store: store, transport: transport, ledger: ledger,
+                                                  retryDelay: retryDelay, now: now)
         self.summaryWriter = summaryWriter
     }
 

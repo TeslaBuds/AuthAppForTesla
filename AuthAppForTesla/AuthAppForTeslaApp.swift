@@ -45,7 +45,6 @@ struct AuthAppForTeslaApp: App {
                     await model.loadTokens()
                     // A Shortcut run in this process updates the screen (#52).
                     model.startObservingStore()
-                    await downloadLatestExternalApplicationList()
                 }
         }
         // The size an iPad opens a new window at, as before. The Mac is

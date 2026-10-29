@@ -41,7 +41,7 @@ struct AppCommands: Commands {
 
         CommandMenu("Tokens") {
             Button("Refresh All Tokens", systemImage: "arrow.clockwise") {
-                model.refreshAll()
+                model.refreshAll(.userRequest)
             }
             .keyboardShortcut("r", modifiers: .command)
 

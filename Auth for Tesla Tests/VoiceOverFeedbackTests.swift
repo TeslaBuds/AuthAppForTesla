@@ -44,7 +44,7 @@ struct VoiceOverFeedbackTests {
             summaryPublisher: TokenSummaryPublisher(defaults: nil) {},
             announcer: recorder.announcer)
         await model.loadTokens()
-        await model.refreshAll().value
+        await model.refreshAll(.userRequest).value
         #expect(recorder.spoken.count == 1)
         #expect(recorder.spoken.first?.contains("Sign in again") == true)
     }

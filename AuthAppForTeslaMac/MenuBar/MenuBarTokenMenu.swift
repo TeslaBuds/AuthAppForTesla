@@ -30,7 +30,7 @@ struct MenuBarTokenMenu: View {
 
         Divider()
         Button("Refresh All Tokens", systemImage: "arrow.clockwise") {
-            model.refreshAll()
+            model.refreshAll(.userRequest)
         }
         .disabled(model.storeProblem != nil || (model.tokenV3 == nil && model.tokenV4 == nil))
 

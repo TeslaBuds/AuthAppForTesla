@@ -1,0 +1,29 @@
+{
+  "configurations": [
+    {
+      "id": "A0F89C68-7440-471B-98AC-E156E248974D",
+      "name": "Configuration 1",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {},
+  "testTargets": [
+    {
+      "target": {
+        "containerPath": "container:AuthAppForTesla.xcodeproj",
+        "identifier": "EA73FFD0306D0E2D00BC6E17",
+        "name": "AuthAppForTeslaMacTests"
+      },
+      "parallelizable": false
+    },
+    {
+      "target": {
+        "containerPath": "container:AuthAppForTesla.xcodeproj",
+        "identifier": "EA73FFDA306D0E2D00BC6E17",
+        "name": "AuthAppForTeslaMacUITests"
+      },
+      "parallelizable": false
+    }
+  ],
+  "version": 1
+}

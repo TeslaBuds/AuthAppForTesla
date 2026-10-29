@@ -89,7 +89,7 @@ struct TokenSummaryPublisherTests {
         let model = AuthViewModel(refresher: refresher, summaryPublisher: fixture.publisher)
         await model.loadTokens()
         await model.pendingTokenSummary?.value
-        await model.refreshAll().value
+        await model.refreshAll(.launch).value
         await model.pendingTokenSummary?.value
         return (model.tokenSummaryRequests, fixture.reloads.value)
     }

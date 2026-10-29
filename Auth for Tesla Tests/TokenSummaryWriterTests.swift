@@ -41,7 +41,7 @@ struct TokenSummaryWriterTests {
 
     @Test("A refused refresh changes nothing and reloads no widget")
     func refusedRefreshWritesNothing() async throws {
-        let fixture = try ControllerFixture { _ in .rejected(reason: "login_required") }
+        let fixture = try ControllerFixture(answer: { _ in .rejected(reason: "login_required") })
         defer { fixture.summary.tearDown() }
 
         #expect(await fixture.controller.acquireTokenV4Silent(profileId: fixture.fleetId, forceRefresh: true) == nil)

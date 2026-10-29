@@ -44,9 +44,8 @@ enum MacLaunch {
         // A Mac that cannot read the synced items shows why and changes
         // nothing: no refresh, which would write back (#44).
         if model.storeProblem == nil {
-            model.refreshAll()
+            model.refreshAll(.launch)
         }
-        await downloadLatestExternalApplicationList()
     }
 
     /// Opening the menu-bar menu (or any menu) re-reads the store, so a

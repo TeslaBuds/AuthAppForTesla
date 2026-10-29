@@ -1,0 +1,41 @@
+{
+  "configurations": [
+    {
+      "id": "0CABF6E6-CB59-483F-83CC-1B674A5C1583",
+      "name": "Configuration 1",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {},
+  "testTargets": [
+    {
+      "target": {
+        "containerPath": "container:AuthAppForTesla.xcodeproj",
+        "identifier": "EA5640842F5D996D00A50586",
+        "name": "Auth for Tesla Tests"
+      },
+      "selectedTests": [
+        "LaunchRefreshAgeGateTests/launchKeepsCurrentTokens()",
+        "LaunchRefreshAgeGateTests/launchRefreshesDueTokens()",
+        "LaunchRefreshAgeGateTests/triggerForcing(trigger:)",
+        "LaunchRefreshAgeGateTests/userRequestAfterLaunchStillForces()",
+        "LaunchRefreshAgeGateTests/userRequestForcesRefresh()",
+        "OpenSourceLicensesTests/creditsOnlyShippedCode()",
+        "OpenSourceLicensesTests/keychainWrapperLicence()",
+        "RetiredHandoffTests/noBundledList()",
+        "RetiredHandoffTests/noFileTimestampReason()"
+      ]
+    },
+    {
+      "target": {
+        "containerPath": "container:AuthAppForTesla.xcodeproj",
+        "identifier": "EA5640912F5D998300A50586",
+        "name": "Auth for Tesla UI Tests"
+      },
+      "selectedTests": [
+        "SheetDismissTests/testAddAccountSheetCanBeCancelled()"
+      ]
+    }
+  ],
+  "version": 1
+}

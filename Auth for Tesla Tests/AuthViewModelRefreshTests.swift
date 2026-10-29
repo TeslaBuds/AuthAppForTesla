@@ -53,7 +53,7 @@ struct AuthViewModelRefreshTests {
         let model = AuthViewModel(refresher: refresher)
         await model.loadTokens()
 
-        await model.refreshAll().value
+        await model.refreshAll(.userRequest).value
 
         #expect(model.tokenV3?.refresh_token == "RT3")
         #expect(model.tokenV4?.refresh_token == "RT4")
@@ -71,7 +71,7 @@ struct AuthViewModelRefreshTests {
         let model = AuthViewModel(refresher: refresher)
         await model.loadTokens()
 
-        await model.refreshAll().value
+        await model.refreshAll(.userRequest).value
 
         #expect(model.tokenV3?.refresh_token == "RT3-new")
         #expect(model.tokenV4?.refresh_token == "RT4")
@@ -87,7 +87,7 @@ struct AuthViewModelRefreshTests {
             stored: [.fleet: Self.token("RT4")])
         let model = AuthViewModel(refresher: refresher)
         await model.loadTokens()
-        await model.refreshAll().value
+        await model.refreshAll(.userRequest).value
         #expect(model.refreshProblem(for: .fleet) != nil)
 
         model.tokenV4 = Self.token("RT4-after-sign-in")
@@ -99,7 +99,7 @@ struct AuthViewModelRefreshTests {
         let refresher = StubRefresher(outcomes: [:])
         let model = AuthViewModel(refresher: refresher)
         model.tokenV3 = Self.token("shown")
-        await model.refreshAll().value
+        await model.refreshAll(.userRequest).value
         #expect(model.tokenV3?.refresh_token == "shown")
         #expect(model.toast == nil)
     }
@@ -111,8 +111,8 @@ struct AuthViewModelRefreshTests {
             delay: .milliseconds(100))
         let model = AuthViewModel(refresher: refresher)
 
-        let first = model.refreshAll()
-        let second = model.refreshAll()
+        let first = model.refreshAll(.userRequest)
+        let second = model.refreshAll(.userRequest)
         await first.value
         await second.value
 

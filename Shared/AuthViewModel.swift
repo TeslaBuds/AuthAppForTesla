@@ -54,7 +54,8 @@ class AuthViewModel {
 
     /// The running "refresh everything", so overlapping triggers (⌘R,
     /// the Refresh button, launch, the menu bar) join it (#50).
-    private var refreshAllTask: Task<Void, Never>?
+    /// `forces` says whether it posts tokens that are not due (#59).
+    private var refreshAllTask: (task: Task<Void, Never>, forces: Bool)?
 
     private let refresher: any ActiveTokenRefreshing
 
@@ -242,21 +243,30 @@ class AuthViewModel {
     /// Refreshes both APIs' active tokens. A token that could not be
     /// refreshed stays on screen: offline is not signed out, and a refused
     /// refresh token is flagged, never deleted (#49, #50). Calls made while
-    /// one is running join it instead of posting the same tokens again.
+    /// one is running join it instead of posting the same tokens again; a
+    /// request that forces a refresh while a launch refresh (which does
+    /// not) is running runs after it, so the person's Refresh still
+    /// rotates (#59).
     @discardableResult
-    func refreshAll() -> Task<Void, Never> {
-        if let refreshAllTask { return refreshAllTask }
-        let task = Task {
-            await performRefreshAll()
-            refreshAllTask = nil
+    func refreshAll(_ trigger: RefreshTrigger) -> Task<Void, Never> {
+        if let running = refreshAllTask,
+           running.forces || !trigger.forcesRefresh {
+            return running.task
         }
-        refreshAllTask = task
+        let previous = refreshAllTask?.task
+        let forces = trigger.forcesRefresh
+        let task = Task {
+            await previous?.value
+            await performRefreshAll(forceRefresh: forces)
+            if refreshAllTask?.forces == forces { refreshAllTask = nil }
+        }
+        refreshAllTask = (task, forces)
         return task
     }
 
-    private func performRefreshAll() async {
-        let owners = await refresher.refreshActive(environment: .owner, forceRefresh: true)
-        let fleet = await refresher.refreshActive(environment: .fleet, forceRefresh: true)
+    private func performRefreshAll(forceRefresh: Bool) async {
+        let owners = await refresher.refreshActive(environment: .owner, forceRefresh: forceRefresh)
+        let fleet = await refresher.refreshActive(environment: .fleet, forceRefresh: forceRefresh)
         apply(owners, environment: .owner)
         apply(fleet, environment: .fleet)
         if let toast = Self.toast(owners: owners, fleet: fleet) {
@@ -289,7 +299,9 @@ class AuthViewModel {
         if outcomes.contains(where: { if case .offline = $0.1 { true } else { false } }) {
             return .error(String(localized: "Couldn't reach Tesla. Your saved tokens are unchanged."))
         }
-        if outcomes.contains(where: { $0.1.freshToken != nil }) {
+        // A token that was merely current (a launch that found nothing
+        // due, #59) is not news.
+        if outcomes.contains(where: { if case .refreshed = $0.1 { true } else { false } }) {
             return .success(String(localized: "Tokens refreshed successfully."))
         }
         return nil
@@ -365,52 +377,5 @@ class AuthViewModel {
             await controller.setJwtToken(token)
         }
         tokenV3 = token
-    }
-}
-
-/// Snapshot of an Owners API OAuth flow that's currently between
-/// "build authorize URL" and "exchange code for token". Identifiable
-/// so it can drive `.sheet(item:)`; a stable id (UUID per flow) keeps
-/// SwiftUI from recreating the auth sheet's content view if the model
-/// republishes for unrelated reasons.
-///
-/// Carries a `TeslaAuthSession` (long-lived `WKWebView` + nav
-/// delegate) so the in-flight auth WebView survives SwiftUI parent
-/// view rebuilds — without it the user loses anything they've typed
-/// when iOS reactivates the app from a password-manager hop.
-struct OwnersAuthInFlight: Identifiable, Equatable {
-    let id = UUID()
-    var url: URL
-    var codeVerifier: String
-    /// The random `state` sent; the redirect must carry it back (#51).
-    var state: String
-    var region: TokenRegion
-    var addAsNewProfile: Bool
-    let session: TeslaAuthSession
-
-    static func == (lhs: OwnersAuthInFlight, rhs: OwnersAuthInFlight) -> Bool {
-        lhs.id == rhs.id
-    }
-}
-
-/// Snapshot of a Fleet API OAuth flow in flight. Carries the
-/// developer-supplied client credentials so the code exchange can
-/// complete with the same values the URL was built from, even if the
-/// user has navigated away from the login view since. Also carries
-/// the `TeslaAuthSession` (see `OwnersAuthInFlight` for rationale).
-struct FleetAuthInFlight: Identifiable, Equatable {
-    let id = UUID()
-    var url: URL
-    /// The random `state` sent; the redirect must carry it back (#51).
-    var state: String
-    var region: TokenRegion
-    var clientId: String
-    var clientSecret: String
-    var redirectUri: String
-    var addAsNewProfile: Bool
-    let session: TeslaAuthSession
-
-    static func == (lhs: FleetAuthInFlight, rhs: FleetAuthInFlight) -> Bool {
-        lhs.id == rhs.id
     }
 }

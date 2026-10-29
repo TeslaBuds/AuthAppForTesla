@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "id": "0093D5D8-E365-444E-B586-BF413CC4A170",
+      "name": "Configuration 1",
+      "options": {}
+    }
+  ],
+  "defaultOptions": {},
+  "testTargets": [
+    {
+      "target": {
+        "containerPath": "container:AuthAppForTesla.xcodeproj",
+        "identifier": "EA73FFD0306D0E2D00BC6E17",
+        "name": "AuthAppForTeslaMacTests"
+      },
+      "selectedTests": [
+        "LaunchRefreshTriggerTests/launchIsNotForced()",
+        "OpenSourceLicensesTests/creditsOnlyShippedCode()"
+      ]
+    }
+  ],
+  "version": 1
+}

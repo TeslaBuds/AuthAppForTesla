@@ -78,9 +78,21 @@ struct ControllerFixture {
 
     static let staleExpiry = Date(timeIntervalSince1970: 1_900_000_000)
 
-    init(answer: @escaping @Sendable (String) -> TokenEndpointResponse = { .token(ControllerFixture.token("\($0)-new", expiresAt: .now.addingTimeInterval(28800))) }) throws {
-        let owners = TokenProfile(id: ownersId, name: "Personal", token: Self.token("RT3", expiresAt: Self.staleExpiry))
-        let fleet = TokenProfile(id: fleetId, name: "Work", token: Self.token("RT4", expiresAt: Self.staleExpiry))
+    /// Tesla's answer by default: a new token, good for eight hours.
+    static let refreshedAnswer: @Sendable (String) -> TokenEndpointResponse = {
+        .token(ControllerFixture.token("\($0)-new", expiresAt: .now.addingTimeInterval(28800)))
+    }
+
+    /// - Parameters:
+    ///   - expiresAt: when both stored access tokens expire.
+    ///   - now: the refresh service's clock (#59).
+    init(expiresAt: Date = ControllerFixture.staleExpiry,
+         now: @escaping @Sendable () -> Date = { .now },
+         answer: @escaping @Sendable (String) -> TokenEndpointResponse = ControllerFixture.refreshedAnswer) throws {
+        let owners = TokenProfile(id: ownersId, name: "Personal",
+                                  token: Self.token("RT3", expiresAt: expiresAt))
+        let fleet = TokenProfile(id: fleetId, name: "Work",
+                                 token: Self.token("RT4", expiresAt: expiresAt))
         storage = InMemoryTokenStorage([
             kTokenV3Profiles: try JSONEncoder().encode(TokenProfileCollection(profiles: [owners], activeProfileId: owners.id)),
             kTokenV4Profiles: try JSONEncoder().encode(TokenProfileCollection(profiles: [fleet], activeProfileId: fleet.id))
@@ -90,7 +102,8 @@ struct ControllerFixture {
             transport: StubTokenEndpoint(answer: answer),
             ledger: InMemoryRejectionLedger(),
             retryDelay: .zero,
-            summaryWriter: TokenSummaryWriter(publisher: summary.publisher)
+            summaryWriter: TokenSummaryWriter(publisher: summary.publisher),
+            now: now
         )
     }
 }
