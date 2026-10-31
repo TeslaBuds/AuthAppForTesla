@@ -52,10 +52,7 @@ enum TokenWidgetLayout: Equatable, CaseIterable, Sendable {
         case .systemSmall: self = .single
         case .systemMedium: self = .pair
         case .systemLarge: self = .cards
-        case .systemExtraLarge: self = .wideCards
-        #if os(iOS)
-        case .systemExtraLargePortrait: self = .wideCards
-        #endif
+        case .systemExtraLarge, .systemExtraLargePortrait: self = .wideCards
         case .accessoryCircular: self = .circular
         case .accessoryRectangular: self = .rectangular
         case .accessoryInline: self = .inline
