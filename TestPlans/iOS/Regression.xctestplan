@@ -23,7 +23,13 @@
         "OpenSourceLicensesTests/creditsOnlyShippedCode()",
         "OpenSourceLicensesTests/keychainWrapperLicence()",
         "RetiredHandoffTests/noBundledList()",
-        "RetiredHandoffTests/noFileTimestampReason()"
+        "RetiredHandoffTests/noFileTimestampReason()",
+        "DuoRegressionTests/iPhoneIsNotOrientationLocked()",
+        "DuoRegressionTests/sheetCancelHasAnIconForAVerticalBar()",
+        "DuoRegressionTests/titleOnlyCancelHasNoIconToShow()",
+        "TokenWidgetLayoutTests/offersEverySize()",
+        "TokenWidgetLayoutTests/largeSizesHaveTheirOwnLayout()",
+        "TokenWidgetLayoutTests/everyOfferedSizeHasADistinctPlace()"
       ]
     },
     {

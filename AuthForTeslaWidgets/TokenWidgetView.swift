@@ -13,11 +13,21 @@ struct TokenWidgetView: View {
 
     var body: some View {
         Group {
-            switch family {
-            case .systemSmall:
+            switch TokenWidgetLayout(family: family) {
+            case .single:
                 SmallTokenWidgetView(entry: entry)
-            default:
+            case .pair:
                 MediumTokenWidgetView(entry: entry)
+            case .cards:
+                LargeTokenWidgetView(entry: entry, axis: .vertical)
+            case .wideCards:
+                LargeTokenWidgetView(entry: entry, axis: .horizontal)
+            case .circular:
+                CircularTokenWidgetView(entry: entry)
+            case .rectangular:
+                RectangularTokenWidgetView(entry: entry)
+            case .inline:
+                InlineTokenWidgetView(entry: entry)
             }
         }
         .containerBackground(.background, for: .widget)
@@ -48,6 +58,11 @@ enum TokenAPI: CaseIterable {
         case .fleet: entry.fleet
         }
     }
+
+    /// The API a one-API layout shows: Owners unless only Fleet is signed in.
+    static func primary(in entry: TokenWidgetEntry) -> TokenAPI {
+        entry.owners == .signedOut && entry.fleet != .signedOut ? .fleet : .owners
+    }
 }
 
 /// Small widget: the app icon and the Owners API token, or the Fleet API
@@ -55,9 +70,7 @@ enum TokenAPI: CaseIterable {
 struct SmallTokenWidgetView: View {
     let entry: TokenWidgetEntry
 
-    private var api: TokenAPI {
-        entry.owners == .signedOut && entry.fleet != .signedOut ? .fleet : .owners
-    }
+    private var api: TokenAPI { .primary(in: entry) }
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -245,3 +258,35 @@ private extension TokenWidgetEntry {
 } timeline: {
     TokenWidgetEntry.previewSignedOut
 }
+
+#Preview("Large", as: .systemLarge) {
+    TokenWidget()
+} timeline: {
+    TokenWidgetEntry.previewMixed
+}
+
+#Preview("Extra large", as: .systemExtraLarge) {
+    TokenWidget()
+} timeline: {
+    TokenWidgetEntry.previewMixed
+}
+
+#if os(iOS)
+#Preview("Circular", as: .accessoryCircular) {
+    TokenWidget()
+} timeline: {
+    TokenWidgetEntry.previewMixed
+}
+
+#Preview("Rectangular", as: .accessoryRectangular) {
+    TokenWidget()
+} timeline: {
+    TokenWidgetEntry.previewMixed
+}
+
+#Preview("Inline", as: .accessoryInline) {
+    TokenWidget()
+} timeline: {
+    TokenWidgetEntry.previewMixed
+}
+#endif

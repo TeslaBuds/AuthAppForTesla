@@ -18,6 +18,6 @@ struct TokenWidget: Widget {
         }
         .configurationDisplayName("Token Expiry")
         .description("Shows how long your Owners API and Fleet API access tokens have left.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies(TokenWidgetLayout.families)
     }
 }
