@@ -2,7 +2,7 @@
 //  ScreenshotTests.swift
 //  Auth for Tesla UI Tests
 //
-//  Captures App Store screenshots — one test method per scenario.
+//  Captures App Store screenshots — one reel test, one launch per scenario.
 //
 //  Each test launches the app with `enable-testing` plus a scenario-
 //  specific flag (e.g. `screenshot-jwt-inspector`). The app reads these
@@ -23,116 +23,97 @@ final class ScreenshotTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    // MARK: - Owners API
-
+    /// The whole App Store reel in one test (DRSFramer#26): eight one-shot
+    /// methods paid the runner's per-test setup eight times for checks that
+    /// only gate each capture. Every scenario still gets its own fresh launch
+    /// and the same attachment name, so the capture script and `appstore.json`
+    /// keys are unchanged.
     @MainActor
-    func testCapture01_OwnersHome() throws {
-        let app = launch(scenario: "screenshot-owners-home")
-        XCTAssertTrue(
-            app.buttons["refreshTokensButton"].waitForExistence(timeout: 10),
-            "Expected authenticated Owners API home view"
-        )
-        takeScreenshot(of: app, named: "01_owners_home")
-    }
+    func testCaptureReel() throws {
+        // MARK: Owners API
+        capture(scenario: "screenshot-owners-home", named: "01_owners_home") { app in
+            XCTAssertTrue(
+                app.buttons["refreshTokensButton"].waitForExistence(timeout: 10),
+                "Expected authenticated Owners API home view"
+            )
+        }
+        capture(scenario: "screenshot-owners-login", named: "02_owners_login") { app in
+            XCTAssertTrue(
+                app.buttons["loginButton"].waitForExistence(timeout: 10),
+                "Expected Owners API login view"
+            )
+        }
 
-    @MainActor
-    func testCapture02_OwnersLogin() throws {
-        let app = launch(scenario: "screenshot-owners-login")
-        XCTAssertTrue(
-            app.buttons["loginButton"].waitForExistence(timeout: 10),
-            "Expected Owners API login view"
-        )
-        takeScreenshot(of: app, named: "02_owners_login")
-    }
+        // MARK: Tools
+        capture(scenario: "screenshot-test-token", named: "03_test_token") { app in
+            XCTAssertTrue(
+                app.navigationBars["Test Token"].waitForExistence(timeout: 10),
+                "Expected Test Token screen"
+            )
+        }
+        capture(scenario: "screenshot-jwt-inspector", named: "04_jwt_inspector") { app in
+            XCTAssertTrue(
+                app.navigationBars["JWT Inspector"].waitForExistence(timeout: 10),
+                "Expected JWT Inspector screen"
+            )
+        }
+        capture(scenario: "screenshot-snippet-exporter", named: "05_snippet_exporter") { app in
+            XCTAssertTrue(
+                app.navigationBars["Snippet Exporter"].waitForExistence(timeout: 10),
+                "Expected Snippet Exporter screen"
+            )
+        }
 
-    // MARK: - Tools
+        // MARK: Multi-account
+        capture(scenario: "screenshot-multi-account", named: "06_multi_account") { app in
+            XCTAssertTrue(
+                app.buttons["refreshTokensButton"].waitForExistence(timeout: 10),
+                "Expected authenticated Owners API home view"
+            )
+            // Open the account menu so the profile switcher is visible. On
+            // Mac Catalyst the SwiftUI `Menu` is exposed as a popUpButton
+            // rather than a button, so query by identifier across all types.
+            let accountMenu = app.descendants(matching: .any)["homeMenu"].firstMatch
+            XCTAssertTrue(accountMenu.waitForExistence(timeout: 5))
+            accountMenu.tap()
+            // Wait briefly for the menu to expand.
+            sleep(1)
+        }
 
-    @MainActor
-    func testCapture03_TestToken() throws {
-        let app = launch(scenario: "screenshot-test-token")
-        // Wait for the navigation title to land on the Test Token screen.
-        XCTAssertTrue(
-            app.navigationBars["Test Token"].waitForExistence(timeout: 10),
-            "Expected Test Token screen"
-        )
-        takeScreenshot(of: app, named: "03_test_token")
-    }
+        // MARK: Fleet API
+        capture(scenario: "screenshot-fleet-home", named: "07_fleet_home") { app in
+            XCTAssertTrue(
+                app.buttons["refreshTokensButton"].waitForExistence(timeout: 10),
+                "Expected authenticated Fleet API home view"
+            )
+        }
 
-    @MainActor
-    func testCapture04_JWTInspector() throws {
-        let app = launch(scenario: "screenshot-jwt-inspector")
-        XCTAssertTrue(
-            app.navigationBars["JWT Inspector"].waitForExistence(timeout: 10),
-            "Expected JWT Inspector screen"
-        )
-        takeScreenshot(of: app, named: "04_jwt_inspector")
-    }
-
-    @MainActor
-    func testCapture05_SnippetExporter() throws {
-        let app = launch(scenario: "screenshot-snippet-exporter")
-        XCTAssertTrue(
-            app.navigationBars["Snippet Exporter"].waitForExistence(timeout: 10),
-            "Expected Snippet Exporter screen"
-        )
-        takeScreenshot(of: app, named: "05_snippet_exporter")
-    }
-
-    // MARK: - Multi-account
-
-    @MainActor
-    func testCapture06_MultiAccount() throws {
-        let app = launch(scenario: "screenshot-multi-account")
-        XCTAssertTrue(
-            app.buttons["refreshTokensButton"].waitForExistence(timeout: 10),
-            "Expected authenticated Owners API home view"
-        )
-        // Open the account menu so the profile switcher is visible. On
-        // Mac Catalyst the SwiftUI `Menu` is exposed as a popUpButton
-        // rather than a button, so query by identifier across all types.
-        let accountMenu = app.descendants(matching: .any)["homeMenu"].firstMatch
-        XCTAssertTrue(accountMenu.waitForExistence(timeout: 5))
-        accountMenu.tap()
-        // Wait briefly for the menu to expand.
-        sleep(1)
-        takeScreenshot(of: app, named: "06_multi_account")
-    }
-
-    // MARK: - Fleet API
-
-    @MainActor
-    func testCapture07_FleetHome() throws {
-        let app = launch(scenario: "screenshot-fleet-home")
-        XCTAssertTrue(
-            app.buttons["refreshTokensButton"].waitForExistence(timeout: 10),
-            "Expected authenticated Fleet API home view"
-        )
-        takeScreenshot(of: app, named: "07_fleet_home")
-    }
-
-    // MARK: - About
-
-    @MainActor
-    func testCapture08_About() throws {
-        let app = launch(scenario: "screenshot-about")
-        sleep(1)
-        takeScreenshot(of: app, named: "08_about")
+        // MARK: About
+        capture(scenario: "screenshot-about", named: "08_about") { _ in
+            sleep(1)
+        }
     }
 
     // MARK: - Helpers
 
-    private func launch(scenario: String) -> XCUIApplication {
-        let app = XCUIApplication()
-        app.launchArguments = ["enable-testing", scenario]
-        app.launch()
-        return app
-    }
-
-    private func takeScreenshot(of app: XCUIApplication, named name: String) {
-        let screenshot = app.windows.firstMatch.screenshot()
-        let attachment = XCTAttachment(screenshot: screenshot)
-        attachment.name = name
-        attachment.lifetime = .keepAlways
-        add(attachment)
+    /// Launches the app fresh into `scenario`, lets `ready` wait for (and
+    /// gate) the screen, then attaches the window as `name`.
+    @MainActor
+    private func capture(
+        scenario: String,
+        named name: String,
+        ready: (XCUIApplication) -> Void
+    ) {
+        XCTContext.runActivity(named: name) { _ in
+            let app = XCUIApplication()
+            app.launchArguments = ["enable-testing", scenario]
+            app.launch()
+            ready(app)
+            let attachment = XCTAttachment(screenshot: app.windows.firstMatch.screenshot())
+            attachment.name = name
+            attachment.lifetime = .keepAlways
+            add(attachment)
+            app.terminate()
+        }
     }
 }

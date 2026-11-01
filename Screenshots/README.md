@@ -52,8 +52,8 @@ ScreenshotTests.swift ─▶ xcresult ─▶ xcresulttool export
 # Single device
 ./Screenshots/capture.sh "iPhone 17 Pro Max"
 
-# Single test method on a single device
-./Screenshots/capture.sh "iPhone 17 Pro Max" testCapture04_JWTInspector
+# The reel (every scenario) on a single device
+./Screenshots/capture.sh "iPhone 17 Pro Max" testCaptureReel
 ```
 
 The wrapper delegates to `DRSFramer/scripts/capture.sh`, which:
@@ -92,12 +92,10 @@ Only after handler entry does the test check for the web view, attaching
 
 ## Adding a new screenshot
 
-1. **Add a test method** in `Auth for Tesla UI Tests/ScreenshotTests.swift`:
+1. **Add a step** to `testCaptureReel` in `Auth for Tesla UI Tests/ScreenshotTests.swift`:
    ```swift
-   @MainActor
-   func testCapture09_NewScene() throws {
-       launch(["enable-testing", "screenshot-new-scene"])
-       takeScreenshot(named: "09_new_scene")
+   capture(scenario: "screenshot-new-scene", named: "09_new_scene") { app in
+       XCTAssertTrue(app.navigationBars["New Scene"].waitForExistence(timeout: 10))
    }
    ```
 
