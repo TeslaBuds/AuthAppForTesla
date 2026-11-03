@@ -35,7 +35,6 @@ private let SecValueData: String! = kSecValueData as String
 private let SecAttrAccessible: String! = kSecAttrAccessible as String
 private let SecClass: String! = kSecClass as String
 private let SecAttrService: String! = kSecAttrService as String
-private let SecAttrGeneric: String! = kSecAttrGeneric as String
 private let SecAttrAccount: String! = kSecAttrAccount as String
 private let SecAttrAccessGroup: String! = kSecAttrAccessGroup as String
 private let SecReturnAttributes: String = kSecReturnAttributes as String
@@ -434,52 +433,6 @@ open class KeychainWrapper {
         }
     }
 
-    /// Setup the keychain query dictionary used to access the keychain on iOS for a specified key name. Takes into account the Service Name and Access Group if one is set.
-    ///
-    /// - parameter forKey: The key this query is for
-    /// - parameter withAccessibility: Optional accessibility to use when setting the keychain item. If none is provided, will default to .WhenUnlocked
-    /// - returns: A dictionary with all the needed properties setup to access the keychain on iOS
-    private func setupKeychainQueryDictionary(forKey key: String, withAccessibility accessibility: KeychainItemAccessibility? = nil) -> [String:Any] {
-        // Setup default access as generic password (rather than a certificate, internet password, etc)
-        var keychainQueryDictionary: [String:Any] = [SecClass:kSecClassGenericPassword]
-        
-        // Uniquely identify this keychain accessor
-        keychainQueryDictionary[SecAttrService] = serviceName
-        
-        // Only set accessibiilty if its passed in, we don't want to default it here in case the user didn't want it set
-        if let accessibility = accessibility {
-            keychainQueryDictionary[SecAttrAccessible] = accessibility.keychainAttrValue
-        }
-        
-        // Set the keychain access group if defined
-        if let accessGroup = self.accessGroup {
-            keychainQueryDictionary[SecAttrAccessGroup] = accessGroup
-        }
-        
-        // Uniquely identify the account who will be accessing the keychain
-        let encodedIdentifier: Data? = key.data(using: String.Encoding.utf8)
-        
-        keychainQueryDictionary[SecAttrGeneric] = encodedIdentifier
-        
-        keychainQueryDictionary[SecAttrAccount] = encodedIdentifier
-
-        //iCloud Keychain synchronizable
-        if iCloudSync
-        {
-            keychainQueryDictionary[SecAttrSynchronizable] = kCFBooleanTrue
-        }
-
-        #if os(macOS)
-        // The native Mac app must use the data-protection keychain: the
-        // legacy file keychain ignores access groups, so `group.global`
-        // would silently mean nothing. Synchronizable items already live
-        // there; this states the intent explicitly (AuthAppForTesla#44).
-        keychainQueryDictionary[kSecUseDataProtectionKeychain as String] = kCFBooleanTrue
-        #endif
-
-        return keychainQueryDictionary
-    }
-
     // MARK: - Status-reporting primitives (the sync-wipe guard, #44)
 
     /// Reads one item and says *why* when there is no data: a missing item
@@ -531,12 +484,4 @@ public enum KeychainReadResult: Equatable, Sendable {
     case found(Data)
     case notFound
     case failed(OSStatus)
-}
-
-extension KeychainWrapper {
-    /// Every Auth for Tesla credential: service `AuthForTesla`, the
-    /// `group.global` app group as the keychain access group, synchronised
-    /// through iCloud Keychain. Never rename either: every stored item
-    /// lives there, on every device.
-    public static let global = KeychainWrapper(serviceName: "AuthForTesla", accessGroup: "group.global", iCloudSync: true)
 }

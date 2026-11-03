@@ -17,7 +17,7 @@ struct MenuBarTokenMenu: View {
 
     var body: some View {
         if model.storeProblem != nil {
-            Text("Your synced tokens can't be read on this Mac")
+            Text("Your tokens can't be read on this Mac")
         }
         MenuBarProfileSection(title: "Owners API", collection: model.profilesV3, model: model)
         if let problem = model.refreshProblem(for: .owner) {

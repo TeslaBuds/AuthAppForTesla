@@ -26,6 +26,25 @@ excluded:
   - "**/SourcePackages"
 
 custom_rules:
+  token_storage_composition_owner:
+    name: "Token storage has one device-bound composition owner (#71)"
+    excluded: '(?:TokenProfileStore|KeychainWrapper)\.swift$|Tests/'
+    regex: 'KeychainSyncedItemStorage\s*\(|KeychainWrapper\s*\.\s*deviceTokens'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+      - string
+    message: "Read tokens through TokenProfileStore or StoredTokenReader; only the profile owner composes device storage"
+    severity: error
+  no_synced_token_fallback:
+    name: "No synchronized OAuth token fallback (#71)"
+    excluded: 'Tests/'
+    regex: 'KeychainWrapper\s*\.\s*global\s*\.\s*(?:data|readResult|set|addOnly|updateOnly)\s*\([^)]*\bkTokenV[34](?:Profiles)?\b'
+    excluded_match_kinds:
+      - comment
+      - doccomment
+    message: "Rotating grants require per-device login; never read or write synchronized token keys"
+    severity: error
   no_title_only_cancel:
     name: "No title-only Cancel — SheetCancelButton instead (AuthAppForTesla#69)"
     # A bar item with a title and no icon is not shown when the bar is

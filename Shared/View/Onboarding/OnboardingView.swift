@@ -23,7 +23,10 @@ struct OnboardingView: View {
             systemImage: "lock.shield.fill",
             color: Color("TeslaRed"),
             title: "Your Credentials Stay on Device",
-            description: "Sign-in happens in a secure browser — your Tesla password never passes through this app. Tokens are stored in your iCloud Keychain and sync across your devices."
+            description: """
+            Sign-in happens in a secure browser — your Tesla password never passes through this app. \
+            Tokens stay in this device’s encrypted Keychain. Sign in separately on each device.
+            """
         ),
         (
             systemImage: "puzzlepiece.extension.fill",

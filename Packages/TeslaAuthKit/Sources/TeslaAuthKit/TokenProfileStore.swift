@@ -8,12 +8,14 @@
 //  are kept in sync with the active profile so the widget extension
 //  and AppIntents continue to work without changes.
 //
-//  THE SYNC-WIPE GUARD (AuthAppForTesla#44). Every profile list is one
-//  iCloud-synchronised keychain item. A device that cannot read that
-//  item — a Mac whose signature lacks `group.global`, a locked
-//  keychain, data written by a newer version — must never write a list
-//  it did not first read, because iCloud Keychain would carry that
-//  write to the iPhone and wipe it. So:
+//  DEVICE-BOUND GRANTS (AuthAppForTesla#71). Production profiles and
+//  their legacy active-token mirrors use non-synchronizable,
+//  AfterFirstUnlockThisDeviceOnly items. Existing synchronized grants
+//  are never read, copied or deleted: each device signs in separately.
+//
+//  The unreadable-data guard from #44 still applies to the local store.
+//  A missing access-group entitlement, inaccessible keychain, or newer
+//  encoding must never turn a failed read into an empty replacement. So:
 //
 //  - a read that *failed* (any status other than success or not-found)
 //    blocks every write for that environment, including the legacy
@@ -42,7 +44,7 @@ public enum TokenStoreError: Error, Equatable {
     case undecodable
     /// The change would have written an empty list. Nothing was written.
     case refusedEmptyWrite
-    /// The list kept changing under the store (another device syncing).
+    /// The list kept changing under the store (another local writer).
     case changedSinceRead
     /// The keychain refused the write itself, with this status.
     case writeFailed(OSStatus)
@@ -53,11 +55,11 @@ extension TokenStoreError {
     public var message: String {
         switch self {
         case .unreadable, .undecodable:
-            "Your synced tokens can't be read on this device, so nothing was changed."
+            "Your tokens can't be read on this device, so nothing was changed."
         case .refusedEmptyWrite:
             "Nothing was changed."
         case .changedSinceRead:
-            "Your tokens changed on another device. Please try again."
+            "Your tokens changed while saving. Please try again."
         case .writeFailed:
             "The change couldn't be saved."
         }
@@ -88,34 +90,14 @@ public protocol SyncedItemStorage: Sendable {
     func remove(_ key: String) -> OSStatus
 }
 
-/// `KeychainWrapper` as the store's storage, with the accessibility every
-/// Auth for Tesla item has always used.
-public struct KeychainSyncedItemStorage: SyncedItemStorage, @unchecked Sendable {
-    public let keychain: KeychainWrapper
-
-    public init(keychain: KeychainWrapper) {
-        self.keychain = keychain
-    }
-
-    public func read(_ key: String) -> KeychainReadResult {
-        keychain.readResult(forKey: key, withAccessibility: .afterFirstUnlock)
-    }
-
-    public func add(_ data: Data, forKey key: String) -> OSStatus {
-        keychain.addOnly(data, forKey: key, withAccessibility: .afterFirstUnlock)
-    }
-
-    public func replace(_ data: Data, forKey key: String) -> OSStatus {
-        keychain.updateOnly(data, forKey: key, withAccessibility: .afterFirstUnlock)
-    }
-
-    public func remove(_ key: String) -> OSStatus {
-        keychain.removeReturningStatus(forKey: key, withAccessibility: .afterFirstUnlock)
-    }
-}
-
 public actor TokenProfileStore {
-    public static let shared = TokenProfileStore(storage: KeychainSyncedItemStorage(keychain: .global))
+    public static let shared = TokenProfileStore(storage: productionStorage())
+
+    /// One composition seam for production token storage; injected Keychain
+    /// wrappers let policy tests run without contacting Security.framework.
+    static func productionStorage(keychain: KeychainWrapper = .deviceTokens) -> any SyncedItemStorage {
+        KeychainSyncedItemStorage(keychain: keychain, accessibility: .afterFirstUnlockThisDeviceOnly)
+    }
 
     private let storage: any SyncedItemStorage
     /// How many times a change is re-applied when the list moved under it.
@@ -180,7 +162,7 @@ public actor TokenProfileStore {
 
     /// Writes a refreshed token to a profile, but only while that profile
     /// still holds `refreshedFrom`, the refresh token that was posted.
-    /// If another device's newer rotation landed in between, it is kept:
+    /// If another local writer's newer rotation landed in between, it is kept:
     /// overwriting it with this older rotation would lose the live token
     /// (AuthAppForTesla#50). The check runs again on every compare-and-swap
     /// retry, against the list that is actually there.
@@ -237,8 +219,8 @@ public actor TokenProfileStore {
 
     /// Removes the legacy single-token mirror after its refresh token was
     /// rejected — the long-standing iOS behaviour — but only when the
-    /// profile list could be read, so a device that cannot see the synced
-    /// items never deletes one.
+    /// local profile list could be read. Synchronized legacy items are
+    /// outside this store's namespace and are never removed.
     public func clearLegacyMirror(environment: LoginEnvironment) throws(TokenStoreError) {
         if case .blocked(let error) = basis(for: environment) { throw error }
         let status = storage.remove(legacyKey(for: environment))

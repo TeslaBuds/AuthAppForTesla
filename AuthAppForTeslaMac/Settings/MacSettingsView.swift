@@ -43,20 +43,23 @@ struct GeneralSettings: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
-            Section("iCloud Keychain") {
+            Section("This Device’s Keychain") {
                 if model.storeProblem == nil {
-                    LabeledContent("Synced tokens") {
-                        Label("Readable on this Mac", systemImage: "checkmark.icloud")
+                    LabeledContent("Device tokens") {
+                        Label("Readable on this Mac", systemImage: "checkmark.shield")
                     }
                 } else {
-                    LabeledContent("Synced tokens") {
-                        Label("Can't be read on this Mac", systemImage: "exclamationmark.icloud")
+                    LabeledContent("Device tokens") {
+                        Label("Can't be read on this Mac", systemImage: "exclamationmark.shield")
                             .foregroundStyle(.orange)
                     }
-                    Text("Nothing is changed on this Mac until they can be read, so your other devices keep their tokens.")
+                    Text("Nothing is changed until this Mac’s tokens can be read.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                Text("Sign in separately on each device. Tokens do not sync or transfer in a backup.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 LabeledContent("Owners API accounts", value: model.profilesV3.profiles.count, format: .number)
                 LabeledContent("Fleet API accounts", value: model.profilesV4.profiles.count, format: .number)
             }
@@ -135,7 +138,7 @@ struct FleetSaveOutcomeLabel: View {
 
     var body: some View {
         if let storeProblem {
-            Label(storeProblem.message, systemImage: "exclamationmark.icloud")
+            Label(storeProblem.message, systemImage: "exclamationmark.shield")
                 .foregroundStyle(.orange)
         } else {
             switch outcome {

@@ -138,17 +138,6 @@ extension AuthController {
         get async { await activeToken(environment: .fleet) }
     }
 
-    func getV4Token() -> Data? {
-        if let tokenJson = KeychainWrapper.global.data(forKey: kTokenV4, withAccessibility: .afterFirstUnlock)
-        {
-            if (try? JSONDecoder().decode(Token.self, from: tokenJson)) != nil
-            {
-                return tokenJson
-            }
-        }
-        return nil
-    }
-
     /// The active Fleet token, refreshed when forced or due; nil when a
     /// needed refresh failed. Never deletes the profile (#50).
     func acquireTokenV4Silent(forceRefresh: Bool = false) async -> Token? {

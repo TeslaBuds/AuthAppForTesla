@@ -157,22 +157,7 @@ actor AuthController {
 
     /// The active profile's stored token for an API.
     func activeToken(environment: LoginEnvironment) async -> Token? {
-        if let token = await store.load(environment: environment).activeProfile?.token {
-            return token
-        }
-        let data = environment == .owner ? getV3Token() : getV4Token()
-        return data.flatMap { try? JSONDecoder().decode(Token.self, from: $0) }
-    }
-
-    func getV3Token() -> Data? {
-        if let tokenJson = KeychainWrapper.global.data(forKey: kTokenV3, withAccessibility: .afterFirstUnlock)
-        {
-            if (try? JSONDecoder().decode(Token.self, from: tokenJson)) != nil
-            {
-                return tokenJson
-            }
-        }
-        return nil
+        await store.load(environment: environment).activeProfile?.token
     }
 
     /// Refreshes the active profile's token, reporting why when it could

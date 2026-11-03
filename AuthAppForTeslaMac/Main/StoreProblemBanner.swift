@@ -16,10 +16,10 @@ struct StoreProblemBanner: View {
     var body: some View {
         Label {
             VStack(alignment: .leading, spacing: AppSpacing.xs) {
-                Text("Your synced tokens can't be read on this device")
+                Text("Your tokens can't be read on this device")
                     .font(.subheadline)
                     .bold()
-                Text("Nothing will be changed here, so your tokens on your other devices stay as they are.")
+                Text("Nothing will be changed until this device’s tokens can be read.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

@@ -17,7 +17,7 @@ struct LoginViewFooter: View {
             Spacer()
             Text("Sign in to generate tokens")
                 .font(.title2)
-            Text("Sign in with your Tesla account to get a refresh token and an access token.")
+            Text("Sign in on each device for its own tokens. Tokens from other devices are not imported.")
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, AppSpacing.md)

@@ -11,21 +11,29 @@
 import Foundation
 
 public enum StoredTokenReader {
-    /// The stored profiles for an API, exactly as they are in the
-    /// keychain. A legacy single-token entry that has not been migrated
-    /// yet is reported as one unnamed, active profile — without
-    /// migrating it.
+    /// The local profiles for an API. A legacy entry is accepted only in
+    /// the same device-only storage class; synchronized grants never fall
+    /// through into status intents or account queries.
     public static func profiles(for environment: LoginEnvironment) -> TokenProfileCollection {
+        profiles(for: environment, storage: TokenProfileStore.productionStorage())
+    }
+
+    static func profiles(
+        for environment: LoginEnvironment, storage: any SyncedItemStorage
+    ) -> TokenProfileCollection {
         let decoder = JSONDecoder()
-        if let data = KeychainWrapper.global.data(forKey: profilesKey(for: environment), withAccessibility: .afterFirstUnlock),
-           let collection = try? decoder.decode(TokenProfileCollection.self, from: data) {
-            return collection
-        }
-        if let data = KeychainWrapper.global.data(forKey: legacyKey(for: environment), withAccessibility: .afterFirstUnlock),
-           let token = try? decoder.decode(Token.self, from: data) {
+        switch storage.read(profilesKey(for: environment)) {
+        case .found(let data):
+            return (try? decoder.decode(TokenProfileCollection.self, from: data)) ?? TokenProfileCollection()
+        case .failed:
+            return TokenProfileCollection()
+        case .notFound:
+            guard case .found(let data) = storage.read(legacyKey(for: environment)),
+                  let token = try? decoder.decode(Token.self, from: data) else {
+                return TokenProfileCollection()
+            }
             return TokenProfileCollection(profiles: [TokenProfile(name: "", token: token)])
         }
-        return TokenProfileCollection()
     }
 
     /// The profile a token-reporting intent should look at: the one the
